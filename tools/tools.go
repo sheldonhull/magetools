@@ -20,6 +20,7 @@ var tools = []string{ //nolint:gochecknoglobals // ok to be global for tooling s
 	"golang.org/x/tools/cmd/goimports@master",
 	"github.com/sqs/goreturns@master",
 	"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
+	"github.com/dustinkirkland/golang-petname/cmd/petname@master"
 }
 
 // createDirectories creates the local working directories for build artifacts and tooling.
@@ -35,6 +36,7 @@ func createDirectories() error {
 
 	return nil
 }
+
 
 // Tools installs tooling for the project in a local directory to avoid polluting global modules.
 func Tools() error {
@@ -52,6 +54,7 @@ func Tools() error {
 	if update {
 		args = []string{"get", "-u"}
 	}
+
 	pterm.DefaultSection.Println("Installing go tooling for development")
 	p, _ := pterm.DefaultProgressbar.WithTotal(len(tools)).WithTitle("Installing stuff").Start()
 	for _, t := range tools {
@@ -60,10 +63,18 @@ func Tools() error {
 		if err != nil {
 			pterm.Warning.Printf("Could not install [%s] per [%v]\n", t, err)
 		}
+		pterm.Success.Printf("install %s\n", t)
+
 		p.Increment()
 	}
+
 	p.Title = "Tools successfully installed"
 	_, _ = p.Stop()
 
 	return nil
+}
+
+// tool runs a command using a cached binary.
+func tool(cmd string, args ...string) error {
+	return sh.Run(filepath.Join("_tools", cmd), args...)
 }
