@@ -38,7 +38,7 @@ func createDirectories() error {
 }
 
 // Tools installs tooling for the project in a local directory to avoid polluting global modules.
-func Tools(tools []string...) error {
+func Tools(tools []string) error {
 	if err := os.MkdirAll("_tools", 0700); err != nil { //nolint:gomnd // file permissions ok to be literal
 		return err
 	}
