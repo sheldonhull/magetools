@@ -74,6 +74,6 @@ func Tools(tools []string) error {
 }
 
 // tool runs a command using a cached binary.
-func tool(cmd string, args ...string) error {
+func RunTool(cmd string, args ...string) error {
 	return sh.Run(filepath.Join("_tools", cmd), args...)
 }
