@@ -14,14 +14,14 @@ const toolDirectory = "_tools"
 // mkdirPermissions creates sets the permission
 const mkdirPermissions = 0700
 
-// tools is a list of Go tools to install to avoid polluting global modules.
-var tools = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
-	"github.com/goreleaser/goreleaser@v0.174.1",
-	"golang.org/x/tools/cmd/goimports@master",
-	"github.com/sqs/goreturns@master",
-	"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-	"github.com/dustinkirkland/golang-petname/cmd/petname@master"
-}
+// // tools is a list of Go tools to install to avoid polluting global modules.
+// var tools = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
+// 	"github.com/goreleaser/goreleaser@v0.174.1",
+// 	"golang.org/x/tools/cmd/goimports@master",
+// 	"github.com/sqs/goreturns@master",
+// 	"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
+// 	"github.com/dustinkirkland/golang-petname/cmd/petname@master"
+// }
 
 // createDirectories creates the local working directories for build artifacts and tooling.
 func createDirectories() error {
@@ -36,7 +36,6 @@ func createDirectories() error {
 
 	return nil
 }
-
 
 // Tools installs tooling for the project in a local directory to avoid polluting global modules.
 func Tools() error {
