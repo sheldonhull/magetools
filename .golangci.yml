@@ -1,0 +1,31 @@
+linters:
+  # disable-all: true
+  # enable:
+  #   - megacheck
+  #   - govet
+  enable-all: true
+  disable:
+   - scopelint
+   - paralleltest
+   - staticcheck
+   - noctx
+   - wsl
+   - lll
+  #   - prealloc
+  # presets:
+  #   - bugs
+  #   - unused
+
+    # bugs|comment|complexity|error|format|import|metalinter|module|performance|sql|style|test|unused
+  fast: true
+
+run:
+  skip-dirs:
+    - cmd/test-files
+    - build
+    - artifacts
+    - _tools
+  # lint magefile, but ignore tools.go
+  build-tags:
+    - mage
+    # - tools

@@ -1,0 +1,19 @@
+---
+comment: my-markdown-linting-rules
+default: true
+# MD003:
+#   style:
+MD007:
+  indent: 4
+no-hard-tabs: true
+whitespace: true
+no-bare-urls: true
+fenced-code-language: true
+no-inline-html: false
+MD004:
+  style: dash
+MD025:
+MD041: false
+MD013: false
+MD046: false
+  #style: consistent

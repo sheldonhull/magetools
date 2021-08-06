@@ -9,3 +9,13 @@ FROM mcr.microsoft.com/vscode/devcontainers/universal:1-focal
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 #
 # USER codespace
+RUN go install github.com/jpoles1/gopherbadger@master \
+    && go install github.com/evilmartians/lefthook@latest \
+    && go install github.com/golangci/golangci-lint/cmd/golangci-lint \
+    && GO111MODULE=on go get mvdan.cc/gofumpt \
+    && GO111MODULE='off'  go get golang.org/x/tools/cmd/goimports \
+    && GO111MODULE='off' go get github.com/daixiang0/gci \
+    && go install github.com/itchyny/gojq/cmd/gojq@latest \
+    && go install github.com/owenrumney/squealer/cmd/squealer@latest
+
+RUN lefthook install

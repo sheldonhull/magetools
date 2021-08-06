@@ -1,0 +1,55 @@
+---
+# EXAMPLE USAGE
+# Refer for explanation to following link:
+# https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
+#
+# This will run the key security checks that will have redacted secrets on output
+ci-lint:
+  commands:
+    golangci-lint:
+      tags: lint go
+      name: golangci-lint
+      run: golangci-lint run ./... --config .golangci.yml
+
+pre-push:
+  commands:
+    gopherbadge:
+      tags: docs tests go
+      name: update gopherbadge
+      run: |
+        go test  ./... -coverprofile ./artifacts/cover.out
+        go tool cover -html=./artifacts/cover.out -o ./artifacts/coverage.html
+        gopherbadger -md="README.md,coverage.md"
+        git add README.md && git commit --amend --no-edit README.md
+        git add coverage.md && git commit --amend --no-edit coverage.md
+pre-commit:
+  parallel: false
+  tags: go lint
+  commands:
+    # golangci-lint: go install github.com/golangci/golangci-lint/cmd/golangci-lint
+    golangci-lint:
+      tags: go
+      run: golangci-lint run ./... --config .golangci.yml --fix
+
+    gofmt:
+      tags: fmt
+      name: gofmt
+      run: gofmt -s -w .
+
+    # GO111MODULE=on go get mvdan.cc/gofumpt
+    gofumpt:
+      tags: gotool fmt
+      name: gofumpt
+      run: gofumpt -l -w .
+
+    # GO111MODULE='off'  go get golang.org/x/tools/cmd/goimports
+    goimports:
+      tags: gotool fmt
+      name: goimports
+      run: goimports -w .
+
+    # GO111MODULE='off' go get github.com/daixiang0/gci
+    gci:
+      tags: gotool fmt
+      name: gci
+      run: gci -w .

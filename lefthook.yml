@@ -1,0 +1,31 @@
+# EXAMPLE USAGE
+# Refer for explanation to following link:
+# https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
+# go install github.com/evilmartians/lefthook@latest
+
+# ⚡ Install go get github.com/evilmartians/lefthook
+# ⚡ Use install:  go install github.com/evilmartians/lefthook@master
+# This will run the key security checks that will have redacted secrets on output
+extends:
+  - ./lefthook.go.yml
+  - ./lefthook.secrets.yml
+
+skip_output:
+  # - meta
+  - success
+  # - summary
+pre-commit:
+  parallel: true
+  tags: go lint
+  commands:
+    markdownlint:
+      tags: docker
+      name: markdownlint-autofix
+      glob: '**/*/*.md'
+      run: docker run -i --rm -v ${PWD}:/work tmknom/markdownlint:latest --fix {files}
+    shellcheck:
+      tags: gotool
+      name: shellcheck
+      files: git ls-files -m
+      glob: '*.sh'
+      run: docker run --rm -v ${PWD}:/mnt koalaman/shellcheck:stable --format=json {files}

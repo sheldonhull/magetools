@@ -11,8 +11,8 @@ import (
 // _tools is a directory containing local tooling for the project.
 const toolDirectory = "_tools"
 
-// mkdirPermissions creates sets the permission
-const mkdirPermissions = 0700
+// mkdirPermissions creates sets the permission.
+const mkdirPermissions = 0o700
 
 // // tools is a list of Go tools to install to avoid polluting global modules.
 // var tools = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
@@ -26,7 +26,7 @@ const mkdirPermissions = 0700
 // createDirectories creates the local working directories for build artifacts and tooling.
 func createDirectories() error {
 	for _, dir := range []string{toolDirectory} {
-		if err := os.MkdirAll(dir, 0700); err != nil { //nolint:gomnd // file permissions ok to be literal
+		if err := os.MkdirAll(dir, 0o700); err != nil { //nolint:gomnd // file permissions ok to be literal
 			pterm.Error.Printf("failed to create dir: [%s] with error: %v\n", dir, err)
 
 			return err
@@ -39,7 +39,7 @@ func createDirectories() error {
 
 // InstallTools installs tooling for the project in a local directory to avoid polluting global modules.
 func InstallTools(tools []string) error {
-	if err := os.MkdirAll("_tools", 0700); err != nil { //nolint:gomnd // file permissions ok to be literal
+	if err := os.MkdirAll("_tools", 0o700); err != nil { //nolint:gomnd // file permissions ok to be literal
 		return err
 	}
 	wd, err := os.Getwd()
