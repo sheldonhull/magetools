@@ -1,4 +1,5 @@
-package tools
+// tooling helps bootstrap a project with locally vendored executables and tools.
+package tooling
 
 import (
 	"os"
