@@ -16,6 +16,9 @@ RUN go install github.com/jpoles1/gopherbadger@master \
     && GO111MODULE='off'  go get golang.org/x/tools/cmd/goimports \
     && GO111MODULE='off' go get github.com/daixiang0/gci \
     && go install github.com/itchyny/gojq/cmd/gojq@latest \
-    && go install github.com/owenrumney/squealer/cmd/squealer@latest
+    && go install github.com/owenrumney/squealer/cmd/squealer@latest \
+    && go install -v github.com/zricethezav/gitleaks@latest \
+    && go install github.com/git-town/git-town@latest && git town alias true && echo "installed git town aliases" \
+    && curl -fsSL https://starship.rs/install.sh | sudo bash -s -- --force && echo "completed setup of starship.rs"
 
 RUN lefthook install
