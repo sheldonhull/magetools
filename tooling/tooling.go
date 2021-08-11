@@ -4,6 +4,7 @@ package tooling
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
@@ -27,7 +28,7 @@ const mkdirPermissions = 0o700
 // createDirectories creates the local working directories for build artifacts and tooling.
 func createDirectories() error {
 	for _, dir := range []string{toolDirectory} {
-		if err := os.MkdirAll(dir, 0o700); err != nil { //nolint:gomnd // file permissions ok to be literal
+		if err := os.MkdirAll(dir, mkdirPermissions); err != nil {
 			pterm.Error.Printf("failed to create dir: [%s] with error: %v\n", dir, err)
 
 			return err
@@ -40,7 +41,7 @@ func createDirectories() error {
 
 // InstallTools installs tooling for the project in a local directory to avoid polluting global modules.
 func InstallTools(tools []string) error {
-	if err := os.MkdirAll("_tools", 0o700); err != nil { //nolint:gomnd // file permissions ok to be literal
+	if err := os.MkdirAll("_tools", mkdirPermissions); err != nil {
 		return err
 	}
 	wd, err := os.Getwd()
@@ -56,7 +57,13 @@ func InstallTools(tools []string) error {
 	}
 
 	pterm.DefaultSection.Println("Installing go tooling for development")
-	p, _ := pterm.DefaultProgressbar.WithTotal(len(tools)).WithTitle("Installing stuff").Start()
+	p, _ := pterm.DefaultProgressbar.WithTotal(len(tools)).WithTitle("Installing stuff").WithRemoveWhenDone(true).Start()
+	defer func() {
+		p.Title = "tooling installed"
+		_, _ = p.Stop()
+		pterm.Success.Printf("tooling installed: %s\n", p.GetElapsedTime().String())
+	}()
+
 	for _, t := range tools {
 		p.Title = "Installing " + t
 		_, err := sh.OutputWith(env, "go", append(args, t)...)
@@ -76,5 +83,11 @@ func InstallTools(tools []string) error {
 
 // tool runs a command using a cached binary.
 func RunTool(cmd string, args ...string) error {
-	return sh.Run(filepath.Join("_tools", cmd), args...)
+	// if windows detected, add the exe to the binary path
+	var extension string
+	if runtime.GOOS == "windows" {
+		extension = ".exe"
+	}
+
+	return sh.Run(filepath.Join("_tools", cmd+extension), args...)
 }

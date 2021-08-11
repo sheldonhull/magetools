@@ -43,3 +43,13 @@ Namespaced
 // mage:import ci
 "github.com/sheldonhull/magetools/ci"
 ```
+
+## Update
+
+Quickly refresh library by running this on caller.
+This should bypass the cached public version and call directly.
+
+```shell
+GOPRIVATE=github.com/sheldonhull/* go get -u
+GOPRIVATE=github.com/sheldonhull/* go get -u github.com/sheldonhull/magetools/gotools@latest
+```
