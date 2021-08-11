@@ -2,14 +2,17 @@
 package gotools
 
 import (
+	"github.com/magefile/mage/mg"
 	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/tooling"
 )
 
+type Golang mg.Namespace
+
 // Lint runs golangci-lint tooling.
-func Lint() error {
+func (Golang) Lint() error {
 	pterm.Info.Println("Running golangci-lint")
-	if err := tooling.RunTool("golangci-lint", "--enable-all"); err != nil {
+	if err := tooling.RunTool("golangci-lint", "run", "./..."); err != nil {
 		return err
 	}
 
