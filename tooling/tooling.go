@@ -71,7 +71,6 @@ func InstallTools(tools []string) error {
 			pterm.Warning.Printf("Could not install [%s] per [%v]\n", t, err)
 		}
 		pterm.Success.Printf("install %s\n", t)
-
 		p.Increment()
 	}
 
