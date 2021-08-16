@@ -22,6 +22,7 @@ pre-push:
         gopherbadger -md="README.md,coverage.md"
         git add README.md && git commit --amend --no-edit README.md
         git add coverage.md && git commit --amend --no-edit coverage.md
+        git add coverage.md && git commit --amend --no-edit coverage_badge.png
 pre-commit:
   parallel: false
   tags: go lint

@@ -1,6 +1,7 @@
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.191.0/containers/codespaces-linux/.devcontainer/base.Dockerfile
 
-FROM mcr.microsoft.com/vscode/devcontainers/universal:1-focal
+FROM mcr.microsoft.com/vscode/devcontainers/universal:linux
+
 
 # ** [Optional] Uncomment this section to install additional packages. **
 # USER root
@@ -11,10 +12,10 @@ FROM mcr.microsoft.com/vscode/devcontainers/universal:1-focal
 # USER codespace
 RUN go install github.com/jpoles1/gopherbadger@master \
     && go install github.com/evilmartians/lefthook@latest \
-    && go install github.com/golangci/golangci-lint/cmd/golangci-lint \
-    && GO111MODULE=on go get mvdan.cc/gofumpt \
-    && GO111MODULE='off'  go get golang.org/x/tools/cmd/goimports \
-    && GO111MODULE='off' go get github.com/daixiang0/gci \
+    # && go install github.com/golangci/golangci-lint/cmd/golangci-lint \
+    # && GO111MODULE=on go get mvdan.cc/gofumpt \
+    # && GO111MODULE='off'  go get golang.org/x/tools/cmd/goimports \
+    # && GO111MODULE='off' go get github.com/daixiang0/gci \
     && go install github.com/itchyny/gojq/cmd/gojq@latest \
     && go install github.com/owenrumney/squealer/cmd/squealer@latest \
     && go install -v github.com/zricethezav/gitleaks@latest \
