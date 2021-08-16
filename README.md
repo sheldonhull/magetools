@@ -53,3 +53,25 @@ This should bypass the cached public version and call directly.
 GOPRIVATE=github.com/sheldonhull/* go get -u
 GOPRIVATE=github.com/sheldonhull/* go get -u github.com/sheldonhull/magetools/gotools@latest
 ```
+
+## Allow Zero Install Run
+
+From the [Mage Docs]
+
+```go
+// +build ignore
+
+package main
+
+import (
+	"os"
+
+	"github.com/magefile/mage/mage"
+)
+
+func main() { os.Exit(mage.Main()) }
+```
+
+Run this using: `go run main.go` and it should work just like using `mage` directly.
+
+[Mage Docs]: https://magefile.org/zeroinstall
