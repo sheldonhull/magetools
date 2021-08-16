@@ -10,6 +10,14 @@ FROM mcr.microsoft.com/vscode/devcontainers/universal:linux
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 #
 # USER codespace
+USER root
+COPY library-scripts/*.sh library-scripts/*.env /tmp/library-scripts/
+RUN echo "✅ install starship prompt" \
+    && bash /tmp/library-scripts/install-starship.sh \
+    && apt-get autoremove && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
+
+USER codespace
+
 RUN go install github.com/jpoles1/gopherbadger@master \
     && go install github.com/evilmartians/lefthook@latest \
     # && go install github.com/golangci/golangci-lint/cmd/golangci-lint \
@@ -18,8 +26,8 @@ RUN go install github.com/jpoles1/gopherbadger@master \
     # && GO111MODULE='off' go get github.com/daixiang0/gci \
     && go install github.com/itchyny/gojq/cmd/gojq@latest \
     && go install github.com/owenrumney/squealer/cmd/squealer@latest \
-    && go install -v github.com/zricethezav/gitleaks@latest \
-    && go install github.com/git-town/git-town@latest && git town alias true && echo "installed git town aliases" \
-    && curl -fsSL https://starship.rs/install.sh | sudo bash -s -- --force && echo "completed setup of starship.rs"
-
+    && GO111MODULE=on go get github.com/zricethezav/gitleaks/v7
+RUN go install github.com/git-town/git-town@latest \
+    && git town alias true \
+    && echo "installed git town aliases"
 RUN lefthook install
