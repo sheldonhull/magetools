@@ -25,7 +25,7 @@ var toolList = []string{ //nolint:gochecknoglobals // ok to be global for toolin
 	"github.com/daixiang0/gci@latest",
 }
 
-// Setup any go tooling in project that is required.
+// ⚙️  Init runs all required steps to use this package.
 func (Golang) Init() error {
 	if err := tooling.InstallTools(toolList); err != nil {
 		return err
@@ -34,7 +34,7 @@ func (Golang) Init() error {
 	return nil
 }
 
-// Lint runs golangci-lint tooling.
+// 🔎 Lint runs golangci-lint tooling.
 func (Golang) Lint() error {
 	pterm.Info.Println("Running golangci-lint")
 	if err := tooling.RunTool("golangci-lint", "run", "./..."); err != nil {
@@ -44,7 +44,7 @@ func (Golang) Lint() error {
 	return nil
 }
 
-// Lint runs golangci-lint tooling.
+// ⚙️ Lint runs golangci-lint tooling.
 func (Golang) Fmt() error {
 	pterm.Info.Println("Running gofmt, gofumpt, goimports, and gci ")
 	p, _ := pterm.DefaultProgressbar.WithTotal(4).WithTitle("running formatters").WithRemoveWhenDone(true).Start() //nolint:gomnd
@@ -80,7 +80,7 @@ func (Golang) Fmt() error {
 	return nil
 }
 
-// Clean all Go artifacts.
+// 🧹 Clean all Go artifacts.
 func (Golang) Clean() error {
 	pterm.Success.Println("Cleaning...")
 
