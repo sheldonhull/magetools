@@ -7,10 +7,13 @@ import (
 	"testing"
 
 	iz "github.com/matryer/is"
+	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/ci"
 )
 
 func Test_DetectCI(t *testing.T) {
+	pterm.DisableStyling()
+
 	tests := []struct {
 		name   string
 		envVar string
@@ -19,6 +22,7 @@ func Test_DetectCI(t *testing.T) {
 		{name: "no ci", envVar: "NOTIMPORTANT", want: false},
 		{name: "github actions", envVar: "CI", want: true},
 		{name: "azure devops", envVar: "AGENT_ID", want: true},
+		{name: "netlify", envVar: "NETLIFY", want: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

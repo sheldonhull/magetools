@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
-        "gotools"
+        "gotools",
+        "ci"
     ],
     "go.testTags": "mage testfiles"
 }
