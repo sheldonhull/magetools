@@ -107,7 +107,7 @@ func (Golang) Clean() error {
 		if _, err := os.Stat(toolPath); err != nil {
 			pterm.Info.Printf("🔄 [%s] item not found, bypassed\n", toolPath)
 
-			break
+			continue
 		}
 		err := os.RemoveAll(toolPath)
 		if err != nil {

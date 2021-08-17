@@ -54,6 +54,10 @@ GOPRIVATE=github.com/sheldonhull/* go get -u
 GOPRIVATE=github.com/sheldonhull/* go get -u github.com/sheldonhull/magetools/gotools@latest
 ```
 
+```powershell
+$ENV:GOPRIVATE='github.com/sheldonhull/*'
+```
+
 ## Allow Zero Install Run
 
 From the [Mage Docs]
@@ -64,9 +68,9 @@ From the [Mage Docs]
 package main
 
 import (
-	"os"
+ "os"
 
-	"github.com/magefile/mage/mage"
+ "github.com/magefile/mage/mage"
 )
 
 func main() { os.Exit(mage.Main()) }
