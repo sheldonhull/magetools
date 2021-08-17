@@ -118,3 +118,12 @@ func (Golang) Clean() error {
 
 	return nil
 }
+
+// 🧹 Tidy tidies.
+func (Golang) Tidy() error {
+	if err := sh.Run("go", "mod", "tidy"); err != nil {
+		return err
+	}
+
+	return nil
+}

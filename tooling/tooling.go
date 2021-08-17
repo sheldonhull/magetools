@@ -65,6 +65,18 @@ func InstallTools(tools []string) error {
 	}()
 
 	for _, t := range tools {
+		// if windows detected, add the exe to the binary path
+		var extension string
+		if runtime.GOOS == "windows" {
+			extension = ".exe"
+		}
+
+		toolPath := filepath.Join("_tools", t+extension)
+		if _, err := os.Stat(toolPath); err != nil {
+			pterm.Info.Printf("🔄 [%s] already installed, bypassed.\n", toolPath)
+
+			continue
+		}
 		p.Title = "Installing " + t
 		_, err := sh.OutputWith(env, "go", append(args, t)...)
 		if err != nil {
