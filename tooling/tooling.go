@@ -56,7 +56,7 @@ func InstallTools(tools []string) error {
 		args = []string{"get", "-u"}
 	}
 
-	pterm.DefaultSection.Println("Installing go tooling for development")
+	pterm.DefaultSection.Println("installing tooling in local project")
 	p, _ := pterm.DefaultProgressbar.WithTotal(len(tools)).WithTitle("Installing stuff").WithRemoveWhenDone(true).Start()
 	defer func() {
 		p.Title = "tooling installed"
