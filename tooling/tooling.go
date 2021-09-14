@@ -49,12 +49,12 @@ func InstallTools(tools []string) error {
 		return err
 	}
 	env := map[string]string{"GOBIN": filepath.Join(wd, "_tools")}
-	args := []string{"get"}
+	args := []string{"install"}
 
-	_, update := os.LookupEnv("UPDATE")
-	if update {
-		args = []string{"get", "-u"}
-	}
+	// _, update := os.LookupEnv("UPDATE")
+	// if update {
+	// 	args = []string{""}
+	// }
 
 	pterm.DefaultSection.Println("installing tooling in local project")
 	p, _ := pterm.DefaultProgressbar.WithTotal(len(tools)).WithTitle("Installing stuff").WithRemoveWhenDone(true).Start()
