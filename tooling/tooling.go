@@ -72,7 +72,7 @@ func InstallTools(tools []string) error {
 		}
 
 		toolPath := filepath.Join("_tools", t+extension)
-		if _, err := os.Stat(toolPath); err != nil {
+		if _, err := os.Stat(toolPath); err == nil {
 			pterm.Info.Printf("🔄 [%s] already installed, bypassed.\n", toolPath)
 
 			continue
@@ -86,7 +86,7 @@ func InstallTools(tools []string) error {
 		p.Increment()
 	}
 
-	p.Title = "Tools successfully installed"
+	p.Title = "Tools successfully installed (make sure dir is part of .gitignore)"
 	_, _ = p.Stop()
 
 	return nil
