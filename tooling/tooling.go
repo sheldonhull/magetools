@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
 )
@@ -98,6 +99,9 @@ func RunTool(cmd string, args ...string) error {
 	var extension string
 	if runtime.GOOS == "windows" {
 		extension = ".exe"
+	}
+	if mg.Verbose() {
+		return sh.RunV(filepath.Join("_tools", cmd+extension), args...)
 	}
 
 	return sh.Run(filepath.Join("_tools", cmd+extension), args...)
