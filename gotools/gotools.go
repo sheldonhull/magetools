@@ -36,8 +36,12 @@ func (Golang) Init() error {
 
 // 🔎 Lint runs golangci-lint tooling.
 func (Golang) Lint() error {
+	var vflag string
+	if mg.Verbose() {
+		vflag = "-v"
+	}
 	pterm.Info.Println("Running golangci-lint")
-	if err := tooling.RunTool("golangci-lint", "run", "./..."); err != nil {
+	if err := tooling.RunTool("golangci-lint", "run", "./...", vflag); err != nil {
 		return err
 	}
 
@@ -55,7 +59,7 @@ func (Golang) Fmt() error {
 	}()
 
 	p.Title = "gofmt"
-	if err := sh.Run("gofmt", "-s", "-w", "."); err != nil {
+	if err := tooling.RunTool("gofmt", "-s", "-w", "."); err != nil {
 		return err
 	}
 	p.Increment()
