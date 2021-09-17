@@ -1,8 +1,9 @@
 {
-    "conventionalCommits.scopes": [
-        "gotools",
-        "ci",
-        "tooling"
-    ],
-    "go.testTags": "mage testfiles"
+  "conventionalCommits.scopes": [
+    "gotools",
+    "ci",
+    "tooling",
+    "licensing"
+  ],
+  "go.testTags": "mage testfiles"
 }
