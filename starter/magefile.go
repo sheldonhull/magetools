@@ -44,7 +44,7 @@ const artifactDirectory = "_artifacts"
 // createDirectories creates the local working directories for build artifacts and tooling.
 func createDirectories() error {
 	for _, dir := range []string{artifactDirectory} {
-		if err := os.MkdirAll(dir, 0o700); err != nil { //nolint:gomnd // file permissions ok to be literal
+		if err := os.MkdirAll(dir, 0o700); err != nil {
 			pterm.Error.Printf("failed to create dir: [%s] with error: %v\n", dir, err)
 
 			return err

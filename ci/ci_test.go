@@ -1,3 +1,4 @@
+//go:build testfiles
 // +build testfiles
 
 package ci_test

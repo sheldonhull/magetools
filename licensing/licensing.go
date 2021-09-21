@@ -4,6 +4,7 @@ package licensing
 
 import (
 	"github.com/magefile/mage/mg"
+	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/tooling"
 )
@@ -36,7 +37,7 @@ func (Licensing) Save() error {
 		licenseDir,
 	}
 
-	err := tooling.RunTool("go-licenses", c...)
+	err := sh.Run("go-licenses", c...)
 	if err != nil {
 		pterm.Error.Println(err)
 
@@ -55,7 +56,7 @@ func (Licensing) Check() error {
 		"check", ".",
 	}
 
-	err := tooling.RunTool("go-licenses", c...)
+	err := sh.Run("go-licenses", c...)
 	if err != nil {
 		pterm.Error.Println(err)
 

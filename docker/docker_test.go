@@ -1,3 +1,4 @@
+//go:build testfiles
 // +build testfiles
 
 // fancy uses pterm to provide some nice output that's not really critical but makes the experience nicer with summary

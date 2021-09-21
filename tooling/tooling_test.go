@@ -1,24 +1,24 @@
 package tooling_test
 
 import (
-	"os"
 	"testing"
 
 	iz "github.com/matryer/is"
-	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/tooling"
 )
 
-func TestGolang_InitAndClean(t *testing.T) {
+func TestGolang_InstallTools(t *testing.T) {
 	is := iz.New(t)
-	pterm.DisableStyling()
+	// pterm.DisableStyling()
 
-	defer func() {
-		err := os.RemoveAll("_tools")
-		is.NoErr(err) // Clean should not fail
-	}()
+	toolList := []string{
+		"github.com/goreleaser/goreleaser@v0.174.1",
+		"golang.org/x/tools/cmd/goimports@master",
+		"github.com/sqs/goreturns@master",
+		"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
+		"github.com/dustinkirkland/golang-petname/cmd/petname@master",
+	}
 
-	toolList := []string{"github.com/dustinkirkland/golang-petname/cmd/petname@master"}
 	err := tooling.InstallTools(toolList)
 	is.NoErr(err) // installing a tool should not fail
 }
