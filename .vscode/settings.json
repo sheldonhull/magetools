@@ -3,7 +3,8 @@
     "gotools",
     "ci",
     "tooling",
-    "licensing"
+    "licensing",
+    "gittools"
   ],
   "go.testTags": "mage testfiles"
 }
