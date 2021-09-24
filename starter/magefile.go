@@ -29,6 +29,8 @@ const ptermMargin = 10
 // artifactDirectory is a directory containing artifacts for the project and shouldn't be committed to source.
 const artifactDirectory = "_artifacts"
 
+const permissionUserReadWriteExecute = 0o0700
+
 // tools is a list of Go tools to install to avoid polluting global modules.
 // Gotools module already sets up most of the basic go tools.
 // var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
@@ -44,7 +46,7 @@ const artifactDirectory = "_artifacts"
 // createDirectories creates the local working directories for build artifacts and tooling.
 func createDirectories() error {
 	for _, dir := range []string{artifactDirectory} {
-		if err := os.MkdirAll(dir, 0o700); err != nil {
+		if err := os.MkdirAll(dir, permissionUserReadWriteExecute); err != nil {
 			pterm.Error.Printf("failed to create dir: [%s] with error: %v\n", dir, err)
 
 			return err
