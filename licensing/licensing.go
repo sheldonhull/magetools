@@ -32,8 +32,9 @@ func (Licensing) Init() error {
 func (Licensing) Save() error {
 	pterm.Info.Println("Checks the licenses and persists to local directory")
 	c := []string{
-		"save", ".",
+		"save", "./...",
 		"--save_path",
+		"--force",
 		licenseDir,
 	}
 
