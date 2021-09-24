@@ -30,6 +30,22 @@ func (Golang) Init() error {
 	return nil
 }
 
+// 🔎  Run go test on project.
+func (Golang) Test() error {
+	var vflag string
+
+	if mg.Verbose() {
+		vflag = "-v"
+	}
+
+	pterm.Info.Println("Running go test")
+	if err := sh.Run("go test", "./...", "-shuffle", "-race", vflag); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // 🔎  Run golangci-lint and fix by default.
 func (Golang) Lint() error {
 	var vflag string
