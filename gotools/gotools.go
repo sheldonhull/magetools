@@ -30,14 +30,20 @@ func (Golang) Init() error {
 	return nil
 }
 
-// 🔎 Lint runs golangci-lint tooling.
-func (Golang) Lint() error {
+// 🔎  Run golangci-lint and fix by default. Pass [true] to set checkOnly and not auto-fix.
+func (Golang) Lint(checkOnly bool) error {
 	var vflag string
+	fx := "--fix"
+
 	if mg.Verbose() {
 		vflag = "-v"
 	}
+
+	if checkOnly {
+		fx = ""
+	}
 	pterm.Info.Println("Running golangci-lint")
-	if err := sh.Run("golangci-lint", "run", "./...", vflag); err != nil {
+	if err := sh.Run("golangci-lint", "run", "./...", fx, vflag); err != nil {
 		return err
 	}
 

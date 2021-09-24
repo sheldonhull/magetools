@@ -30,3 +30,10 @@ func TestGolang_Fmt(t *testing.T) {
 	err := gotools.Golang{}.Fmt()
 	is.NoErr(err) // Fmt should not fail
 }
+
+func TestGolang_Lint(t *testing.T) {
+	is := iz.New(t)
+	pterm.DisableOutput()
+	err := gotools.Golang{}.Lint(true) // Lint is check-only, not auto-fix
+	is.NoErr(err)                      // Lint should not fail
+}
