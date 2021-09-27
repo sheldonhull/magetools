@@ -19,6 +19,16 @@ var toolList = []string{ //nolint:gochecknoglobals // ok to be global for toolin
 	"github.com/dustinkirkland/golang-petname/cmd/petname@master",
 	"mvdan.cc/gofumpt@latest",
 	"github.com/daixiang0/gci@latest",
+
+	// Additionally to simplify init command adding the commands to install from VSCode go installer
+	"golang.org/x/tools/gopls@latest",
+	"github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest",
+	"github.com/ramya-rao-a/go-outline@latest",
+	"github.com/cweill/gotests/gotests@latest",
+	"github.com/fatih/gomodifytags@latest",
+	"github.com/josharian/impl@latest",
+	"github.com/haya14busa/goplay/cmd/goplay@latest",
+	"github.com/go-delve/delve/cmd/dlv@latest",
 }
 
 // ⚙️  Init runs all required steps to use this package.
