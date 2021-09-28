@@ -4,15 +4,18 @@
 # https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
 #
 # This will run the key security checks that will have redacted secrets on output
-ci-lint:
-  commands:
-    golangci-lint:
-      tags: lint go
-      name: golangci-lint
-      run: golangci-lint run ./... --config .golangci.yml
+# ci-lint:
+#   commands:
+#     golangci-lint:
+#       tags: lint go
+#       name: golangci-lint
+#       run: golangci-lint run ./... --config .golangci.yml
 
 pre-push:
   commands:
+    test:
+      tags: go
+      run: mage go:test
     gopherbadge:
       tags: docs tests go
       name: update gopherbadge
@@ -27,30 +30,37 @@ pre-commit:
   parallel: false
   tags: go lint
   commands:
-    # golangci-lint: go install github.com/golangci/golangci-lint/cmd/golangci-lint
-    golangci-lint:
+    format:
       tags: go
-      run: golangci-lint run ./... --config .golangci.yml --fix
+      run: mage go:fmt
+    lint:
+      tags: go
+      run: mage go:lint
 
-    gofmt:
-      tags: fmt
-      name: gofmt
-      run: gofmt -s -w .
+    # golangci-lint: go install github.com/golangci/golangci-lint/cmd/golangci-lint
+    # golangci-lint:
+    #   tags: go
+    #   run: golangci-lint run ./... --config .golangci.yml --fix
 
-    # GO111MODULE=on go get mvdan.cc/gofumpt
-    gofumpt:
-      tags: gotool fmt
-      name: gofumpt
-      run: gofumpt -l -w .
+    # gofmt:
+    #   tags: fmt
+    #   name: gofmt
+    #   run: gofmt -s -w .
 
-    # GO111MODULE='off'  go get golang.org/x/tools/cmd/goimports
-    goimports:
-      tags: gotool fmt
-      name: goimports
-      run: goimports -w .
+    # # GO111MODULE=on go get mvdan.cc/gofumpt
+    # gofumpt:
+    #   tags: gotool fmt
+    #   name: gofumpt
+    #   run: gofumpt -l -w .
 
-    # GO111MODULE='off' go get github.com/daixiang0/gci
-    gci:
-      tags: gotool fmt
-      name: gci
-      run: gci -w .
+    # # GO111MODULE='off'  go get golang.org/x/tools/cmd/goimports
+    # goimports:
+    #   tags: gotool fmt
+    #   name: goimports
+    #   run: goimports -w .
+
+    # # GO111MODULE='off' go get github.com/daixiang0/gci
+    # gci:
+    #   tags: gotool fmt
+    #   name: gci
+    #   run: gci -w .
