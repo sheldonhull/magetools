@@ -16,14 +16,12 @@ package main
 // Consuming the package as a standard Go library doesn't go here, but in the magefiles/mage/magefile.go file.
 
 import (
-
-	// mage:import
-	_ "github.com/sheldonhull/magetools/gotools"
-
-	// mage:import
-	_ "github.com/sheldonhull/magetools/gotools"
-
-	// mage:import
-	_ "github.com/sheldonhull/magetools/licensing"
 	_ "mycurrentrepo/magefiles"
+
+	// mage:import
+	_ "github.com/sheldonhull/magetools/gotools"
+
+	// mage:import
+	_ "github.com/sheldonhull/magetools/gotools"
+	_ "github.com/sheldonhull/magetools/licensing"
 )

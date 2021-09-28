@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/pterm/pterm"
+
 	"github.com/sheldonhull/magetools/ci"
 )
 

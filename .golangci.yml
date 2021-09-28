@@ -29,3 +29,66 @@ run:
   build-tags:
     - mage
     # - tools
+
+
+linters-settings:
+  goimports:
+    local-prefixes: github.com/sheldonhull
+  misspell:
+    locale: US
+  nolintlint:
+    # Enable to ensure that nolint directives are all used. Default is true.
+    allow-unused: false
+    # Disable to ensure that nolint directives don't have a leading space. Default is true.
+    allow-leading-space: true
+    # Exclude following linters from requiring an explanation.  Default is [].
+    allow-no-explanation: []
+    # Enable to require an explanation of nonzero length after each nolint directive. Default is false.
+    require-explanation: true
+    # Enable to require nolint directives to mention the specific linter being suppressed. Default is false.
+    require-specific: true
+  gci:
+      # put imports beginning with prefix after 3rd-party packages;
+      # only support one prefix
+      # if not set, use goimports.local-prefixes
+    local-prefixes: github.com/sheldonhull
+  gofmt:
+    # simplify code: gofmt with `-s` option, true by default
+    simplify: true
+  gofumpt:
+    # Select the Go version to target. The default is `1.15`.
+    lang-version: "1.17"
+
+    # Choose whether or not to use the extra rules that are disabled
+    # by default
+    extra-rules: true
+  godox:
+    # report any comments starting with keywords, this is useful for TODO or FIXME comments that
+    # might be left in the code accidentally and should be resolved before merging
+    keywords: # default keywords are TODO, BUG, and FIXME, these can be overwritten by this setting
+      # - NOTE
+      - OPTIMIZE # marks code that should be optimized before merging
+      - HACK # marks hack-arounds that should be removed before merging
+      - TODO
+      - BUG
+      - FIXME
+
+
+  godot:
+    # comments to be checked: `declarations`, `toplevel`, or `all`
+    scope: declarations
+    # list of regexps for excluding particular comment lines from check
+    exclude:
+      # example: exclude comments which contain numbers
+      # - '[0-9]+'
+    # check that each sentence starts with a capital letter
+    capital: true
+
+  depguard:
+    list-type: blacklist
+    include-go-root: false
+    packages:
+      - github.com/sirupsen/logrus
+    packages-with-error-message:
+      # specify an error message to output when a blacklisted package is used
+      - github.com/sirupsen/logrus: "logging is allowed only by zerolog. Please use zerolog"

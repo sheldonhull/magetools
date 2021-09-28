@@ -13,7 +13,7 @@ import (
 type Docker mg.Namespace
 
 // Build runs docker build command against the provided dockerfile.
-func (Docker) Build(dockerfile string, imagename string, tag string) error {
+func (Docker) Build(dockerfile, imagename, tag string) error {
 	pterm.Info.Println("Building docker image")
 
 	dockerfileDirectory := filepath.Dir(dockerfile)

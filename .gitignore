@@ -78,3 +78,5 @@ Temporary Items
 _tools
 _artifacts
 .idea/aws.xml
+
+.route_test.go.golangci_fix

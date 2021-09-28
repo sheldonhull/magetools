@@ -5,6 +5,7 @@ import (
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
+
 	"github.com/sheldonhull/magetools/tooling"
 )
 
@@ -56,8 +57,24 @@ func (Golang) Test() error {
 	return nil
 }
 
-// 🔎  Run golangci-lint and fix by default.
+// 🔎  Run golangci-lint without fixing.
 func (Golang) Lint() error {
+	var vflag string
+
+	if mg.Verbose() {
+		vflag = "-v"
+	}
+
+	pterm.Info.Println("Running golangci-lint")
+	if err := sh.Run("golangci-lint", "run", "./...", vflag); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ⚙️ Lint runs golangci-lint tooling using .golangci.yml settings.
+func (Golang) Fmt() error {
 	var vflag string
 
 	if mg.Verbose() {
@@ -68,42 +85,6 @@ func (Golang) Lint() error {
 	if err := sh.Run("golangci-lint", "run", "./...", "--fix", vflag); err != nil {
 		return err
 	}
-
-	return nil
-}
-
-// ⚙️ Lint runs golangci-lint tooling.
-func (Golang) Fmt() error {
-	pterm.Info.Println("Running gofmt, gofumpt, goimports, and gci ")
-	p, _ := pterm.DefaultProgressbar.WithTotal(4).WithTitle("running formatters").WithRemoveWhenDone(true).Start() //nolint:gomnd
-	defer func() {
-		p.Title = "formatting completed"
-		_, _ = p.Stop()
-		pterm.Success.Printf("fmt complete: %s\n", p.GetElapsedTime().String())
-	}()
-
-	p.Title = "gofmt"
-	if err := sh.Run("gofmt", "-s", "-w", "."); err != nil {
-		return err
-	}
-	p.Increment()
-	p.Title = "gofumpt"
-	if err := sh.Run("gofumpt", "-l", "-w", "."); err != nil {
-		return err
-	}
-	p.Increment()
-
-	p.Title = "goimports"
-	if err := sh.Run("goimports", "-w", "."); err != nil {
-		return err
-	}
-	p.Increment()
-
-	p.Title = "gci"
-	if err := sh.Run("gci", "-w", "."); err != nil {
-		return err
-	}
-	p.Increment()
 
 	return nil
 }
