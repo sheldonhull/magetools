@@ -24,7 +24,7 @@ import (
 // Default target to run when none is specified
 // If not set, running mage will list available targets
 // var Default = Build.
-const ptermMargin = 10
+// const ptermMargin = 10
 
 // artifactDirectory is a directory containing artifacts for the project and shouldn't be committed to source.
 const artifactDirectory = "_artifacts"
@@ -58,11 +58,11 @@ func createDirectories() error {
 }
 
 // Init runs multiple tasks to initialize all the requirements for running a project for a new contributor.
-func Init() error {
+func Init() error { //nolint:deadcode // unused is ok. It's a mage task!
 	fancy.IntroScreen(ci.IsCI())
 	pterm.Success.Println("running Init()...")
 	mg.Deps(Clean, createDirectories)
-	if err := (gotools.Golang{}.Init()); err != nil {
+	if err := (gotools.Go{}.Init()); err != nil {
 		return err
 	}
 
@@ -71,7 +71,7 @@ func Init() error {
 
 // Clean up after yourself.
 func Clean() {
-	pterm.Success.Println("Cleaning...")
+	pterm.Success.Printf("Cleaning...")
 	for _, dir := range []string{artifactDirectory} {
 		err := os.RemoveAll(dir)
 		if err != nil {

@@ -46,7 +46,7 @@ func createDirectories() error {
 // InstallTools installs tooling for the project in a local directory to avoid polluting global modules.
 func InstallTools(tools []string) error {
 	start := time.Now()
-	if err := os.MkdirAll("_tools", mkdirPermissions); err != nil {
+	if err := createDirectories(); err != nil {
 		return err
 	}
 	wd, err := os.Getwd()

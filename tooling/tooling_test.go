@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	iz "github.com/matryer/is"
-
 	"github.com/sheldonhull/magetools/tooling"
 )
 

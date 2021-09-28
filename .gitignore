@@ -80,3 +80,12 @@ _artifacts
 .idea/aws.xml
 
 .route_test.go.golangci_fix
+docs/godocs/ci.md
+docs/godocs/docgen.md
+docs/godocs/docker.md
+docs/godocs/fancy.md
+docs/godocs/gittools.md
+docs/godocs/gotools.md
+docs/godocs/licensing.md
+docs/godocs/retool.md
+docs/godocs/tooling.md

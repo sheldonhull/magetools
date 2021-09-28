@@ -3,21 +3,26 @@ linters:
   # enable:
   #   - megacheck
   #   - govet
-  enable-all: true
+  exclude-use-default: false # Some key checks that will be missing if the default of 'true' is kept.
+  # enable-all: true
   disable:
-   - scopelint
-   - paralleltest
-   - staticcheck
-   - noctx
-   - wsl
-   - lll
+    - scopelint
+    - paralleltest
+    - staticcheck
+    - noctx
+    - wsl
+    - lll
+    - maligned
+    - golint
+    - interfacer
+    - wrapcheck # disable wrapcheck as Mage project. Don't need to wrap
+    - nlreturn # until it supports autofix, just ignore as too much manual work
   #   - prealloc
   # presets:
   #   - bugs
   #   - unused
-
-    # bugs|comment|complexity|error|format|import|metalinter|module|performance|sql|style|test|unused
-  fast: true
+  # bugs|comment|complexity|error|format|import|metalinter|module|performance|sql|style|test|unused
+  # fast: true
 
 run:
   skip-dirs:
@@ -25,13 +30,28 @@ run:
     - build
     - artifacts
     - _tools
+    - starter/*
+    - _artifacts/
+
   # lint magefile, but ignore tools.go
   build-tags:
     - mage
+    - tools
     # - tools
 
-
 linters-settings:
+  wrapcheck:
+    ignorePackageGlobs:
+       - github.com/sheldonhull/magetools/*
+      #  - docgen/*
+      #  - ci/*
+      #  - fancy/*
+      #  - gittools/*
+      #  - gotools/*
+      #  - licensing/*
+      #  - starter/*
+      #  - tooling/*
+
   goimports:
     local-prefixes: github.com/sheldonhull
   misspell:
@@ -48,16 +68,16 @@ linters-settings:
     # Enable to require nolint directives to mention the specific linter being suppressed. Default is false.
     require-specific: true
   gci:
-      # put imports beginning with prefix after 3rd-party packages;
-      # only support one prefix
-      # if not set, use goimports.local-prefixes
+    # put imports beginning with prefix after 3rd-party packages;
+    # only support one prefix
+    # if not set, use goimports.local-prefixes
     local-prefixes: github.com/sheldonhull
   gofmt:
     # simplify code: gofmt with `-s` option, true by default
     simplify: true
   gofumpt:
     # Select the Go version to target. The default is `1.15`.
-    lang-version: "1.17"
+    lang-version: '1.17'
 
     # Choose whether or not to use the extra rules that are disabled
     # by default
@@ -72,7 +92,6 @@ linters-settings:
       - TODO
       - BUG
       - FIXME
-
 
   godot:
     # comments to be checked: `declarations`, `toplevel`, or `all`
@@ -91,4 +110,4 @@ linters-settings:
       - github.com/sirupsen/logrus
     packages-with-error-message:
       # specify an error message to output when a blacklisted package is used
-      - github.com/sirupsen/logrus: "logging is allowed only by zerolog. Please use zerolog"
+      - github.com/sirupsen/logrus: 'logging is allowed only by zerolog. Please use zerolog'

@@ -9,7 +9,7 @@
 package tools
 
 import (
-	_ "github.com/dustinkirkland/golang-petname/cmd/petname"
+	_ "github.com/dustinkirkland/golang-petname"
 	_ "github.com/gosuri/uiprogress"
 	_ "github.com/magefile/mage/mg"
 	_ "github.com/magefile/mage/sh"

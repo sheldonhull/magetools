@@ -5,36 +5,35 @@ import (
 
 	iz "github.com/matryer/is"
 	"github.com/pterm/pterm"
-
 	"github.com/sheldonhull/magetools/gotools"
 )
 
-func TestGolang_InitAndClean(t *testing.T) {
+func TestGo_InitAndClean(t *testing.T) {
 	is := iz.New(t)
 	pterm.DisableColor()
 	pterm.DisableStyling()
 
-	err := gotools.Golang{}.Init()
+	err := gotools.Go{}.Init()
 	is.NoErr(err) // Init should not fail
 }
 
-func TestGolang_Tidy(t *testing.T) {
+func TestGo_Tidy(t *testing.T) {
 	is := iz.New(t)
 	pterm.DisableOutput()
-	err := gotools.Golang{}.Tidy()
+	err := gotools.Go{}.Tidy()
 	is.NoErr(err) // Tidy should not fail
 }
 
-func TestGolang_Fmt(t *testing.T) {
+func TestGo_Fmt(t *testing.T) {
 	is := iz.New(t)
 	pterm.DisableOutput()
-	err := gotools.Golang{}.Fmt()
+	err := gotools.Go{}.Fmt()
 	is.NoErr(err) // Fmt should not fail
 }
 
-func TestGolang_Lint(t *testing.T) {
+func TestGo_Lint(t *testing.T) {
 	is := iz.New(t)
 	pterm.DisableOutput()
-	err := gotools.Golang{}.Lint() // Lint is check-only, not auto-fix
-	is.NoErr(err)                  // Lint should not fail
+	err := gotools.Go{}.Lint() // Lint is check-only, not auto-fix
+	is.NoErr(err)              // Lint should not fail
 }
