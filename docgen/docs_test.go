@@ -6,7 +6,6 @@ import (
 
 	iz "github.com/matryer/is"
 	"github.com/pterm/pterm"
-
 	"github.com/sheldonhull/magetools/docgen"
 )
 

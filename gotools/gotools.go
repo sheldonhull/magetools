@@ -7,9 +7,8 @@ import (
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
-	modfile "golang.org/x/mod/modfile"
-
 	"github.com/sheldonhull/magetools/tooling"
+	modfile "golang.org/x/mod/modfile"
 )
 
 type Go mg.Namespace
@@ -17,12 +16,12 @@ type Go mg.Namespace
 // golang tools to ensure are locally vendored.
 var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
 	"github.com/goreleaser/goreleaser@v0.174.1",
-	"golang.org/x/tools/cmd/goimports@master",
+	// "golang.org/x/tools/cmd/goimports@master",
 	"github.com/sqs/goreturns@master",
 	"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
 	"github.com/dustinkirkland/golang-petname/cmd/petname@master",
 	"mvdan.cc/gofumpt@latest",
-	"github.com/daixiang0/gci@latest",
+	// "github.com/daixiang0/gci@latest",
 
 	// Additionally to simplify init command adding the commands to install from VSCode go installer
 	"golang.org/x/tools/gopls@latest",
@@ -133,44 +132,15 @@ func (Go) Lint() error {
 // 	return nil
 // }
 
-// ✨ Fmt runs gofumpt, goimports, and gci.
+// ✨ Fmt runs gofumpt.
+// Important. Make sure golangci-lint config disables gci, goimports, and gofmt.
+// This will perform all the sorting and other linters can cause conflicts in import ordering.
 func (Go) Fmt() error {
-	pterm.Info.Println("Running gofumpt, goimports, and gci")
-	p, _ := pterm.DefaultProgressbar.WithTotal(4).WithTitle("running formatters").WithRemoveWhenDone(true).Start() //nolint:gomnd
-	defer func() {
-		p.Title = "formatting completed"
-		_, _ = p.Stop()
-		pterm.Success.Printf("fmt complete: %s\n", p.GetElapsedTime().String())
-	}()
-
-	// p.Title = "gofmt"
-	// if err := sh.Run("gofmt", "-s", "-w", "."); err != nil {
-	// 	return err
-	// }
-	// p.Increment()
-	p.Title = "gofumpt"
+	pterm.Info.Println("Running gofumpt")
 	if err := sh.Run("gofumpt", "-l", "-w", "."); err != nil {
 		return err
 	}
-	p.Increment()
-
-	var localFlag []string = []string{"-w", "."}
-
-	if modName := (Go{}.GetModuleName()); modName != "" {
-		localFlag = []string{"-w", "-local", "'" + modName + "'", "."}
-	}
-	p.Title = "goimports"
-	if err := sh.Run("goimports", localFlag...); err != nil {
-		return err
-	}
-	p.Increment()
-
-	// p.Title = "gci"
-	// if err := tooling.RunTool("gci", "-w", "."); err != nil {
-	// 	return err
-	// }
-	// p.Increment()
-
+	pterm.Success.Println("✅ gofumpt")
 	return nil
 }
 

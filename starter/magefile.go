@@ -14,7 +14,6 @@ import (
 
 	"github.com/magefile/mage/mg"
 	"github.com/pterm/pterm"
-
 	"github.com/sheldonhull/magetools/ci"
 	"github.com/sheldonhull/magetools/fancy"
 

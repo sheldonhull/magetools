@@ -19,6 +19,9 @@ linters:
     - wrapcheck # disable wrapcheck as Mage project. Don't need to wrap
     - nlreturn # until it supports autofix, just ignore as too much manual work
     - prealloc
+    - gci
+    - goimports
+    - gofmt
   # presets:
   #   - bugs
   #   - unused
