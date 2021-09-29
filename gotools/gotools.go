@@ -2,9 +2,12 @@
 package gotools
 
 import (
+	"io/ioutil"
+
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
+	modfile "golang.org/x/mod/modfile"
 
 	"github.com/sheldonhull/magetools/tooling"
 )
@@ -30,6 +33,25 @@ var toolList = []string{ //nolint:gochecknoglobals // ok to be global for toolin
 	"github.com/josharian/impl@latest",
 	"github.com/haya14busa/goplay/cmd/goplay@latest",
 	"github.com/go-delve/delve/cmd/dlv@latest",
+}
+
+// getModuleName returns the name from the module file.
+// Original help on this was: https://stackoverflow.com/a/63393712/68698
+func (Go) GetModuleName() string {
+	goModBytes, err := ioutil.ReadFile("go.mod")
+	if err != nil {
+		pterm.Warning.Println("getModuleName() can't find ./go.mod")
+		// Running one more check above the parent directory in case this is running in a test or nested directory for some reason.
+		// Only 1 level lookback for now.
+		goModBytes, err = ioutil.ReadFile("../go.mod")
+		if err != nil {
+			pterm.Warning.Println("getModuleName() not able to find ../go.mod")
+			return ""
+		}
+		pterm.Info.Println("found go.mod in ../go.mod")
+	}
+	modName := modfile.ModulePath(goModBytes)
+	return modName
 }
 
 // NOTE: this didn't work compared to running with RunV, so I'm commenting out for now.
@@ -89,23 +111,65 @@ func (Go) Lint() error {
 // ⚙️ Lint runs golangci-lint tooling using .golangci.yml settings.
 // Recommend setting fast: false in your config and allow tool to set.
 // Recommend not setting enable-all: true in config to allow cli to call this for linting.
+// REMOVED: 20201-09-29 due to issues found in https://github.com/golangci/golangci-lint/issues/1490
+// Will manually invoke desired formatters.
+// func (Go) Fmt() error {
+// 	// var vflag string
+
+// 	// if mg.Verbose() {
+// 	// 	vflag = "-v"
+// 	// }
+
+// 	pterm.Info.Println("Running golangci-lint formatter")
+// 	if err := sh.RunV("golangci-lint", "run", "--fix", "--enable", "gofumpt,gci", "--fast"); err != nil {
+// 		// if err := golanglint("run", "--fix", "--presets", "format", "--fast"); err != nil {
+// 		pterm.Error.Println("golangci-lint failure")
+
+// 		return err
+// 	}
+// 	// if err := golanglint("run", "--fix", vflag); err != nil {
+// 	// 	return err
+// 	// }
+// 	return nil
+// }
+
+// ✨ Fmt runs gofumpt, goimports, and gci.
 func (Go) Fmt() error {
-	// var vflag string
+	pterm.Info.Println("Running gofumpt, goimports, and gci")
+	p, _ := pterm.DefaultProgressbar.WithTotal(4).WithTitle("running formatters").WithRemoveWhenDone(true).Start() //nolint:gomnd
+	defer func() {
+		p.Title = "formatting completed"
+		_, _ = p.Stop()
+		pterm.Success.Printf("fmt complete: %s\n", p.GetElapsedTime().String())
+	}()
 
-	// if mg.Verbose() {
-	// 	vflag = "-v"
-	// }
-
-	pterm.Info.Println("Running golangci-lint formatter")
-	if err := sh.RunV("golangci-lint", "run", "--fix", "--enable", "gofumpt,gci", "--fast"); err != nil {
-		// if err := golanglint("run", "--fix", "--presets", "format", "--fast"); err != nil {
-		pterm.Error.Println("golangci-lint failure")
-
-		return err
-	}
-	// if err := golanglint("run", "--fix", vflag); err != nil {
+	// p.Title = "gofmt"
+	// if err := sh.Run("gofmt", "-s", "-w", "."); err != nil {
 	// 	return err
 	// }
+	// p.Increment()
+	p.Title = "gofumpt"
+	if err := sh.Run("gofumpt", "-l", "-w", "."); err != nil {
+		return err
+	}
+	p.Increment()
+
+	var localFlag []string = []string{"-w", "."}
+
+	if modName := (Go{}.GetModuleName()); modName != "" {
+		localFlag = []string{"-w", "-local", "'" + modName + "'", "."}
+	}
+	p.Title = "goimports"
+	if err := sh.Run("goimports", localFlag...); err != nil {
+		return err
+	}
+	p.Increment()
+
+	// p.Title = "gci"
+	// if err := tooling.RunTool("gci", "-w", "."); err != nil {
+	// 	return err
+	// }
+	// p.Increment()
 
 	return nil
 }

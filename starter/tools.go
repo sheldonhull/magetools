@@ -14,6 +14,7 @@ import (
 	_ "github.com/magefile/mage/mg"
 	_ "github.com/magefile/mage/sh"
 	_ "github.com/pterm/pterm"
+
 	_ "github.com/sheldonhull/magetools/fancy"
 	_ "github.com/sheldonhull/magetools/gotools"
 	_ "github.com/sheldonhull/magetools/licensing"

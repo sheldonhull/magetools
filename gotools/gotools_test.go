@@ -39,6 +39,13 @@ func TestGo_Lint(t *testing.T) {
 	is.NoErr(err)              // Lint should not fail
 }
 
+func TestGo_GetModuleName(t *testing.T) {
+	is := iz.New(t)
+	// pterm.DisableOutput()
+	got := gotools.Go{}.GetModuleName()               // Lint should never fail, as only diagnostic info
+	is.Equal(got, "github.com/sheldonhull/magetools") // GetModuleName should return the module name
+}
+
 func TestGo_Doctor(t *testing.T) {
 	pterm.DisableOutput()
 	gotools.Go{}.Doctor() // Lint should never fail, as only diagnostic info
