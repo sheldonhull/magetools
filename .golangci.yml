@@ -5,6 +5,7 @@ linters:
   #   - govet
   exclude-use-default: false # Some key checks that will be missing if the default of 'true' is kept.
   # enable-all: true
+
   disable:
     - scopelint
     - paralleltest
@@ -17,7 +18,7 @@ linters:
     - interfacer
     - wrapcheck # disable wrapcheck as Mage project. Don't need to wrap
     - nlreturn # until it supports autofix, just ignore as too much manual work
-  #   - prealloc
+    - prealloc
   # presets:
   #   - bugs
   #   - unused
@@ -111,3 +112,10 @@ linters-settings:
     packages-with-error-message:
       # specify an error message to output when a blacklisted package is used
       - github.com/sirupsen/logrus: 'logging is allowed only by zerolog. Please use zerolog'
+  revive:
+    # see https://github.com/mgechev/revive#available-rules for details.
+    ignore-generated-header: true
+    severity: warning
+    rules:
+      - name: indent-error-flow
+        severity: warning

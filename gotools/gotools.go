@@ -73,7 +73,7 @@ func (Go) Lint() error {
 	// 	vflag = "-v"
 	// }
 	pterm.Info.Println("Running golangci-lint")
-	if err := sh.RunV("golangci-lint", "run", "--enable-all"); err != nil {
+	if err := sh.RunV("golangci-lint", "run"); err != nil {
 		pterm.Error.Println("golangci-lint failure")
 
 		return err
@@ -97,7 +97,7 @@ func (Go) Fmt() error {
 	// }
 
 	pterm.Info.Println("Running golangci-lint formatter")
-	if err := sh.RunV("golangci-lint", "run", "--fix", "--presets", "format", "--fast"); err != nil {
+	if err := sh.RunV("golangci-lint", "run", "--fix", "--enable", "gofumpt,gci", "--fast"); err != nil {
 		// if err := golanglint("run", "--fix", "--presets", "format", "--fast"); err != nil {
 		pterm.Error.Println("golangci-lint failure")
 
@@ -119,7 +119,22 @@ func (Go) Tidy() error {
 	return nil
 }
 
-// Lint run golangci-lint.
-// func (Go) Linter() {
-// 	sh.RunV("golangci-lint", "run")
-// }
+// 🏥 Doctor will provide config details.
+func (Go) Doctor() {
+	pterm.Info.Println("🏥 Doctor Diagnostic Checks")
+
+	pterm.DefaultSection.Println("🔍 golangci-lint linters with --preset format")
+	if err := sh.RunV("golangci-lint", "linters", "--enable", "gofumpt,gci"); err != nil {
+		pterm.Error.Println("unable to run golangci-lint")
+	}
+	pterm.DefaultSection.Println("🔍 golangci-lint linters with --fast")
+	if err := sh.RunV("golangci-lint", "linters"); err != nil {
+		pterm.Error.Println("unable to run golangci-lint")
+	}
+	pterm.DefaultSection.Println("🔍  golangci-lint linters with plain run")
+	if err := sh.RunV("golangci-lint", "linters"); err != nil {
+		pterm.Error.Println("unable to run golangci-lint")
+	}
+
+	pterm.Success.Println("Doctor Diagnostic Checks")
+}
