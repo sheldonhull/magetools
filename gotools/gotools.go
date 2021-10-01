@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 
+	// "time".
+
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
@@ -18,7 +20,7 @@ type Go mg.Namespace
 var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
 	"github.com/goreleaser/goreleaser@v0.174.1",
 	// "golang.org/x/tools/cmd/goimports@master",
-	"github.com/sqs/goreturns@master",
+	// "github.com/sqs/goreturns@master",
 	"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
 	"github.com/dustinkirkland/golang-petname/cmd/petname@master",
 	"mvdan.cc/gofumpt@latest",
@@ -60,7 +62,7 @@ func (Go) GetModuleName() string {
 
 // ⚙️  Init runs all required steps to use this package.
 func (Go) Init() error {
-	if err := tooling.InstallTools(toolList); err != nil {
+	if err := tooling.SilentInstallTools(toolList); err != nil {
 		return err
 	}
 	if err := (Go{}.Tidy()); err != nil {
