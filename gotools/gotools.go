@@ -3,6 +3,7 @@ package gotools
 
 import (
 	"io/ioutil"
+	"os"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -69,16 +70,19 @@ func (Go) Init() error {
 	return nil
 }
 
-// 🧪 Run go test on project.
+// 🧪 Run go test on project. GOTEST_FLAGS optional to customize. EG: '-tags fast'.
 func (Go) Test() error {
 	var vflag string
 
 	if mg.Verbose() {
 		vflag = "-v"
 	}
-
+	testFlags := os.Getenv("GOTEST_FLAGS")
+	if testFlags != "" {
+		pterm.Info.Printf("GOTEST_FLAGS provided: %q", testFlags)
+	}
 	pterm.Info.Println("Running go test")
-	if err := sh.RunV("go", "test", "./...", "-shuffle", "on", "-race", vflag); err != nil {
+	if err := sh.RunV("go", "test", "./...", "-shuffle", "on", "-race", vflag, testFlags); err != nil {
 		return err
 	}
 	pterm.Success.Println("✅ Go Test")

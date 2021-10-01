@@ -1,6 +1,10 @@
+//go:build integration
+// +build integration
+
 package gotools_test
 
 import (
+	"os"
 	"testing"
 
 	iz "github.com/matryer/is"
@@ -48,4 +52,22 @@ func TestGo_GetModuleName(t *testing.T) {
 func TestGo_Doctor(t *testing.T) {
 	pterm.DisableOutput()
 	gotools.Go{}.Doctor() // Lint should never fail, as only diagnostic info
+}
+
+func TestGo_Test(t *testing.T) {
+	pterm.DisableOutput()
+
+	t.Run("test with no flags", func(t *testing.T) {
+		is := iz.New(t)
+		err := gotools.Go{}.Test()
+		is.NoErr(err) // No error should be returned, and gotools tests shouldn't run by default
+		// TODO: mock test invocation to confirm parses, but doesn't rerun each time.
+	})
+	t.Run("test with GOTEST_FLAGS with -tags=integration", func(t *testing.T) {
+		is := iz.New(t)
+		os.Setenv("GOTEST_FLAGS", "-tags=integration")
+		err := gotools.Go{}.Test()
+		is.NoErr(err) // No error should be returned against --tags=integration
+		// TODO: mock test invocation to confirm parses, but doesn't rerun each time.
+	})
 }
