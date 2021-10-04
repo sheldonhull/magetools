@@ -3,6 +3,7 @@ module github.com/sheldonhull/magetools
 go 1.16
 
 require (
+	github.com/dustin/go-humanize v1.0.0
 	github.com/dustinkirkland/golang-petname v0.0.0-20191129215211-8e5a1ed0cff0
 	github.com/gosuri/uilive v0.0.4 // indirect
 	github.com/gosuri/uiprogress v0.0.1

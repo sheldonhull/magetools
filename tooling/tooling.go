@@ -4,9 +4,11 @@ package tooling
 import (
 	"bufio"
 	"fmt"
+	"os"
 	"os/exec"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
 )
@@ -21,8 +23,8 @@ func InstallTools(tools []string) error {
 
 	// spinnerLiveText, _ := pterm.DefaultSpinner.Start("InstallTools")
 	defer func() {
-		duration := time.Since(start)
-		msg := fmt.Sprintf("tooling installed: %v\n", duration)
+		// duration := time.Since(start)
+		msg := fmt.Sprintf("tooling installed: %s\n", humanize.Time(start))
 		pterm.Success.Println(msg)
 		// spinnerLiveText.Success(msg) // Resolve spinner with success message.
 	}()
@@ -53,14 +55,23 @@ func InstallTools(tools []string) error {
 // SilentInstallTools reads the stdout and then uses a spinner to show progress.
 // This is designed to swallow up a lot of the noise with go install commands.
 // Originally found from: https://www.yellowduck.be/posts/reading-command-output-line-by-line/ and modified.
-func SilentInstallTools(toolList []string) error {
+func SilentInstallTools(toolList []string) error { //nolint:funlen // This is ok for now. Can refactor into smaller pieces later if needed.
+	start := time.Now()
+
 	// delay := time.Second * 1 // help prevent jitter
 	spin, _ := pterm.DefaultSpinner. // WithDelay((delay)).WithRemoveWhenDone(true).
 						WithShowTimer(true).
-						WithSequence("|", "/", "-", "|", "/", "-", "\\").
-						WithText("Installing tools").
+						WithText("go install tools").
 						Start()
+		// WithSequence("|", "/", "-", "|", "/", "-", "\\").
 
+	// spinnerLiveText, _ := pterm.DefaultSpinner.Start("InstallTools")
+	defer func() {
+		msg := fmt.Sprintf("SilentInstallTools: %s\n", humanize.Time(start))
+		spin.Success(msg) // Resolve spinner with success message.
+		// pterm.Success.Println(msg)
+	}()
+	pterm.Info.Printf("items to iterate through: %d", len(toolList))
 	for _, item := range toolList {
 		cmd := exec.Command("go", "install", item)
 
@@ -80,7 +91,7 @@ func SilentInstallTools(toolList []string) error {
 		// It's running in a goroutine so that it doesn't block
 		go func(item string) {
 			// Read line by line and process it
-
+			spin.UpdateText(item)
 			for scanner.Scan() {
 				line := scanner.Text()
 				spin.UpdateText(line)
@@ -88,6 +99,118 @@ func SilentInstallTools(toolList []string) error {
 			// We're all done, unblock the channel
 			done <- struct{}{}
 		}(item)
+
+		// Start the command and check for errors
+		err := cmd.Start()
+		if err != nil {
+			spin.Fail(err)
+			_ = spin.Stop()
+			return err
+		}
+
+		// Wait for all output to be processed
+		<-done
+
+		// Wait for the command to finish
+		err = cmd.Wait()
+		if err != nil {
+			spin.Fail(err)
+			_ = spin.Stop()
+			return err
+		}
+		spin.Success(item)
+	}
+	return nil
+}
+
+// SilentInstallTools reads the stdout and then uses a spinner to show progress.
+// binary: name of tool to run, such as go, gofumpt, etc.
+//
+// cmdargs: slice of string arguments to pass into command
+//
+// list: optional list of strings that the command will iterate against.
+//
+// - If no arguments, will range 1x over blank string
+//
+// - If list is provided then loop will provide each invocation against it.
+//
+// Example: SpinnerStdOut("go",[]string{"mod","tidy"},[]string{""})
+//
+// Example: SpinnerStdOut("go",[]string{"install"},[]string{	"golang.org/x/tools/cmd/goimports@master","github.com/sqs/goreturns@master"})
+// This is designed to swallow up a lot of the noise with go install commands.
+// Originally found from: https://www.yellowduck.be/posts/reading-command-output-line-by-line/ and modified.
+func SpinnerStdOut(binary string, cmdargs, list []string) error { //nolint:funlen // This is ok for now. Can refactor into smaller pieces later if needed.
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
+	// delay := time.Second * 1 // help prevent jitter
+	start := time.Now()
+	spin, _ := pterm.DefaultSpinner. // WithDelay((delay)).WithRemoveWhenDone(true).
+						WithShowTimer(true).
+						WithText(fmt.Sprintf("%s %v", binary, cmdargs)).
+						Start()
+		// WithSequence("|", "/", "-", "|", "/", "-", "\\").
+
+	defer func() {
+		msg := fmt.Sprintf("%s: %q %s\n", binary, cmdargs, humanize.Time(start))
+		spin.Success(msg) // Resolve spinner with success message.
+		// pterm.Success.Println(msg)
+	}()
+	// NOTE: if empty set string to "empty" so iteration 1 time will work.
+	// Not sure if alternative, will revisit in future.
+	if len(list) == 0 {
+		pterm.Debug.Println("set list to \"empty\" to force iteration 1x")
+		list = []string{"empty"}
+	}
+	pterm.Info.Printf("items to iterate through: %d", len(list))
+	for _, item := range list[0:] {
+		pterm.Debug.Printf("item: %s\n", item)
+		thisargs := []string{}
+		thisargs = append(thisargs, cmdargs...)
+		var status string
+		// takes the cmdargs and appends the item to iterate on to the end of the slice
+		// this would then mean go install x becomes go install repo@latest
+		//
+		// If blank list is provided then this would be go mod tidy <nil> and no invalid string arg would be passed
+		status = item // default to item, but override value with cmd if no args are provided
+		if item == "empty" {
+			item = ""
+			pterm.Debug.Println("item matched \"empty\" so inside range loop I'm setting now to empty")
+			status = fmt.Sprintf("%s %q", binary, thisargs)
+		}
+		if item != "" {
+			thisargs = append(thisargs, item)
+			pterm.Debug.Printf("item: %q not nil, so adding to cmd\n", item)
+			status = fmt.Sprintf("%s %q", binary, thisargs)
+		}
+		pterm.Debug.Printf("exec.Command(%s, %q)\n", binary, thisargs)
+		time.Sleep(time.Second)
+		cmd := exec.Command(binary, thisargs...)
+
+		// Get a pipe to read from standard out
+		r, _ := cmd.StdoutPipe()
+
+		// Use the same pipe for standard error
+		cmd.Stderr = cmd.Stdout
+
+		// Make a new channel which will be used to ensure we get all output
+		done := make(chan struct{})
+
+		// Create a scanner which scans r in a line-by-line fashion
+		scanner := bufio.NewScanner(r)
+
+		// Use the scanner to scan the output line by line and log it
+		// It's running in a goroutine so that it doesn't block
+		go func(status string) {
+			// Read line by line and process it
+			spin.UpdateText(status)
+			for scanner.Scan() {
+				line := scanner.Text()
+				spin.UpdateText(line)
+			}
+			// We're all done, unblock the channel
+			done <- struct{}{}
+		}(status)
 
 		// Start the command and check for errors
 		err := cmd.Start()

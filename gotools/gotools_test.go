@@ -64,6 +64,9 @@ func TestGo_Test(t *testing.T) {
 		// TODO: mock test invocation to confirm parses, but doesn't rerun each time.
 	})
 	t.Run("test with GOTEST_FLAGS with -tags=integration", func(t *testing.T) {
+		if testing.Short() {
+			t.Skip("skipping test in short mode.")
+		}
 		is := iz.New(t)
 		os.Setenv("GOTEST_FLAGS", "-tags=integration")
 		err := gotools.Go{}.Test()
