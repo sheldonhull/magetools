@@ -4,17 +4,25 @@ package gotools
 import (
 	"io/ioutil"
 	"os"
+	"testing"
 
 	// "time".
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
+	iz "github.com/matryer/is"
 	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/tooling"
 	modfile "golang.org/x/mod/modfile"
 )
 
-type Go mg.Namespace
+type (
+	Go  mg.Namespace
+	Git mg.Namespace
+)
+
+// gitcmd runs git.
+var gitcmd = sh.RunCmd("git") //nolint: gochecknoglobals // I don't like globals, but this is Mage, let it be.
 
 // golang tools to ensure are locally vendored.
 var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
@@ -178,4 +186,20 @@ func (Go) Doctor() {
 	}
 
 	pterm.Success.Println("Doctor Diagnostic Checks")
+}
+
+// 💾 Commit runs interactive git commit tool for conventional commits.
+func (Git) Commit() error {
+	t := &testing.T{}
+
+	is := iz.New(t)
+	pterm.Info.Println("Generate commit using cz")
+
+	err := gitcmd("add", "-A")
+	is.NoErr(err) // git add -A should not fail
+	if err := sh.RunV("yarn", "commit"); err != nil {
+		return err
+	}
+	pterm.Success.Println("✅ Git Commit")
+	return nil
 }

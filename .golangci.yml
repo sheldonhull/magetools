@@ -4,7 +4,7 @@ linters:
   #   - megacheck
   #   - govet
   exclude-use-default: false # Some key checks that will be missing if the default of 'true' is kept.
-  # enable-all: true
+  enable-all: true
 
   disable:
     - scopelint
