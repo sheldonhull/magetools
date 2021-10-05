@@ -15,6 +15,10 @@ import (
 
 // InstallTools installs tooling for the project in a local directory to avoid polluting global modules.
 func InstallTools(tools []string) error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
+	pterm.DefaultHeader.Println("InstallTools")
 	start := time.Now()
 
 	pterm.DefaultSection.Println("Installing Tools")
@@ -56,6 +60,10 @@ func InstallTools(tools []string) error {
 // This is designed to swallow up a lot of the noise with go install commands.
 // Originally found from: https://www.yellowduck.be/posts/reading-command-output-line-by-line/ and modified.
 func SilentInstallTools(toolList []string) error { //nolint:funlen // This is ok for now. Can refactor into smaller pieces later if needed.
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
+	pterm.DefaultHeader.Println("SilentInstallTools")
 	start := time.Now()
 
 	// delay := time.Second * 1 // help prevent jitter
@@ -143,6 +151,7 @@ func SpinnerStdOut(binary string, cmdargs, list []string) error { //nolint:funle
 	if os.Getenv("DEBUG") == "1" {
 		pterm.EnableDebugMessages()
 	}
+	pterm.DefaultHeader.Println(fmt.Sprintf("%s %v", binary, cmdargs))
 	// delay := time.Second * 1 // help prevent jitter
 	start := time.Now()
 	spin, _ := pterm.DefaultSpinner. // WithDelay((delay)).WithRemoveWhenDone(true).

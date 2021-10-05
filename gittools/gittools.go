@@ -2,6 +2,8 @@
 package gittools
 
 import (
+	"os"
+
 	"github.com/magefile/mage/mg"
 	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/tooling"
@@ -17,7 +19,12 @@ var toolList = []string{ //nolint:gochecknoglobals // ok to be global for toolin
 
 // ⚙️  Init runs all required steps to use this package.
 func (Gittools) Init() error {
-	if err := tooling.InstallTools(toolList); err != nil {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
+	pterm.DefaultHeader.Println("Gittools Init()")
+
+	if err := tooling.SilentInstallTools(toolList); err != nil {
 		return err
 	}
 	pterm.Info.Println("🔧  Installed tools. To setup aliases automatically run these statements in your terminal:")

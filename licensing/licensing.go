@@ -26,6 +26,9 @@ const mkdirPermissions = 0o700
 
 // createDirectories creates the local working directories for build artifacts and tooling.
 func createDirectories() error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
 	for _, dir := range []string{licenseDir} {
 		if err := os.MkdirAll(dir, mkdirPermissions); err != nil {
 			pterm.Error.Printf("failed to create dir: [%s] with error: %v\n", dir, err)
@@ -40,6 +43,10 @@ func createDirectories() error {
 
 // ⚙️  Init runs all required steps to use this package.
 func (Licensing) Init() error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
+	pterm.DefaultHeader.Println("Licensing Init()")
 	if err := createDirectories(); err != nil {
 		return err
 	}
@@ -53,6 +60,9 @@ func (Licensing) Init() error {
 
 // Save checks the licenses of the files in the given repo and saves to a csv.
 func (Licensing) Save() error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
 	pterm.Info.Println("Checks the licenses and persists to local directory")
 	c := []string{
 		"save", "./...",
@@ -75,6 +85,9 @@ func (Licensing) Save() error {
 
 // Check look for forbidden licenses.
 func (Licensing) Check() error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
 	pterm.Info.Println("look for forbidden licenses")
 	c := []string{
 		"check", ".",

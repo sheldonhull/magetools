@@ -4,25 +4,19 @@ package gotools
 import (
 	"io/ioutil"
 	"os"
-	"testing"
 
 	// "time".
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
-	iz "github.com/matryer/is"
 	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/tooling"
 	modfile "golang.org/x/mod/modfile"
 )
 
 type (
-	Go  mg.Namespace
-	Git mg.Namespace
+	Go mg.Namespace
 )
-
-// gitcmd runs git.
-var gitcmd = sh.RunCmd("git") //nolint: gochecknoglobals // I don't like globals, but this is Mage, let it be.
 
 // golang tools to ensure are locally vendored.
 var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
@@ -71,6 +65,10 @@ func (Go) GetModuleName() string {
 
 // ⚙️  Init runs all required steps to use this package.
 func (Go) Init() error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
+	pterm.DefaultHeader.Println("Go Init()")
 	if err := tooling.SilentInstallTools(toolList); err != nil {
 		return err
 	}
@@ -83,6 +81,9 @@ func (Go) Init() error {
 
 // 🧪 Run go test on project. GOTEST_FLAGS optional to customize. EG: '-tags fast'.
 func (Go) Test() error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
 	var vflag string
 
 	if mg.Verbose() {
@@ -102,6 +103,9 @@ func (Go) Test() error {
 
 // 🔎  Run golangci-lint without fixing.
 func (Go) Lint() error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
 	// var vflag string
 
 	// // outFormat := "tab"
@@ -151,6 +155,9 @@ func (Go) Lint() error {
 // Important. Make sure golangci-lint config disables gci, goimports, and gofmt.
 // This will perform all the sorting and other linters can cause conflicts in import ordering.
 func (Go) Fmt() error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
 	pterm.Info.Println("Running gofumpt")
 	if err := sh.Run("gofumpt", "-l", "-w", "."); err != nil {
 		return err
@@ -161,6 +168,9 @@ func (Go) Fmt() error {
 
 // 🧹 Tidy tidies.
 func (Go) Tidy() error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
 	if err := sh.Run("go", "mod", "tidy"); err != nil {
 		return err
 	}
@@ -170,6 +180,9 @@ func (Go) Tidy() error {
 
 // 🏥 Doctor will provide config details.
 func (Go) Doctor() {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
 	pterm.Info.Println("🏥 Doctor Diagnostic Checks")
 
 	pterm.DefaultSection.Println("🔍 golangci-lint linters with --preset format")
@@ -186,20 +199,4 @@ func (Go) Doctor() {
 	}
 
 	pterm.Success.Println("Doctor Diagnostic Checks")
-}
-
-// 💾 Commit runs interactive git commit tool for conventional commits.
-func (Git) Commit() error {
-	t := &testing.T{}
-
-	is := iz.New(t)
-	pterm.Info.Println("Generate commit using cz")
-
-	err := gitcmd("add", "-A")
-	is.NoErr(err) // git add -A should not fail
-	if err := sh.RunV("yarn", "commit"); err != nil {
-		return err
-	}
-	pterm.Success.Println("✅ Git Commit")
-	return nil
 }

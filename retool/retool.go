@@ -31,6 +31,9 @@ const mkdirPermissions = 0o700
 
 // createDirectories creates the local working directories for build artifacts and tooling.
 func createDirectories() error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
 	for _, dir := range []string{toolDirectory} {
 		if err := os.MkdirAll(dir, mkdirPermissions); err != nil {
 			pterm.Error.Printf("failed to create dir: [%s] with error: %v\n", dir, err)
@@ -45,6 +48,10 @@ func createDirectories() error {
 
 // InstallTools installs tooling for the project in a local directory to avoid polluting global modules.
 func InstallTools(tools []string) error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
+	pterm.DefaultHeader.Println("InstallTools")
 	start := time.Now()
 	if err := createDirectories(); err != nil {
 		return err
@@ -99,6 +106,9 @@ func InstallTools(tools []string) error {
 
 // tool runs a command using a cached binary.
 func RunTool(cmd string, args ...string) error {
+	if os.Getenv("DEBUG") == "1" {
+		pterm.EnableDebugMessages()
+	}
 	// if windows detected, add the exe to the binary path
 	var extension string
 	if runtime.GOOS == "windows" {
