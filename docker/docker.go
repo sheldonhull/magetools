@@ -8,12 +8,14 @@ import (
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
+	"github.com/sheldonhull/magetools/pkg/magetoolsutils"
 )
 
 type Docker mg.Namespace
 
 // Build runs docker build command against the provided dockerfile.
 func (Docker) Build(dockerfile, imagename, tag string) error {
+	magetoolsutils.CheckPtermDebug()
 	pterm.Info.Println("Building docker image")
 
 	dockerfileDirectory := filepath.Dir(dockerfile)

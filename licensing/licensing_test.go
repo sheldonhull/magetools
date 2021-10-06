@@ -2,6 +2,7 @@ package licensing_test
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	iz "github.com/matryer/is"
@@ -10,7 +11,11 @@ import (
 )
 
 func TestInitAndSave(t *testing.T) {
+	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "slow") {
+		t.Skip("GOTESTS should include 'slow' to run this test")
+	}
 	pterm.DisableStyling()
+
 	is := iz.New(t)
 	var err error
 

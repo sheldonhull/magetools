@@ -10,10 +10,12 @@ import (
 	"os"
 
 	"github.com/pterm/pterm"
+	"github.com/sheldonhull/magetools/pkg/magetoolsutils"
 )
 
 // IsCI will set the global variable for IsCI based on lookup of the environment variable.
 func IsCI() bool {
+	magetoolsutils.CheckPtermDebug()
 	_, exists := os.LookupEnv("AGENT_ID")
 	if exists {
 		pterm.Info.Println("Azure DevOps match based on AGENT_ID. Setting IS_CI = 1")

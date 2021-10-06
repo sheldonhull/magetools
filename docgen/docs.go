@@ -9,6 +9,7 @@ import (
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
+	"github.com/sheldonhull/magetools/pkg/magetoolsutils"
 	"github.com/sheldonhull/magetools/tooling"
 )
 
@@ -25,6 +26,7 @@ var toolList = []string{ //nolint:gochecknoglobals // ok to be global for toolin
 
 // ⚙️ Init initializes the tooling for Docs.
 func (Docs) Init() error {
+	magetoolsutils.CheckPtermDebug()
 	if err := tooling.InstallTools(toolList); err != nil {
 		return err
 	}
@@ -34,6 +36,7 @@ func (Docs) Init() error {
 
 // 📘 Docs generate md docs. Required: Format (azure-devops, github, gitlab).
 func (Docs) Generate(format string) error {
+	magetoolsutils.CheckPtermDebug()
 	pterm.Info.Println("generate Go docs for the project.")
 	c := []string{
 		// "--include-unexported",

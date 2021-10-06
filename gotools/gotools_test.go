@@ -13,6 +13,9 @@ import (
 )
 
 func TestGo_InitAndClean(t *testing.T) {
+	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "slow") {
+		t.Skip("GOTESTS should include 'slow' to run this test")
+	}
 	is := iz.New(t)
 	pterm.DisableColor()
 	pterm.DisableStyling()
@@ -55,6 +58,9 @@ func TestGo_Doctor(t *testing.T) {
 }
 
 func TestGo_Test(t *testing.T) {
+	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "slow") {
+		t.Skip("GOTESTS should include 'slow' to run this test")
+	}
 	pterm.DisableOutput()
 
 	t.Run("test with no flags", func(t *testing.T) {

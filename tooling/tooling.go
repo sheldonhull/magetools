@@ -4,20 +4,18 @@ package tooling
 import (
 	"bufio"
 	"fmt"
-	"os"
 	"os/exec"
 	"time"
 
 	"github.com/dustin/go-humanize"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
+	"github.com/sheldonhull/magetools/pkg/magetoolsutils"
 )
 
 // InstallTools installs tooling for the project in a local directory to avoid polluting global modules.
 func InstallTools(tools []string) error {
-	if os.Getenv("DEBUG") == "1" {
-		pterm.EnableDebugMessages()
-	}
+	magetoolsutils.CheckPtermDebug()
 	pterm.DefaultHeader.Println("InstallTools")
 	start := time.Now()
 
@@ -60,9 +58,7 @@ func InstallTools(tools []string) error {
 // This is designed to swallow up a lot of the noise with go install commands.
 // Originally found from: https://www.yellowduck.be/posts/reading-command-output-line-by-line/ and modified.
 func SilentInstallTools(toolList []string) error { //nolint:funlen // This is ok for now. Can refactor into smaller pieces later if needed.
-	if os.Getenv("DEBUG") == "1" {
-		pterm.EnableDebugMessages()
-	}
+	magetoolsutils.CheckPtermDebug()
 	pterm.DefaultHeader.Println("SilentInstallTools")
 	start := time.Now()
 
@@ -148,9 +144,7 @@ func SilentInstallTools(toolList []string) error { //nolint:funlen // This is ok
 // This is designed to swallow up a lot of the noise with go install commands.
 // Originally found from: https://www.yellowduck.be/posts/reading-command-output-line-by-line/ and modified.
 func SpinnerStdOut(binary string, cmdargs, list []string) error { //nolint:funlen // This is ok for now. Can refactor into smaller pieces later if needed.
-	if os.Getenv("DEBUG") == "1" {
-		pterm.EnableDebugMessages()
-	}
+	magetoolsutils.CheckPtermDebug()
 	pterm.DefaultHeader.Println(fmt.Sprintf("%s %v", binary, cmdargs))
 	// delay := time.Second * 1 // help prevent jitter
 	start := time.Now()

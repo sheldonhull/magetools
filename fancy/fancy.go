@@ -6,6 +6,7 @@ import (
 
 	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/ci"
+	"github.com/sheldonhull/magetools/pkg/magetoolsutils"
 )
 
 // ptermMargin defaults to 10. This provides a buffer on items like spinners to avoid whiplash on the console as it refreshes.
@@ -13,6 +14,7 @@ const ptermMargin = 10
 
 // IntroScreen provides a nice pterm based output header for console execution with a summary of the runner and time.
 func IntroScreen(disableStyling bool) {
+	magetoolsutils.CheckPtermDebug()
 	if disableStyling || ci.IsCI() {
 		pterm.DisableStyling()
 	}

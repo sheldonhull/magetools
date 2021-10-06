@@ -5,6 +5,7 @@ package tooling_test
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	iz "github.com/matryer/is"
@@ -12,6 +13,9 @@ import (
 )
 
 func TestInstallTools(t *testing.T) {
+	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "slow") {
+		t.Skip("GOTESTS should include 'slow' to run this test")
+	}
 	is := iz.New(t)
 	// pterm.DisableStyling()
 
@@ -33,8 +37,8 @@ func TestInstallTools(t *testing.T) {
 // Try cleaning a specific directory to see output if already ran
 // sudo rm -rf $(go env GOPATH)/pkg/mod/github.com/fatih.
 func TestGo_SilentInit(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping test in short mode.")
+	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "slow") {
+		t.Skip("GOTESTS should include 'slow' to run this test")
 	}
 	is := iz.New(t)
 	if os.Getenv("PRESENTATION_TEST") != "1" {
