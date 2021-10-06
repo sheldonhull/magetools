@@ -33,7 +33,6 @@
 # Icon must end with two \r
 Icon
 
-
 # Thumbnails
 ._*
 
@@ -73,8 +72,6 @@ Temporary Items
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 
-
-
 _tools
 _artifacts
 .idea/aws.xml
@@ -90,3 +87,4 @@ docs/godocs/licensing.md
 docs/godocs/retool.md
 docs/godocs/tooling.md
 node_modules/.yarn-integrity
+mage_output_file.go
