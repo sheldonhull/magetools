@@ -79,6 +79,7 @@ func SilentInstallTools(toolList []string) error { //nolint:funlen // This is ok
 	for _, item := range toolList {
 		cmd := exec.Command("go", "install", item)
 
+		status := "go install " + item
 		// Get a pipe to read from standard out
 		r, _ := cmd.StdoutPipe()
 
@@ -93,16 +94,16 @@ func SilentInstallTools(toolList []string) error { //nolint:funlen // This is ok
 
 		// Use the scanner to scan the output line by line and log it
 		// It's running in a goroutine so that it doesn't block
-		go func(item string) {
+		go func(status string, spin *pterm.SpinnerPrinter) {
 			// Read line by line and process it
-			spin.UpdateText(item)
+			spin.UpdateText(status)
 			for scanner.Scan() {
 				line := scanner.Text()
 				spin.UpdateText(line)
 			}
 			// We're all done, unblock the channel
 			done <- struct{}{}
-		}(item)
+		}(status, spin)
 
 		// Start the command and check for errors
 		err := cmd.Start()
@@ -204,7 +205,7 @@ func SpinnerStdOut(binary string, cmdargs, list []string) error { //nolint:funle
 
 		// Use the scanner to scan the output line by line and log it
 		// It's running in a goroutine so that it doesn't block
-		go func(status string) {
+		go func(status string, spin *pterm.SpinnerPrinter) {
 			// Read line by line and process it
 			spin.UpdateText(status)
 			for scanner.Scan() {
@@ -213,7 +214,7 @@ func SpinnerStdOut(binary string, cmdargs, list []string) error { //nolint:funle
 			}
 			// We're all done, unblock the channel
 			done <- struct{}{}
-		}(status)
+		}(status, spin)
 
 		// Start the command and check for errors
 		err := cmd.Start()

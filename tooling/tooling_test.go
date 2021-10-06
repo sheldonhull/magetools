@@ -75,32 +75,34 @@ func TestGo_SilentInit(t *testing.T) {
 //
 // find  $(go env GOPATH)/pkg/mod/github.com -name fatih -maxdepth 2 -depth -type d -exec sudo rm -rf {} \;.
 //
+//  find  $(go env GOPATH)/pkg/mod/github.com -name golangci -maxdepth 2 -depth -type d -exec sudo rm  -rf {} \;.
+//
 // find  $(go env GOPATH)/pkg/mod/github.com -name gosuri -maxdepth 2 -depth -type d -exec sudo rm -rf {} \;
 func TestGoSpinnerStdOut(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping test in short mode.")
 	}
 
-	// t.Run("run with list of inputs", func(t *testing.T) {
-	// 	is := iz.New(t)
-	// 	if os.Getenv("PRESENTATION_TEST") != "1" {
-	// 		t.Skip("PRESENTATION_TEST != 1 so skipping")
-	// 	}
+	t.Run("run with list of inputs", func(t *testing.T) {
+		is := iz.New(t)
+		if os.Getenv("PRESENTATION_TEST") != "1" {
+			t.Skip("PRESENTATION_TEST != 1 so skipping")
+		}
 
-	// 	toolList := []string{
-	// 		"github.com/goreleaser/goreleaser@latest",
-	// 		"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-	// 		"github.com/dustinkirkland/golang-petname/cmd/petname@master",
-	// 		"mvdan.cc/gofumpt@latest",
-	// 		"golang.org/x/tools/gopls@latest",
-	// 		"github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest",
-	// 		"github.com/ramya-rao-a/go-outline@latest",
-	// 		"github.com/cweill/gotests/gotests@latest",
-	// 		"github.com/fatih/gomodifytags@latest",
-	// 	}
-	// 	err := tooling.SpinnerStdOut("go", []string{"install"}, toolList)
-	// 	is.NoErr(err) // SpinnerStdOut should not fail
-	// })
+		toolList := []string{
+			"github.com/goreleaser/goreleaser@latest",
+			"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
+			"github.com/dustinkirkland/golang-petname/cmd/petname@master",
+			"mvdan.cc/gofumpt@latest",
+			"golang.org/x/tools/gopls@latest",
+			"github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest",
+			"github.com/ramya-rao-a/go-outline@latest",
+			"github.com/cweill/gotests/gotests@latest",
+			"github.com/fatih/gomodifytags@latest",
+		}
+		err := tooling.SpinnerStdOut("go", []string{"install"}, toolList)
+		is.NoErr(err) // SpinnerStdOut should not fail
+	})
 
 	t.Run("run mod tidy with nil slice", func(t *testing.T) {
 		is := iz.New(t)
