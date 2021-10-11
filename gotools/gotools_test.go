@@ -5,6 +5,7 @@ package gotools_test
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	iz "github.com/matryer/is"
@@ -40,7 +41,7 @@ func TestGo_Fmt(t *testing.T) {
 
 func TestGo_Lint(t *testing.T) {
 	is := iz.New(t)
-	pterm.DisableOutput()
+	// pterm.DisableOutput()
 	err := gotools.Go{}.Lint() // Lint is check-only, not auto-fix
 	is.NoErr(err)              // Lint should not fail
 }
@@ -54,7 +55,16 @@ func TestGo_GetModuleName(t *testing.T) {
 
 func TestGo_Doctor(t *testing.T) {
 	pterm.DisableOutput()
+	pterm.DisableStyling()
 	gotools.Go{}.Doctor() // Lint should never fail, as only diagnostic info
+}
+
+func TestLintConfig(t *testing.T) {
+	is := iz.New(t)
+	pterm.DisableOutput()
+	pterm.DisableStyling()
+	err := gotools.Go{}.LintConfig()
+	is.NoErr(err) // Lint config should run without returning any errors
 }
 
 func TestGo_Test(t *testing.T) {

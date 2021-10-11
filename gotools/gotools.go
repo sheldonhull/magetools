@@ -4,6 +4,7 @@ package gotools
 import (
 	"io/ioutil"
 	"os"
+	"runtime"
 
 	// "time".
 
@@ -173,20 +174,41 @@ func (Go) Tidy() error {
 // 🏥 Doctor will provide config details.
 func (Go) Doctor() {
 	magetoolsutils.CheckPtermDebug()
-	pterm.Info.Println("🏥 Doctor Diagnostic Checks")
+	pterm.DefaultHeader.Printf("🏥 Doctor Diagnostic Checks\n")
+	pterm.DefaultSection.Printf("🏥  Environment Variables\n")
 
-	pterm.DefaultSection.Println("🔍 golangci-lint linters with --preset format")
-	if err := sh.RunV("golangci-lint", "linters", "--enable", "gofumpt,gci"); err != nil {
-		pterm.Error.Println("unable to run golangci-lint")
+	primary := pterm.NewStyle(pterm.FgLightCyan, pterm.BgGray, pterm.Bold)
+	// secondary := pterm.NewStyle(pterm.FgLightGreen, pterm.BgWhite, pterm.Italic)
+	if err := pterm.DefaultTable.WithHasHeader().
+		WithBoxed(true).
+		WithHeaderStyle(primary).
+		WithData(pterm.TableData{
+			{"Variable", "Value"},
+			{"GOVERSION", runtime.Version()},
+			{"GOOS", runtime.GOOS},
+			{"GOARCH", runtime.GOARCH},
+			{"GOROOT", runtime.GOROOT()},
+		}).Render(); err != nil {
+		pterm.Error.Printf("pterm.DefaultTable.WithHasHeader of variable information failed. Continuing...\n%v", err)
 	}
+	pterm.Success.Println("Doctor Diagnostic Checks")
+}
+
+// 🏥  LintConfig will return output of golangci-lint config.
+func (Go) LintConfig() error {
+	magetoolsutils.CheckPtermDebug()
+	pterm.DefaultHeader.Println("🏥 LintConfig Diagnostic Checks")
 	pterm.DefaultSection.Println("🔍 golangci-lint linters with --fast")
-	if err := sh.RunV("golangci-lint", "linters"); err != nil {
+	if err := sh.RunV("golangci-lint", "linters", "--fast"); err != nil {
 		pterm.Error.Println("unable to run golangci-lint")
+		return err
 	}
 	pterm.DefaultSection.Println("🔍  golangci-lint linters with plain run")
 	if err := sh.RunV("golangci-lint", "linters"); err != nil {
 		pterm.Error.Println("unable to run golangci-lint")
+		return err
 	}
 
-	pterm.Success.Println("Doctor Diagnostic Checks")
+	pterm.Success.Println("LintConfig Diagnostic Checks")
+	return nil
 }
