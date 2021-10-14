@@ -30,6 +30,10 @@ Alias: `mage-select` as `mages`
 go install github.com/iwittkau/mage-select@latest
 ```
 
+## Examples
+
+The examples directory contains random mage examples I've used that don't fit yet into a package, or I haven't had the need to add any tests to reuse this in multiple places.
+
 ## How To Use
 
 ```go

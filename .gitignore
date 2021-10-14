@@ -88,3 +88,5 @@ docs/godocs/retool.md
 docs/godocs/tooling.md
 node_modules/.yarn-integrity
 mage_output_file.go
+node_modules/
+.yarn/
