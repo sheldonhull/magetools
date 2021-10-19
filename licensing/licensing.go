@@ -15,7 +15,7 @@ import (
 type Licensing mg.Namespace
 
 // licenseDir is the directory where the licenses are stored.
-const licenseDir = "licenses"
+const licenseDir = "_licenses"
 
 // golang tools to ensure are locally vendored.
 var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
