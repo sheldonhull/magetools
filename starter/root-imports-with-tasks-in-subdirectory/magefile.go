@@ -1,8 +1,8 @@
 //go:build mage
 // +build mage
 
-//nolint:typecheck // demo template, don't lint
-package main
+// Package imports remote and local Mage targets for tasks
+package main //nolint:typecheck // demo template, don't lint
 
 // If you are importing a remote mage config setup, you should put the import in here, as nested target discovery isn't supported.
 // For example: "github.com/sheldonhull/magetools/gotools" provides a preset list of tasks that will be automatically discovered by mage on import without any new code.
@@ -17,15 +17,15 @@ package main
 // Consuming the package as a standard Go library doesn't go here, but in the magefiles/mage/magefile.go file.
 // Create a subdirectory called: magefiles, and then you can import all the tasks nested in there with:
 //
-// `//	_ "mycurrentrepo/magefiles"`
+// `//	_ "mycurrentrepo/magefiles"`.
 import (
 
 	// mage:import
-	_ "github.com/sheldonhull/magetools/gotools"
+	_ "github.com/sheldonhull/magetools/gotools" // gotools provides Go tasks such as linting and testing
 
 	// mage:import
-	_ "github.com/sheldonhull/magetools/gotools"
-
+	_ "github.com/sheldonhull/magetools/licensing" // licensing provides a license checker and vendor tooling for the project
+	// Example, importing the subdirectory tasks, but root doesn't have all the mage tasks (which can be split by file)
 	// mage:import
-	_ "github.com/sheldonhull/magetools/licensing"
+	// _ "github.com/myrepo/tasks".
 )
