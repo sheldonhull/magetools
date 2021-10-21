@@ -14,14 +14,11 @@
 pre-push:
   commands:
     test:
-      tags: go
-      run: mage go:test
-    gopherbadge:
       tags: docs tests go
-      name: update gopherbadge
       run: |
-        go test  ./... -coverprofile ./artifacts/cover.out
-        go tool cover -html=./artifacts/cover.out -o ./artifacts/coverage.html
+        echo "🧪 running a full go test... this may take a few minutes"
+        GOTESTS='slow' go test ./... -v -json -coverprofile ./.artifacts/cover.out | tparse -all
+        go tool cover -html=./.artifacts/cover.out -o ./.artifacts/coverage.html
         gopherbadger -md="README.md,coverage.md"
         git add README.md && git commit --amend --no-edit README.md
         git add coverage.md && git commit --amend --no-edit coverage.md
@@ -36,7 +33,9 @@ pre-commit:
     lint:
       tags: go
       run: mage go:lint
-
+    test:
+      tags: go
+      run: go test ./... -v -json -cover | tparse -all
     # golangci-lint: go install github.com/golangci/golangci-lint/cmd/golangci-lint
     # golangci-lint:
     #   tags: go

@@ -1,6 +1,3 @@
-//go:build integration
-// +build integration
-
 package gotools_test
 
 import (
@@ -67,26 +64,22 @@ func TestLintConfig(t *testing.T) {
 	is.NoErr(err) // Lint config should run without returning any errors
 }
 
-func TestGo_Test(t *testing.T) {
-	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "slow") {
-		t.Skip("GOTESTS should include 'slow' to run this test")
-	}
+func ExampleGo_Test() {
 	pterm.DisableOutput()
+	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "superslow") {
+		return
+		// t.Skip("GOTESTS should include 'slow' to run this test")
+	}
+	// Running as mage task
+	if err := (gotools.Go{}.Test()); err != nil {
+		pterm.Error.Printf("ExampleGo_Test: %v", err)
+	}
 
-	t.Run("test with no flags", func(t *testing.T) {
-		is := iz.New(t)
-		err := gotools.Go{}.Test()
-		is.NoErr(err) // No error should be returned, and gotools tests shouldn't run by default
-		// TODO: mock test invocation to confirm parses, but doesn't rerun each time.
-	})
-	t.Run("test with GOTEST_FLAGS with -tags=integration", func(t *testing.T) {
-		if testing.Short() {
-			t.Skip("skipping test in short mode.")
-		}
-		is := iz.New(t)
-		os.Setenv("GOTEST_FLAGS", "-tags=integration")
-		err := gotools.Go{}.Test()
-		is.NoErr(err) // No error should be returned against --tags=integration
-		// TODO: mock test invocation to confirm parses, but doesn't rerun each time.
-	})
+	// Running with GOTEST_FLAGS detection
+	os.Setenv("GOTEST_FLAGS", "-tags=integration")
+	if err := (gotools.Go{}.Test()); err != nil {
+		pterm.Error.Printf("ExampleGo_Test: %v", err)
+	}
+
+	// Output:
 }

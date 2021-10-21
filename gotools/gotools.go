@@ -40,6 +40,7 @@ var toolList = []string{ //nolint:gochecknoglobals // ok to be global for toolin
 	"github.com/haya14busa/goplay/cmd/goplay@latest",
 	"github.com/go-delve/delve/cmd/dlv@latest",
 	"github.com/rogpeppe/godef@latest",
+	"github.com/mfridman/tparse@latest", // nice table output after running test
 }
 
 // getModuleName returns the name from the module file.
@@ -80,7 +81,12 @@ func (Go) Init() error {
 	return nil
 }
 
-// 🧪 Run go test on project. GOTEST_FLAGS optional to customize. EG: '-tags fast'.
+// 🧪 Run go test. Optional: GOTEST_FLAGS '-tags integration', Or write your own GOTEST env logic.
+// Example of checking based on GOTEST style environment variable:
+//
+// 	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "slow") {
+//		t.Skip("GOTESTS should include 'slow' to run this test")
+// }.
 func (Go) Test() error {
 	magetoolsutils.CheckPtermDebug()
 	var vflag string
@@ -92,8 +98,9 @@ func (Go) Test() error {
 	if testFlags != "" {
 		pterm.Info.Printf("GOTEST_FLAGS provided: %q", testFlags)
 	}
+
 	pterm.Info.Println("Running go test")
-	if err := sh.RunV("go", "test", "./...", "-shuffle", "on", "-race", vflag, testFlags); err != nil {
+	if err := sh.RunV("go", "test", "./...", "-cover", "-shuffle", "on", "-race", vflag, testFlags); err != nil {
 		return err
 	}
 	pterm.Success.Println("✅ Go Test")
@@ -153,11 +160,12 @@ func (Go) Lint() error {
 // This will perform all the sorting and other linters can cause conflicts in import ordering.
 func (Go) Fmt() error {
 	magetoolsutils.CheckPtermDebug()
-	pterm.Info.Println("Running gofumpt")
+	spin, _ := pterm.DefaultSpinner.Start("\tRunning gofumpt")
 	if err := sh.Run("gofumpt", "-l", "-w", "."); err != nil {
+		spin.Fail(err)
 		return err
 	}
-	pterm.Success.Println("✅ gofumpt")
+	spin.Success(pterm.Success.Println())
 	return nil
 }
 

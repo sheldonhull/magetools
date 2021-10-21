@@ -8,6 +8,7 @@ import (
 	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/ci"
 	"github.com/sheldonhull/magetools/fancy"
+	"github.com/sheldonhull/magetools/tooling"
 
 	// mage:import
 	"github.com/sheldonhull/magetools/gotools"
@@ -19,7 +20,7 @@ import (
 const ptermMargin = 10
 
 // artifactDirectory is a directory containing artifacts for the project and shouldn't be committed to source.
-const artifactDirectory = "_artifacts"
+const artifactDirectory = ".artifacts"
 
 const permissionUserReadWriteExecute = 0o0700
 
@@ -53,11 +54,16 @@ func createDirectories() error {
 func Init() error {
 	fancy.IntroScreen(ci.IsCI())
 	pterm.Success.Println("running Init()...")
-	mg.Deps(Clean, createDirectories)
-	if err := (gotools.Golang{}.Init()); err != nil {
-		return err
-	}
 
+	mg.SerialDeps(
+		Clean,
+		createDirectories,
+		(gotools.Go{}.Init()),
+		tooling.SilentInstallTools(toolList),
+	)
+	// if err := (gotools.Go{}.Init()); err != nil {
+	// 	return err
+	// }
 	return nil
 }
 

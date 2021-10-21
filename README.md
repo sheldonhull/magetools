@@ -2,7 +2,7 @@
 
 General tooling helpers for simplifying cross repository automation using Mage.
 
-<a href='https://github.com/jpoles1/gopherbadger' target='_blank'>![gopherbadger-tag-do-not-edit](https://img.shields.io/badge/Go%20Coverage-13%25-brightgreen.svg?longCache=true&style=flat)</a>
+<a href='https://github.com/jpoles1/gopherbadger' target='_blank'>![gopherbadger-tag-do-not-edit](https://img.shields.io/badge/Go%20Coverage-29%25-brightgreen.svg?longCache=true&style=flat)</a>
 
 The test coverage shown is informal, as these aren't setup always with full standard tests.
 Primarily the tests just import and run to confirm no errors.
