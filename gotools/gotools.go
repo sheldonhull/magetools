@@ -185,11 +185,14 @@ func (Go) Fmt() error {
 	spin, _ := pterm.DefaultSpinner.Start("\tRunning gofumpt")
 	// golines ./... --base-formatter="gofumpt" -w --max-len=100 --keep-annotations --reformat-tags
 	if os.Getenv("SKIP_GOLINES") != "" {
+		pterm.Debug.Printf("SKIP_GOLINES not empty, defaulting to gofumpt formatter")
 		if err := sh.Run("gofumpt", "-l", "-w", "."); err != nil {
 			spin.Fail(err)
 			return err
 		}
+		return nil
 	}
+	pterm.Debug.Printf("SKIP_GOLINES empty, so using golines")
 	if err := sh.Run("golines",
 		".",
 		"--base-formatter=\"gofumpt\"",
