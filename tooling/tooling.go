@@ -57,7 +57,8 @@ func InstallTools(tools []string) error {
 // SilentInstallTools reads the stdout and then uses a spinner to show progress.
 // This is designed to swallow up a lot of the noise with go install commands.
 // Originally found from: https://www.yellowduck.be/posts/reading-command-output-line-by-line/ and modified.
-func SilentInstallTools(toolList []string) error { //nolint:funlen // This is ok for now. Can refactor into smaller pieces later if needed.
+//nolint:funlen // This is ok for now. Can refactor into smaller pieces later if needed.
+func SilentInstallTools(toolList []string) error {
 	magetoolsutils.CheckPtermDebug()
 	pterm.DefaultHeader.Println("SilentInstallTools")
 	start := time.Now()
@@ -144,7 +145,10 @@ func SilentInstallTools(toolList []string) error { //nolint:funlen // This is ok
 // Example: SpinnerStdOut("go",[]string{"install"},[]string{	"golang.org/x/tools/cmd/goimports@master","github.com/sqs/goreturns@master"})
 // This is designed to swallow up a lot of the noise with go install commands.
 // Originally found from: https://www.yellowduck.be/posts/reading-command-output-line-by-line/ and modified.
-func SpinnerStdOut(binary string, cmdargs, list []string) error { //nolint:funlen // This is ok for now. Can refactor into smaller pieces later if needed.
+func SpinnerStdOut(
+	binary string,
+	cmdargs, list []string,
+) error {
 	magetoolsutils.CheckPtermDebug()
 	pterm.DefaultHeader.Println(fmt.Sprintf("%s %v", binary, cmdargs))
 	// delay := time.Second * 1 // help prevent jitter
@@ -179,7 +183,9 @@ func SpinnerStdOut(binary string, cmdargs, list []string) error { //nolint:funle
 		status = item // default to item, but override value with cmd if no args are provided
 		if item == "empty" {
 			item = ""
-			pterm.Debug.Println("item matched \"empty\" so inside range loop I'm setting now to empty")
+			pterm.Debug.Println(
+				"item matched \"empty\" so inside range loop I'm setting now to empty",
+			)
 			status = fmt.Sprintf("%s %q", binary, thisargs)
 		}
 		if item != "" {

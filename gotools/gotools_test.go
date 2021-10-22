@@ -32,8 +32,14 @@ func TestGo_Tidy(t *testing.T) {
 func TestGo_Fmt(t *testing.T) {
 	is := iz.New(t)
 	pterm.DisableOutput()
-	err := gotools.Go{}.Fmt()
-	is.NoErr(err) // Fmt should not fail
+	var err error
+	err = gotools.Go{}.Fmt()
+	is.NoErr(err) // Fmt should not fail with golines
+
+	err = os.Setenv("SKIP_GOLINES", "1")
+	is.NoErr(err) // Setenv should not fail
+	err = gotools.Go{}.Fmt()
+	is.NoErr(err) // Fmt should not fail with gofumpt
 }
 
 func TestGo_Lint(t *testing.T) {
@@ -80,6 +86,26 @@ func ExampleGo_Test() {
 	if err := (gotools.Go{}.Test()); err != nil {
 		pterm.Error.Printf("ExampleGo_Test: %v", err)
 	}
+
+	// Output:
+}
+
+func ExampleGo_TestSum() {
+	pterm.DisableOutput()
+	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "superslow") {
+		return
+		// t.Skip("GOTESTS should include 'slow' to run this test")
+	}
+	// Running as mage task
+	if err := (gotools.Go{}.TestSum()); err != nil {
+		pterm.Error.Printf("ExampleGo_TestSum: %v", err)
+	}
+
+	// Running with GOTEST_FLAGS detection
+	// os.Setenv("GOTEST_FLAGS", "-tags=integration")
+	// if err := (gotools.Go{}.TestSum()); err != nil {
+	// 	pterm.Error.Printf("ExampleGo_TestSum: %v", err)
+	// }
 
 	// Output:
 }

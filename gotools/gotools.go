@@ -40,7 +40,8 @@ var toolList = []string{ //nolint:gochecknoglobals // ok to be global for toolin
 	"github.com/haya14busa/goplay/cmd/goplay@latest",
 	"github.com/go-delve/delve/cmd/dlv@latest",
 	"github.com/rogpeppe/godef@latest",
-	"github.com/mfridman/tparse@latest", // nice table output after running test
+	"github.com/mfridman/tparse@latest",   // nice table output after running test
+	"github.com/segmentio/golines@latest", // handles nice clean line breaks of long lines
 }
 
 // getModuleName returns the name from the module file.
@@ -107,6 +108,27 @@ func (Go) Test() error {
 	return nil
 }
 
+// 🧪 Run gotestsum.
+func (Go) TestSum() error {
+	magetoolsutils.CheckPtermDebug()
+	var vflag string
+
+	if mg.Verbose() {
+		vflag = "-v"
+	}
+	testFlags := os.Getenv("GOTEST_FLAGS")
+	if testFlags != "" {
+		pterm.Info.Printf("GOTEST_FLAGS provided: %q", testFlags)
+	}
+
+	pterm.Info.Println("Running go test")
+	if err := sh.RunV("gotestsum", "--", "-cover", "-shuffle", "on", "-race", vflag, testFlags); err != nil {
+		return err
+	}
+	pterm.Success.Println("✅ gotestsum")
+	return nil
+}
+
 // 🔎  Run golangci-lint without fixing.
 func (Go) Lint() error {
 	magetoolsutils.CheckPtermDebug()
@@ -155,13 +177,20 @@ func (Go) Lint() error {
 // 	return nil
 // }
 
-// ✨ Fmt runs gofumpt.
+// ✨ Fmt runs gofumpt. Export SKIP_GOLINES=1 to skip golines.
 // Important. Make sure golangci-lint config disables gci, goimports, and gofmt.
 // This will perform all the sorting and other linters can cause conflicts in import ordering.
 func (Go) Fmt() error {
 	magetoolsutils.CheckPtermDebug()
 	spin, _ := pterm.DefaultSpinner.Start("\tRunning gofumpt")
-	if err := sh.Run("gofumpt", "-l", "-w", "."); err != nil {
+	// golines ./... --base-formatter="gofumpt" -w --max-len=100 --keep-annotations --reformat-tags
+	if os.Getenv("SKIP_GOLINES") != "" {
+		if err := sh.Run("gofumpt", "-l", "-w", "."); err != nil {
+			spin.Fail(err)
+			return err
+		}
+	}
+	if err := sh.Run("golines", ".", "--base-formatter=\"$(go env GOPATH)/bin/gofumpt\"", "-w", "--max-len=120", "--reformat-tags"); err != nil {
 		spin.Fail(err)
 		return err
 	}
@@ -197,7 +226,10 @@ func (Go) Doctor() {
 			{"GOARCH", runtime.GOARCH},
 			{"GOROOT", runtime.GOROOT()},
 		}).Render(); err != nil {
-		pterm.Error.Printf("pterm.DefaultTable.WithHasHeader of variable information failed. Continuing...\n%v", err)
+		pterm.Error.Printf(
+			"pterm.DefaultTable.WithHasHeader of variable information failed. Continuing...\n%v",
+			err,
+		)
 	}
 	pterm.Success.Println("Doctor Diagnostic Checks")
 }

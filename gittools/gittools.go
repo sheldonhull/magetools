@@ -24,7 +24,7 @@ func (Gittools) Init() error {
 	if err := tooling.SilentInstallTools(toolList); err != nil {
 		return err
 	}
-	pterm.Info.Println("🔧  Installed tools. To setup aliases automatically run these statements in your terminal:")
+	pterm.Info.Println("🔧 Installed tools. To setup aliases automatically run these statements in your terminal:")
 	pterm.Info.Println("bit aliases:     \tbit complete")
 	pterm.Info.Println("git-town aliases:\tgit town alias true")
 
