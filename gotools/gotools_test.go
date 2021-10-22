@@ -31,15 +31,16 @@ func TestGo_Tidy(t *testing.T) {
 
 func TestGo_Fmt(t *testing.T) {
 	is := iz.New(t)
-	pterm.DisableOutput()
-	var err error
-	err = gotools.Go{}.Fmt()
-	is.NoErr(err) // Fmt should not fail with golines
-
-	err = os.Setenv("SKIP_GOLINES", "1")
-	is.NoErr(err) // Setenv should not fail
-	err = gotools.Go{}.Fmt()
+	// pterm.DisableOutput()
+	err := gotools.Go{}.Fmt()
 	is.NoErr(err) // Fmt should not fail with gofumpt
+}
+
+func TestGo_Wrap(t *testing.T) {
+	is := iz.New(t)
+	// pterm.DisableOutput()
+	err := gotools.Go{}.Wrap()
+	is.NoErr(err) // Fmt should not fail with golines
 }
 
 func TestGo_Lint(t *testing.T) {

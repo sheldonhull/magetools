@@ -2,9 +2,12 @@
 package gotools
 
 import (
+	"go/build"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"runtime"
+	"strings"
 
 	// "time".
 
@@ -182,27 +185,77 @@ func (Go) Lint() error {
 // This will perform all the sorting and other linters can cause conflicts in import ordering.
 func (Go) Fmt() error {
 	magetoolsutils.CheckPtermDebug()
-	spin, _ := pterm.DefaultSpinner.Start("\tRunning gofumpt")
-	// golines ./... --base-formatter="gofumpt" -w --max-len=100 --keep-annotations --reformat-tags
-	if os.Getenv("SKIP_GOLINES") != "" {
-		pterm.Debug.Printf("SKIP_GOLINES not empty, defaulting to gofumpt formatter")
-		if err := sh.Run("gofumpt", "-l", "-w", "."); err != nil {
-			spin.Fail(err)
+	magetoolsutils.CheckPtermDebug()
+	if err := addGoPkgBinToPath(); err != nil {
+		return err
+	}
+	gopath := getGoPath()
+
+	gfpath := filepath.Join(gopath, "bin", "gofumpt")
+	if _, err := os.Stat(gfpath); err != nil {
+		pterm.Error.Printf("gofumpt not found in bin, run mage go:init\n")
+		return err
+	}
+	pterm.Debug.Printf("gofumpt full path: %q\n", gfpath)
+	if err := sh.Run(gfpath, "-l", "-w", "."); err != nil {
+		return err
+	}
+
+	pterm.Success.Println("✅ Go Fmt")
+	return nil
+}
+
+// getGoPath returns the GOPATH value.
+func getGoPath() string {
+	gopath := os.Getenv("GOPATH")
+	if gopath == "" {
+		gopath = build.Default.GOPATH
+	}
+	return gopath
+}
+
+// addGoPkgBinToPath ensures the go/bin directory is available in path for cli tooling.
+func addGoPkgBinToPath() error {
+	gopath := getGoPath()
+	goPkgBinPath := filepath.Join(gopath, "bin")
+	if !strings.Contains(os.Getenv("PATH"), goPkgBinPath) {
+		pterm.Debug.Printf("Adding %q to PATH\n", goPkgBinPath)
+		updatedPath := strings.Join([]string{goPkgBinPath, os.Getenv("PATH")}, string(os.PathListSeparator))
+		if err := os.Setenv("PATH", updatedPath); err != nil {
+			pterm.Error.Printf("Error setting PATH: %v\n", err)
 			return err
 		}
-		return nil
+		pterm.Info.Printf("Updated PATH: %q\n", updatedPath)
 	}
-	pterm.Debug.Printf("SKIP_GOLINES empty, so using golines")
-	if err := sh.Run("golines",
+	pterm.Debug.Printf("bypassed PATH update as already contained %q\n", goPkgBinPath)
+	return nil
+}
+
+// ✨ Wrap runs golines powered by gofumpt.
+func (Go) Wrap() error {
+	magetoolsutils.CheckPtermDebug()
+	if err := addGoPkgBinToPath(); err != nil {
+		return err
+	}
+	gopath := getGoPath()
+
+	gfpath := filepath.Join(gopath, "bin", "gofumpt")
+	if _, err := os.Stat(gfpath); err != nil {
+		pterm.Error.Printf("gofumpt not found in bin, run mage go:init\n")
+		return err
+	}
+	pterm.Debug.Printf("gofumpt full path: %q\n", gfpath)
+	if err := sh.Run(
+		"golines",
 		".",
-		"--base-formatter=\"gofumpt\"",
+		"--base-formatter",
+		gfpath,
 		"-w",
 		"--max-len=120",
 		"--reformat-tags"); err != nil {
-		spin.Fail(err)
 		return err
 	}
-	spin.Success(pterm.Success.Println())
+	pterm.Success.Println("✅ Go Fmt")
 	return nil
 }
 
