@@ -190,7 +190,12 @@ func (Go) Fmt() error {
 			return err
 		}
 	}
-	if err := sh.Run("golines", ".", "--base-formatter=\"$(go env GOPATH)/bin/gofumpt\"", "-w", "--max-len=120", "--reformat-tags"); err != nil {
+	if err := sh.Run("golines",
+		".",
+		"--base-formatter=\"gofumpt\"",
+		"-w",
+		"--max-len=120",
+		"--reformat-tags"); err != nil {
 		spin.Fail(err)
 		return err
 	}
