@@ -62,7 +62,7 @@ func Init() error {
 	fancy.IntroScreen(ci.IsCI())
 	pterm.Success.Println("running Init()...")
 	mg.Deps(Clean, createDirectories)
-	if err := (gotools.Golang{}.Init()); err != nil {
+	if err := (gotools.Go{}.Init()); err != nil {
 		return err
 	}
 

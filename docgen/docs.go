@@ -38,7 +38,7 @@ func (Docs) Init() error {
 func (Docs) Generate(format string) error {
 	magetoolsutils.CheckPtermDebug()
 	pterm.Info.Println("generate Go docs for the project.")
-	c := []string{
+	cmdArgs := []string{
 		// "--include-unexported",
 		"--format",
 		format,
@@ -46,7 +46,7 @@ func (Docs) Generate(format string) error {
 		fmt.Sprintf("%s/{{ .Dir }}.md", docsDir),
 		"./...",
 	}
-	if err := sh.Run("gomarkdoc", c...); err != nil {
+	if err := sh.Run("gomarkdoc", cmdArgs...); err != nil {
 		pterm.Error.Println(err)
 
 		return err

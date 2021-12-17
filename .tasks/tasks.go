@@ -8,7 +8,6 @@ import (
 	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/ci"
 	"github.com/sheldonhull/magetools/fancy"
-	// "github.com/sheldonhull/magetools/tooling"
 
 	// mage:import
 	"github.com/sheldonhull/magetools/gotools"

@@ -74,8 +74,8 @@ func InstallTools(tools []string) error {
 		pterm.Success.Println(msg)
 		// spinnerLiveText.Success(msg) // Resolve spinner with success message.
 	}()
-	for i, t := range tools {
-		msg := fmt.Sprintf("install [%d] %s]", i, t)
+	for idx, tool := range tools {
+		msg := fmt.Sprintf("install [%d] %s]", idx, tool)
 
 		// if windows detected, add the exe to the binary path
 		var extension string
@@ -83,15 +83,15 @@ func InstallTools(tools []string) error {
 			extension = ".exe"
 		}
 
-		toolPath := filepath.Join("_tools", t+extension)
+		toolPath := filepath.Join("_tools", tool+extension)
 		if _, err := os.Stat(toolPath); err == nil {
 			pterm.Info.Printf("🔄 [%s] already installed, bypassed.\n", toolPath)
 
 			continue
 		}
-		_, err := sh.OutputWith(env, "go", append(args, t)...)
+		_, err := sh.OutputWith(env, "go", append(args, tool)...)
 		if err != nil {
-			pterm.Warning.Printf("Could not install [%s] per [%v]\n", t, err)
+			pterm.Warning.Printf("Could not install [%s] per [%v]\n", tool, err)
 		}
 		pterm.Success.Println(msg)
 	}

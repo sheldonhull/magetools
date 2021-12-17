@@ -3,6 +3,7 @@ package licensing
 // This set of tasks helps run Google's licensing tool to check for problem licenses, comply with credit, and also saving source when required.
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/magefile/mage/mg"
@@ -59,14 +60,14 @@ func (Licensing) Init() error {
 func (Licensing) Save() error {
 	magetoolsutils.CheckPtermDebug()
 	pterm.Info.Println("Checks the licenses and persists to local directory")
-	c := []string{
+	cmdArgs := []string{
 		"save", "./...",
 		"--save_path",
 		licenseDir,
 		"--force",
 	}
 
-	err := sh.Run("go-licenses", c...)
+	err := sh.Run("go-licenses", cmdArgs...)
 	if err != nil {
 		pterm.Error.Println(err)
 
@@ -83,7 +84,7 @@ func (Licensing) Check() error {
 	magetoolsutils.CheckPtermDebug()
 	pterm.Info.Println("look for forbidden licenses")
 	c := []string{
-		"check", ".",
+		"check", fmt.Sprintf("%s/...", licenseDir),
 	}
 
 	err := sh.Run("go-licenses", c...)

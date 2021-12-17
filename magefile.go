@@ -1,83 +1,34 @@
 //go:build mage
+// +build mage
 
-// This magefile provides a template to get started quickly using the helpers.
-// You can drop this into an existing project instead of the default mage --init generated one to quickly get going.
-// You'll still have to run: `go mod tidy` to get the dependencies sorted out.
-// go get "github.com/sheldonhull/magetools/ci"
-// go get "github.com/sheldonhull/magetools/fancy"
-// go get "github.com/sheldonhull/magetools/gotools"
-
+// Package imports remote and local Mage targets for tasks
 package main
 
-import (
-	"os"
+// If you are importing a remote mage config setup, you should put the import in here, as nested target discovery isn't supported.
+// For example: "github.com/sheldonhull/magetools/gotools" provides a preset list of tasks that will be automatically discovered by mage on import without any new code.
+// NOTE: some of these are sourced as common helper libraries, but at anytime they can just be copied into magefiles directory and internalized on demand.
+// Only importing common build specific helpers from public repos (build a generic docker image, run a go linting tool, changelog tooling etc)
+//
+// - gotools: Provides init command to just setup golangci-lint and formatters, and common formatter running sequence of a gofmt, goimports, goreturns, and gofumpt.
+// - licensing: Uses a google project from github to inventory licenses for problematic licenses, as well as internally vendor the license files for adherence to MIT and other tools.
 
-	"github.com/magefile/mage/mg"
-	"github.com/pterm/pterm"
-	"github.com/sheldonhull/magetools/ci"
-	"github.com/sheldonhull/magetools/fancy"
+// If you are importing a remote mage config setup, you should put the import in here, as nested target discovery isn't supported.
+// For example: "github.com/sheldonhull/magetools/gotools" provides a preset list of tasks that will be automatically discovered by mage on import without any new code.
+// Consuming the package as a standard Go library doesn't go here, but in the magefiles/mage/magefile.go file.
+// Create a subdirectory called: magefiles, and then you can import all the tasks nested in there with:
+//
+// `//	_ "mycurrentrepo/magefiles"`.
+import (
 
 	// mage:import
-	"github.com/sheldonhull/magetools/gotools"
+	_ "github.com/sheldonhull/magetools/.tasks"
+
+	// mage:import
+	_ "github.com/sheldonhull/magetools/gotools" // gotools provides Go tasks such as linting and testing
+
+	// mage:import
+	_ "github.com/sheldonhull/magetools/licensing" // licensing provides a license checker and vendor tooling for the project
+	// Example, importing the subdirectory tasks, but root doesn't have all the mage tasks (which can be split by file)
+	// mage:import
+	// _ "github.com/myrepo/tasks".
 )
-
-// Default target to run when none is specified
-// If not set, running mage will list available targets
-// var Default = Build.
-// const ptermMargin = 10
-
-// artifactDirectory is a directory containing artifacts for the project and shouldn't be committed to source.
-const artifactDirectory = "_artifacts"
-
-const permissionUserReadWriteExecute = 0o0700
-
-// tools is a list of Go tools to install to avoid polluting global modules.
-// Gotools module already sets up most of the basic go tools.
-// var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
-// 	"github.com/goreleaser/goreleaser@v0.174.1",
-// 	"golang.org/x/tools/cmd/goimports@master",
-// 	"github.com/sqs/goreturns@master",
-// 	"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-// 	"github.com/dustinkirkland/golang-petname/cmd/petname@master",
-// 	"mvdan.cc/gofumpt@latest",
-// 	"github.com/daixiang0/gci@latest",
-// }
-
-// createDirectories creates the local working directories for build artifacts and tooling.
-func createDirectories() error {
-	for _, dir := range []string{artifactDirectory} {
-		if err := os.MkdirAll(dir, permissionUserReadWriteExecute); err != nil {
-			pterm.Error.Printf("failed to create dir: [%s] with error: %v\n", dir, err)
-
-			return err
-		}
-		pterm.Success.Printf("✅ [%s] dir created\n", dir)
-	}
-
-	return nil
-}
-
-// Init runs multiple tasks to initialize all the requirements for running a project for a new contributor.
-func Init() error { //nolint:deadcode // unused is ok. It's a mage task!
-	fancy.IntroScreen(ci.IsCI())
-	pterm.Success.Println("running Init()...")
-	mg.Deps(Clean, createDirectories)
-	if err := (gotools.Go{}.Init()); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Clean up after yourself.
-func Clean() {
-	pterm.Success.Printf("Cleaning...")
-	for _, dir := range []string{artifactDirectory} {
-		err := os.RemoveAll(dir)
-		if err != nil {
-			pterm.Error.Printf("failed to removeall: [%s] with error: %v\n", dir, err)
-		}
-		pterm.Success.Printf("🧹 [%s] dir removed\n", dir)
-	}
-	mg.Deps(createDirectories)
-}

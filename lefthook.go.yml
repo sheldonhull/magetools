@@ -35,31 +35,4 @@ pre-commit:
       run: mage go:lint
     test:
       tags: go
-      run: go test ./... -v -json -cover | tparse -all
-    # golangci-lint: go install github.com/golangci/golangci-lint/cmd/golangci-lint
-    # golangci-lint:
-    #   tags: go
-    #   run: golangci-lint run ./... --config .golangci.yml --fix
-
-    # gofmt:
-    #   tags: fmt
-    #   name: gofmt
-    #   run: gofmt -s -w .
-
-    # # GO111MODULE=on go get mvdan.cc/gofumpt
-    # gofumpt:
-    #   tags: gotool fmt
-    #   name: gofumpt
-    #   run: gofumpt -l -w .
-
-    # # GO111MODULE='off'  go get golang.org/x/tools/cmd/goimports
-    # goimports:
-    #   tags: gotool fmt
-    #   name: goimports
-    #   run: goimports -w .
-
-    # # GO111MODULE='off' go get github.com/daixiang0/gci
-    # gci:
-    #   tags: gotool fmt
-    #   name: gci
-    #   run: gci -w .
+      run: go test ./... -v -json -cover | tparse -all -pulse "1s"

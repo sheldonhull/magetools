@@ -1,3 +1,4 @@
+---
 linters:
   # disable-all: true
   # enable:
@@ -46,7 +47,7 @@ run:
 linters-settings:
   wrapcheck:
     ignorePackageGlobs:
-       - github.com/sheldonhull/magetools/*
+      - github.com/sheldonhull/magetools/*
       #  - docgen/*
       #  - ci/*
       #  - fancy/*
@@ -114,7 +115,7 @@ linters-settings:
       - github.com/sirupsen/logrus
     packages-with-error-message:
       # specify an error message to output when a blacklisted package is used
-      - github.com/sirupsen/logrus: 'logging is allowed only by zerolog. Please use zerolog'
+      - github.com/sirupsen/logrus: logging is allowed only by zerolog. Please use zerolog
   revive:
     # see https://github.com/mgechev/revive#available-rules for details.
     ignore-generated-header: true
@@ -122,3 +123,30 @@ linters-settings:
     rules:
       - name: indent-error-flow
         severity: warning
+  varnamelen:
+    # The longest distance, in source lines, that is being considered a "small scope." (defaults to 5)
+    # Variables used in at most this many lines will be ignored.
+    max-distance: 15 # updated to 10 since we wrap struct and param lines pretty heavily
+    # The minimum length of a variable's name that is considered "long." (defaults to 3)
+    # Variable names that are at least this long will be ignored.
+    min-name-length: 3
+    # Check method receiver names. (defaults to false)
+    check-receiver: false
+    # Check named return values. (defaults to false)
+    check-return: false
+    # Ignore "ok" variables that hold the bool return value of a type assertion. (defaults to false)
+    ignore-type-assert-ok: true
+    # Ignore "ok" variables that hold the bool return value of a map index. (defaults to false)
+    ignore-map-index-ok: true
+    # Ignore "ok" variables that hold the bool return value of a channel receive. (defaults to false)
+    ignore-chan-recv-ok: true
+    # Optional list of variable names that should be ignored completely. (defaults to empty list)
+    ignore-names:
+      - err
+      - tt
+      - tc
+      - i
+      - x
+      - id
+      - b # for functions using byte input this is acceptable nomenclature
+      - is # for testing framework

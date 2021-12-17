@@ -90,3 +90,5 @@ node_modules/.yarn-integrity
 mage_output_file.go
 node_modules/
 .yarn/
+
+dist/

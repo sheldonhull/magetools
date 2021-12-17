@@ -79,13 +79,13 @@ func ExampleGo_Test() {
 	}
 	// Running as mage task
 	if err := (gotools.Go{}.Test()); err != nil {
-		pterm.Error.Printf("ExampleGo_Test: %v", err)
+		pterm.Error.Printf("ExampleGo_Test: %v\n", err)
 	}
 
 	// Running with GOTEST_FLAGS detection
 	os.Setenv("GOTEST_FLAGS", "-tags=integration")
 	if err := (gotools.Go{}.Test()); err != nil {
-		pterm.Error.Printf("ExampleGo_Test: %v", err)
+		pterm.Error.Printf("ExampleGo_Test: %v\n", err)
 	}
 
 	// Output:
@@ -99,7 +99,7 @@ func ExampleGo_TestSum() {
 	}
 	// Running as mage task
 	if err := (gotools.Go{}.TestSum()); err != nil {
-		pterm.Error.Printf("ExampleGo_TestSum: %v", err)
+		pterm.Error.Printf("ExampleGo_TestSum: %v\n", err)
 	}
 
 	// Running with GOTEST_FLAGS detection

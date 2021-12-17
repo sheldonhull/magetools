@@ -100,7 +100,7 @@ func (Go) Test() error {
 	}
 	testFlags := os.Getenv("GOTEST_FLAGS")
 	if testFlags != "" {
-		pterm.Info.Printf("GOTEST_FLAGS provided: %q", testFlags)
+		pterm.Info.Printf("GOTEST_FLAGS provided: %q\n", testFlags)
 	}
 
 	pterm.Info.Println("Running go test")
@@ -121,11 +121,11 @@ func (Go) TestSum() error {
 	}
 	testFlags := os.Getenv("GOTEST_FLAGS")
 	if testFlags != "" {
-		pterm.Info.Printf("GOTEST_FLAGS provided: %q", testFlags)
+		pterm.Info.Printf("GOTEST_FLAGS provided: %q\n", testFlags)
 	}
 
 	pterm.Info.Println("Running go test")
-	if err := sh.RunV("gotestsum", "--", "-cover", "-shuffle", "on", "-race", vflag, testFlags); err != nil {
+	if err := sh.RunV("gotestsum", "--format", "pkgname", "--", "-cover", "-shuffle", "on", "-race", vflag, testFlags, "./..."); err != nil {
 		return err
 	}
 	pterm.Success.Println("✅ gotestsum")

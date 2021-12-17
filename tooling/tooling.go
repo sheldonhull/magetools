@@ -32,17 +32,17 @@ func InstallTools(tools []string) error {
 	}()
 
 	// as of last time I checked 2021-09, go get/install wasn't noted to be safe to run in parallel, so keeping it simple with just loop
-	for i, t := range tools {
-		msg := fmt.Sprintf("install [%d] %s]", i, t)
+	for idx, tool := range tools {
+		msg := fmt.Sprintf("install [%d] %s]", idx, tool)
 		// spinner, _ := pterm.DefaultSpinner.
 		// 	WithSequence("|", "/", "-", "|", "/", "-", "\\").
 		// 	WithRemoveWhenDone(true).
 		// 	WithText(msg).
 		// 	WithShowTimer(true).Start()
 
-		err := sh.RunWith(env, "go", append(args, t)...)
+		err := sh.RunWith(env, "go", append(args, tool)...)
 		if err != nil {
-			pterm.Warning.Printf("Could not install [%s] per [%v]\n", t, err)
+			pterm.Warning.Printf("Could not install [%s] per [%v]\n", tool, err)
 			// spinner.Fail(fmt.Sprintf("Could not install [%s] per [%v]\n", t, err))
 
 			continue
@@ -199,7 +199,7 @@ func SpinnerStdOut(
 		cmd := exec.Command(binary, thisargs...)
 
 		// Get a pipe to read from standard out
-		r, _ := cmd.StdoutPipe()
+		readCloser, _ := cmd.StdoutPipe()
 
 		// Use the same pipe for standard error
 		cmd.Stderr = cmd.Stdout
@@ -208,7 +208,7 @@ func SpinnerStdOut(
 		done := make(chan struct{})
 
 		// Create a scanner which scans r in a line-by-line fashion
-		scanner := bufio.NewScanner(r)
+		scanner := bufio.NewScanner(readCloser)
 
 		// Use the scanner to scan the output line by line and log it
 		// It's running in a goroutine so that it doesn't block

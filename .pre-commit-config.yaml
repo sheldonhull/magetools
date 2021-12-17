@@ -64,19 +64,6 @@ repos:
   # https://pre-commit.com/#supported-languages
   - repo: local
     hooks:
-      # FIRST TIME SETUP:  GO111MODULE=on go get github.com/zricethezav/gitleaks/v4@latest
-      # - id: local-run
-      #   name: Scan for secrets
-      #   entry: gitleaks --pretty -v
-      #   language: system
-      # - id: gitleaks
-      #   name: gitleaks-scan
-      #   entry: zsh -c docker run -v ${PWD}:/repo zricethezav/gitleaks:latest --path="/repo" --pretty -v
-      #   language: system
-      # - id: markdownlint
-      #   name: markdownlint-autofix
-      #   entry: zsh -c docker run -i --rm -v ${PWD}:/work tmknom/markdownlint:latest --fix --config ./settings/.markdownlint.yaml content/docs
-        language: system
       - id: shellcheck
         name: shellcheck
         entry: zsh -c docker run --rm -v "${PWD}:/mnt" koalaman/shellcheck:stable --format=json
@@ -120,7 +107,9 @@ repos:
       - id: gotest
         name: go-test-all
         description: Run integration tests for go
-        entry: echo "🧪 run quick unit tests, this should be pretty quick" && go test ./... -json -v -shuffle=on -race -tags integration | tparse -notests -smallscreen -pulse 1s
+        #entry: GOTESTS='slow' go test ./... -json -v -shuffle=on -race -tags integration | tparse -notests -smallscreen -pulse 1s
+        # no race conditions for this because we are doing build tasks here and not threadsafe to run parallel builds on every function
+        entry: GOTESTS='slow' go test ./... -json -v -shuffle=on  -tags integration | tparse -notests -smallscreen -pulse 1s
         stages: [push]
         types: [go]
         language: golang
@@ -129,7 +118,9 @@ repos:
       - id: gotest
         name: go-test-fast
         description: Run fast unit tests for go
-        entry: echo "🧪 running full integration tests, this may take a min" && go test ./... -json -v -shuffle=on -race | tparse -notests -smallscreen -pulse 1s
+        # entry: go test ./... -json -v -shuffle=on -race | tparse -notests -smallscreen -pulse 1s
+        # no race conditions for this because we are doing build tasks here and not threadsafe to run parallel builds on every function
+        entry: go test ./... -json -v -shuffle=on | tparse -notests -smallscreen -pulse 1s
         stages: [commit]
         types: [go]
         language: golang
