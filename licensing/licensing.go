@@ -3,7 +3,6 @@ package licensing
 // This set of tasks helps run Google's licensing tool to check for problem licenses, comply with credit, and also saving source when required.
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/magefile/mage/mg"
@@ -56,7 +55,7 @@ func (Licensing) Init() error {
 	return nil
 }
 
-// Save checks the licenses of the files in the given repo and saves to a csv.
+// 💾 Save checks the licenses of the files in the given repo and saves to a csv.
 func (Licensing) Save() error {
 	magetoolsutils.CheckPtermDebug()
 	pterm.Info.Println("Checks the licenses and persists to local directory")
@@ -79,15 +78,27 @@ func (Licensing) Save() error {
 	return nil
 }
 
-// Check look for forbidden licenses.
+// 💾 CSV checks the licenses of the files in the given repo persists to a license.csv file.
+func (Licensing) CSV() error {
+	magetoolsutils.CheckPtermDebug()
+	pterm.Info.Println("Checks the licenses and persists to local directory")
+	err := sh.Run("go-licenses", "csv", "./...")
+	if err != nil {
+		pterm.Error.Println(err)
+
+		return err
+	}
+	pterm.Success.Println("✅ Licenses CSV Check")
+
+	return nil
+}
+
+// 🔎 Check look for forbidden licenses.
 func (Licensing) Check() error {
 	magetoolsutils.CheckPtermDebug()
 	pterm.Info.Println("look for forbidden licenses")
-	c := []string{
-		"check", fmt.Sprintf("%s/...", licenseDir),
-	}
 
-	err := sh.Run("go-licenses", c...)
+	err := sh.Run("go-licenses", "check", "./...")
 	if err != nil {
 		pterm.Error.Println(err)
 
