@@ -185,18 +185,15 @@ func (Go) Lint() error {
 // This will perform all the sorting and other linters can cause conflicts in import ordering.
 func (Go) Fmt() error {
 	magetoolsutils.CheckPtermDebug()
-	magetoolsutils.CheckPtermDebug()
-	if err := addGoPkgBinToPath(); err != nil {
-		return err
-	}
-	gopath := getGoPath()
 
-	gfpath := filepath.Join(gopath, "bin", "gofumpt")
-	if _, err := os.Stat(gfpath); err != nil {
-		pterm.Error.Printf("gofumpt not found in bin, run mage go:init\n")
+	if err := AddGoPkgBinToPath(); err != nil {
 		return err
 	}
-	pterm.Debug.Printf("gofumpt full path: %q\n", gfpath)
+	gfpath, err := QualifyGoBinary("gofumpt")
+	if err != nil {
+		pterm.Error.Printfln("unable to find gofumpt: %v", err)
+		return err
+	}
 	if err := sh.Run(gfpath, "-l", "-w", "."); err != nil {
 		return err
 	}
@@ -205,8 +202,8 @@ func (Go) Fmt() error {
 	return nil
 }
 
-// getGoPath returns the GOPATH value.
-func getGoPath() string {
+// GetGoPath returns the GOPATH value.
+func GetGoPath() string {
 	gopath := os.Getenv("GOPATH")
 	if gopath == "" {
 		gopath = build.Default.GOPATH
@@ -214,9 +211,9 @@ func getGoPath() string {
 	return gopath
 }
 
-// addGoPkgBinToPath ensures the go/bin directory is available in path for cli tooling.
-func addGoPkgBinToPath() error {
-	gopath := getGoPath()
+// AddGoPkgBinToPath ensures the go/bin directory is available in path for cli tooling.
+func AddGoPkgBinToPath() error {
+	gopath := GetGoPath()
 	goPkgBinPath := filepath.Join(gopath, "bin")
 	if !strings.Contains(os.Getenv("PATH"), goPkgBinPath) {
 		pterm.Debug.Printf("Adding %q to PATH\n", goPkgBinPath)
@@ -231,13 +228,26 @@ func addGoPkgBinToPath() error {
 	return nil
 }
 
+// QualifyGoBinary provides a fully qualified path for an installed Go binary to avoid path issues.
+func QualifyGoBinary(binary string) (string, error) {
+	gopath := GetGoPath()
+
+	qualifiedPath := filepath.Join(gopath, "bin", binary)
+	if _, err := os.Stat(qualifiedPath); err != nil {
+		pterm.Error.Printfln("%q not found in bin", binary)
+		return "", err
+	}
+	pterm.Debug.Printfln("%q full path: %q", binary, qualifiedPath)
+	return qualifiedPath, nil
+}
+
 // ✨ Wrap runs golines powered by gofumpt.
 func (Go) Wrap() error {
 	magetoolsutils.CheckPtermDebug()
-	if err := addGoPkgBinToPath(); err != nil {
+	if err := AddGoPkgBinToPath(); err != nil {
 		return err
 	}
-	gopath := getGoPath()
+	gopath := GetGoPath()
 
 	gfpath := filepath.Join(gopath, "bin", "gofumpt")
 	if _, err := os.Stat(gfpath); err != nil {

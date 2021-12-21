@@ -1,15 +1,12 @@
-//go:build testfiles
-// +build testfiles
-
 // fancy uses pterm to provide some nice output that's not really critical but makes the experience nicer with summary
 package docker_test
 
 import (
+	"os"
+	"strings"
 	"testing"
 
 	iz "github.com/matryer/is"
-
-	// mage:import
 	"github.com/sheldonhull/magetools/docker"
 )
 
