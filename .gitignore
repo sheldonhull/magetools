@@ -95,3 +95,4 @@ dist/
 
 
 licensing/.licenses/
+docker/.devcontainer

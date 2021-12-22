@@ -23,6 +23,7 @@ linters:
     - gci
     - goimports
     - gofmt
+    - exhaustivestruct
   # presets:
   #   - bugs
   #   - unused

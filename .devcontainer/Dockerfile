@@ -13,21 +13,17 @@ FROM mcr.microsoft.com/vscode/devcontainers/universal:linux
 USER root
 COPY library-scripts/*.sh library-scripts/*.env /tmp/library-scripts/
 RUN echo "✅ install starship prompt" \
-    && bash /tmp/library-scripts/install-starship.sh \
-    && apt-get autoremove && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
+  && bash /tmp/library-scripts/install-starship.sh \
+  && apt-get autoremove && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
 
 USER codespace
 
-RUN go install github.com/jpoles1/gopherbadger@master \
-    && go install github.com/evilmartians/lefthook@latest \
-    # && go install github.com/golangci/golangci-lint/cmd/golangci-lint \
-    # && GO111MODULE=on go get mvdan.cc/gofumpt \
-    # && GO111MODULE='off'  go get golang.org/x/tools/cmd/goimports \
-    # && GO111MODULE='off' go get github.com/daixiang0/gci \
-    && go install github.com/itchyny/gojq/cmd/gojq@latest \
-    && go install github.com/owenrumney/squealer/cmd/squealer@latest \
-    && GO111MODULE=on go get github.com/zricethezav/gitleaks/v7
-RUN go install github.com/git-town/git-town@latest \
-    && git town alias true \
-    && echo "installed git town aliases"
-RUN lefthook install
+# RUN go install github.com/jpoles1/gopherbadger@master \
+#   # && go install github.com/golangci/golangci-lint/cmd/golangci-lint \
+#   # && GO111MODULE=on go get mvdan.cc/gofumpt \
+#   # && GO111MODULE='off'  go get golang.org/x/tools/cmd/goimports \
+#   # && GO111MODULE='off' go get github.com/daixiang0/gci \
+#   && go install github.com/itchyny/gojq/cmd/gojq@latest \
+#   && go install github.com/owenrumney/squealer/cmd/squealer@latest \
+#   && GO111MODULE=on go get github.com/zricethezav/gitleaks/v7 \
+#   go install github.com/git-town/git-town@latest

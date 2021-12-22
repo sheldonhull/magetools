@@ -3,7 +3,12 @@ package docker
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
+	"strings"
+	"time"
+
+	"github.com/dustin/go-humanize"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -26,12 +31,64 @@ type Docker mg.Namespace
 // Compose namespace contains all the tasks for Docker compose commands.
 type Compose mg.Namespace
 
+// Devcontainer namespace contains all the tasks for Dev container commands.
+type Devcontainer mg.Namespace
+
+// relTime returns just a simple relative time humanized, without the "ago" suffix.
+func relTime(t time.Time) string {
+	return strings.ReplaceAll(humanize.Time(t), " ago", "")
+}
+
+// taskTimer tasks a task name, starts a timer, and provides a func to call with defer to complete logging of the task.
+func taskTimer(taskName string) (time.Time, func(time.Time)) {
+	start := time.Now()
+
+	deferMeFunc := func(start time.Time) {
+		pterm.Success.Printf("✅ %s [%s]\n", taskName, relTime(start))
+	}
+
+	pterm.DefaultHeader.Println(taskName)
+	return start, deferMeFunc
+}
+
+// 🔨 Build devcontainer.
+func (Devcontainer) Build() error {
+	magetoolsutils.CheckPtermDebug()
+	t, df := taskTimer("(Devcontainer) Build()")
+	defer df(t)
+
+	pterm.Info.Println("Build devcontainer")
+
+	if _, err := os.Stat(".devcontainer/Dockerfile"); os.IsNotExist(err) {
+		pterm.Warning.Println("No Dockerfile found in .devcontainer/Dockerfile")
+		return err
+	}
+	wd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	projectDir := filepath.Base(wd)
+
+	c := []string{
+		"build",
+		"--pull",
+		"--rm",
+		"-f",
+		".devcontainer/Dockerfile",
+		"-t",
+		projectDir + ":latest",
+		".devcontainer",
+	}
+	return sh.RunV("docker", c...)
+}
+
 // 🧹 DockerPrune cleans up images.
 //
 // parameter: dockerMaintainer is the label used to filter to images maintained by this maintainer (ok for small teams).
 //
 // This is useful to narrow the pruning to just the images being build by the designated maintainer over `n` hours old.
 func (Docker) Prune(maintainer string) error {
+	magetoolsutils.CheckPtermDebug()
 	pterm.Info.Println("Pruning images over 24 hours old and maintained by ", maintainer)
 	return sh.RunV(
 		"docker",
