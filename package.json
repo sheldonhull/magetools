@@ -1,11 +1,11 @@
 {
-  "name": "magetools",
-  "version": "1.0.0",
-  "description": "mostly just tools for project",
-  "repository": "https://github.com/sheldonhull/magetools.git",
   "author": "Sheldon Hull <sheldonhull@users.noreply.github.com>",
+  "description": "mostly just tools for project",
   "license": "MIT",
+  "name": "magetools",
+  "repository": "https://github.com/sheldonhull/magetools.git",
   "scripts": {
     "commit": "yarn dlx git-cz"
-  }
+  },
+  "version": "1.0.0"
 }

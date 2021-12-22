@@ -1,3 +1,4 @@
+---
   ## commit_convention.yml
   ## omit the commit_types to use the default angular-style commit types
 # commit_types:
