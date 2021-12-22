@@ -10,5 +10,6 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/otiai10/copy v1.7.0
 	github.com/pterm/pterm v0.12.33
+	github.com/ztrue/tracerr v0.3.0
 	golang.org/x/mod v0.5.1
 )

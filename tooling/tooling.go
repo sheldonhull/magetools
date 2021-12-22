@@ -10,6 +10,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
+	"github.com/sheldonhull/magetools/ci"
 	"github.com/sheldonhull/magetools/pkg/magetoolsutils"
 )
 
@@ -60,13 +61,17 @@ func InstallTools(tools []string) error {
 //nolint:funlen // This is ok for now. Can refactor into smaller pieces later if needed.
 func SilentInstallTools(toolList []string) error {
 	magetoolsutils.CheckPtermDebug()
-	pterm.DefaultHeader.Println("SilentInstallTools")
+	if ci.IsCI() {
+		pterm.DisableStyling()
+	}
+	pterm.DefaultSection.Println("SilentInstallTools")
 	start := time.Now()
 
 	// delay := time.Second * 1 // help prevent jitter
 	spin, _ := pterm.DefaultSpinner. // WithDelay((delay)).WithRemoveWhenDone(true).
 						WithShowTimer(true).
 						WithText("go install tools").
+						WithSequence("|", "/", "-", "|", "/", "-", "\\").
 						Start()
 		// WithSequence("|", "/", "-", "|", "/", "-", "\\").
 

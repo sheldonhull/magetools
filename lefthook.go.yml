@@ -17,7 +17,7 @@ pre-push:
       tags: docs tests go
       run: |
         echo "🧪 running a full go test... this may take a few minutes"
-        GOTESTS='slow' go test ./... -v -json -coverprofile ./.artifacts/cover.out | tparse -all
+        GOTESTS='superslow' go test ./... -v -json -coverprofile ./.artifacts/cover.out | tparse -all
         go tool cover -html=./.artifacts/cover.out -o ./.artifacts/coverage.html
         gopherbadger -md="README.md,coverage.md"
         git add README.md && git commit --amend --no-edit README.md

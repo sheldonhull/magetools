@@ -1,5 +1,7 @@
 # magetools
 
+![Coverage](https://img.shields.io/badge/Coverage-58.1%25-yellow)
+
 General tooling helpers for simplifying cross repository automation using Mage.
 
 <a href='https://github.com/jpoles1/gopherbadger' target='_blank'>![gopherbadger-tag-do-not-edit](https://img.shields.io/badge/Go%20Coverage-34%25-brightgreen.svg?longCache=true&style=flat)</a>

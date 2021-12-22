@@ -4,14 +4,15 @@ package magetoolsutils
 import (
 	"os"
 
+	"github.com/magefile/mage/mg"
 	"github.com/pterm/pterm"
 )
 
 // checkPtermDebug looks for DEBUG=1 and sets debug level output if this is found to help troubleshoot tasks.
 func CheckPtermDebug() {
-	if os.Getenv("DEBUG") == "1" {
+	if os.Getenv("DEBUG") == "1" || mg.Verbose() {
 		pterm.EnableDebugMessages()
-		pterm.Debug.Println("DEBUG enabled per env variable DEBUG = 1")
+		pterm.Debug.Println("DEBUG enabled per env variable DEBUG = 1 or mage verbose flag")
 	} else {
 		pterm.DisableDebugMessages()
 	}

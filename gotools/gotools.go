@@ -1,7 +1,16 @@
 // Provide Go linting, formatting and other basic tooling.
+//
+// Some additional benefits to using this over calling natively are:
+//
+// - Uses improved gofumpt over gofmt.
+//
+// - Uses golines with `mage go:wrap` to automatically wrap long expressions.
+//
+// - If the non-standard tooling isn't installed, it will automatically go install the required tool on calling, reducing the need to run setup processes.
 package gotools
 
 import (
+	"fmt"
 	"go/build"
 	"io/ioutil"
 	"os"
@@ -9,13 +18,12 @@ import (
 	"runtime"
 	"strings"
 
-	// "time".
-
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/pkg/magetoolsutils"
 	"github.com/sheldonhull/magetools/tooling"
+	"github.com/ztrue/tracerr"
 	modfile "golang.org/x/mod/modfile"
 )
 
@@ -23,17 +31,42 @@ type (
 	Go mg.Namespace
 )
 
-// golang tools to ensure are locally vendored.
-var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
-	"github.com/goreleaser/goreleaser@v0.174.1",
-	// "golang.org/x/tools/cmd/goimports@master",
-	// "github.com/sqs/goreturns@master",
-	"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-	"github.com/dustinkirkland/golang-petname/cmd/petname@master",
-	"mvdan.cc/gofumpt@latest",
-	// "github.com/daixiang0/gci@latest",
+const (
+	// _maxLength is the maximum length allowed before golines will wrap functional options and similar style calls.
+	//
+	// For example:
+	//
+	// log.Str(foo).Str(bar).Str(taco).Msg("foo") if exceeded the length would get transformted into:
+	//
+	// log.Str(foo).
+	//	Str(bar).
+	//	Str(taco).
+	//	Msg("foo")
+	_maxLength = 120
+)
 
-	// Additionally to simplify init command adding the commands to install from VSCode go installer
+// toolList is the list of tools to initially install when running a setup process in a project.
+//
+// This includes goreleaser, golangci-lint, petname (for random build/titles).
+//
+// In addition, core tooling from VSCode Install Tool commands are included so using in a Codespace project doesn't require anything other than mage go:init.
+var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
+
+	// build tools
+	"github.com/goreleaser/goreleaser@v0.174.1",
+	"github.com/dustinkirkland/golang-petname/cmd/petname@master",
+	"github.com/AlexBeauchemin/gobadge@latest", // create a badge for your markdown from the coverage files.
+	// linting tools
+	"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
+
+	// formatting tools
+	"github.com/segmentio/golines@latest", // handles nice clean line breaks of long lines
+	"mvdan.cc/gofumpt@latest",
+
+	// Testing tools
+	"github.com/mfridman/tparse@latest", // nice table output after running test
+	"gotest.tools/gotestsum@latest",     // ability to run tests with junit, json output, xml, and more.
+
 	"golang.org/x/tools/gopls@latest",
 	"github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest",
 	"github.com/ramya-rao-a/go-outline@latest",
@@ -43,8 +76,6 @@ var toolList = []string{ //nolint:gochecknoglobals // ok to be global for toolin
 	"github.com/haya14busa/goplay/cmd/goplay@latest",
 	"github.com/go-delve/delve/cmd/dlv@latest",
 	"github.com/rogpeppe/godef@latest",
-	"github.com/mfridman/tparse@latest",   // nice table output after running test
-	"github.com/segmentio/golines@latest", // handles nice clean line breaks of long lines
 }
 
 // getModuleName returns the name from the module file.
@@ -53,12 +84,14 @@ func (Go) GetModuleName() string {
 	magetoolsutils.CheckPtermDebug()
 	goModBytes, err := ioutil.ReadFile("go.mod")
 	if err != nil {
-		pterm.Warning.Println("getModuleName() can't find ./go.mod")
+		pterm.Warning.WithShowLineNumber(true).WithLineNumberOffset(1).Println("getModuleName() can't find ./go.mod")
 		// Running one more check above the parent directory in case this is running in a test or nested directory for some reason.
 		// Only 1 level lookback for now.
 		goModBytes, err = ioutil.ReadFile("../go.mod")
 		if err != nil {
-			pterm.Warning.Println("getModuleName() not able to find ../go.mod")
+			pterm.Warning.WithShowLineNumber(true).
+				WithLineNumberOffset(1).
+				Println("getModuleName() not able to find ../go.mod")
 			return ""
 		}
 		pterm.Info.Println("found go.mod in ../go.mod")
@@ -114,8 +147,14 @@ func (Go) Test() error {
 // 🧪 Run gotestsum.
 func (Go) TestSum() error {
 	magetoolsutils.CheckPtermDebug()
-	var vflag string
+	appgofumpt := "gotestsum"
+	gofumpt, err := resolveBinaryByInstall(appgofumpt, "gotest.tools/gotestsum@latest")
+	if err != nil {
+		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("unable to find %s: %v", gofumpt, err)
+		return err
+	}
 
+	var vflag string
 	if mg.Verbose() {
 		vflag = "-v"
 	}
@@ -123,9 +162,35 @@ func (Go) TestSum() error {
 	if testFlags != "" {
 		pterm.Info.Printf("GOTEST_FLAGS provided: %q\n", testFlags)
 	}
-
+	// The artifact directory will atttempt to be set to the environment variable: BUILD_ARTIFACTSTAGINGDIRECTORY, but if it isn't set then it will default to .artifacts, which should be excluded in gitignore.
+	var artifactDir string
+	var ok bool
+	artifactDir, ok = os.LookupEnv("BUILD_ARTIFACTSTAGINGDIRECTORY")
+	if !ok {
+		artifactDir = ".artifacts"
+	}
+	junitFile := filepath.Join(artifactDir, "junit.xml")
+	jsonFile := filepath.Join(artifactDir, "gotest.json")
+	coverfile := filepath.Join(artifactDir, "cover.out")
+	if err := os.MkdirAll(artifactDir, os.FileMode(0o755)); err != nil { //nolint: gomnd // gomnd, acceptable per permissions
+		return err
+	}
 	pterm.Info.Println("Running go test")
-	if err := sh.RunV("gotestsum", "--format", "pkgname", "--", "-cover", "-shuffle", "on", "-race", vflag, testFlags, "./..."); err != nil {
+	if err := sh.RunV("gotestsum",
+		"--format", "pkgname",
+		"--junitfile", junitFile,
+		"--jsonfile", jsonFile,
+		"--",
+
+		"-coverpkg=./...",
+		fmt.Sprintf("-coverprofile=%s", coverfile),
+		"-covermode", "atomic",
+		"-shuffle=on",
+		"-race",
+		vflag,
+		testFlags,
+		"./...",
+	); err != nil {
 		return err
 	}
 	pterm.Success.Println("✅ gotestsum")
@@ -135,66 +200,29 @@ func (Go) TestSum() error {
 // 🔎  Run golangci-lint without fixing.
 func (Go) Lint() error {
 	magetoolsutils.CheckPtermDebug()
-	// var vflag string
 
-	// // outFormat := "tab"
-	// if mg.Verbose() {
-	// 	vflag = "-v"
-	// }
 	pterm.Info.Println("Running golangci-lint")
 	if err := sh.RunV("golangci-lint", "run"); err != nil {
-		pterm.Error.Println("golangci-lint failure")
+		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Println("golangci-lint failure")
 
 		return err
 	}
-	// pterm.Info.Println("Running golangci-lint")
-	// if err := golanglint("run"); err != nil {
-	// 	return err
-	// }
 	pterm.Success.Println("✅ Go Lint")
 	return nil
 }
-
-// ⚙️ Lint runs golangci-lint tooling using .golangci.yml settings.
-// Recommend setting fast: false in your config and allow tool to set.
-// Recommend not setting enable-all: true in config to allow cli to call this for linting.
-// REMOVED: 20201-09-29 due to issues found in https://github.com/golangci/golangci-lint/issues/1490
-// Will manually invoke desired formatters.
-// func (Go) Fmt() error {
-// 	// var vflag string
-
-// 	// if mg.Verbose() {
-// 	// 	vflag = "-v"
-// 	// }
-
-// 	pterm.Info.Println("Running golangci-lint formatter")
-// 	if err := sh.RunV("golangci-lint", "run", "--fix", "--enable", "gofumpt,gci", "--fast"); err != nil {
-// 		// if err := golanglint("run", "--fix", "--presets", "format", "--fast"); err != nil {
-// 		pterm.Error.Println("golangci-lint failure")
-
-// 		return err
-// 	}
-// 	// if err := golanglint("run", "--fix", vflag); err != nil {
-// 	// 	return err
-// 	// }
-// 	return nil
-// }
 
 // ✨ Fmt runs gofumpt. Export SKIP_GOLINES=1 to skip golines.
 // Important. Make sure golangci-lint config disables gci, goimports, and gofmt.
 // This will perform all the sorting and other linters can cause conflicts in import ordering.
 func (Go) Fmt() error {
 	magetoolsutils.CheckPtermDebug()
-
-	if err := AddGoPkgBinToPath(); err != nil {
-		return err
-	}
-	gfpath, err := QualifyGoBinary("gofumpt")
+	appgofumpt := "gofumpt"
+	gofumpt, err := resolveBinaryByInstall(appgofumpt, "mvdan.cc/gofumpt@latest")
 	if err != nil {
-		pterm.Error.Printfln("unable to find gofumpt: %v", err)
+		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("unable to find %s: %v", gofumpt, err)
 		return err
 	}
-	if err := sh.Run(gfpath, "-l", "-w", "."); err != nil {
+	if err := sh.Run(gofumpt, "-l", "-w", "."); err != nil {
 		return err
 	}
 
@@ -211,58 +239,32 @@ func GetGoPath() string {
 	return gopath
 }
 
-// AddGoPkgBinToPath ensures the go/bin directory is available in path for cli tooling.
-func AddGoPkgBinToPath() error {
-	gopath := GetGoPath()
-	goPkgBinPath := filepath.Join(gopath, "bin")
-	if !strings.Contains(os.Getenv("PATH"), goPkgBinPath) {
-		pterm.Debug.Printf("Adding %q to PATH\n", goPkgBinPath)
-		updatedPath := strings.Join([]string{goPkgBinPath, os.Getenv("PATH")}, string(os.PathListSeparator))
-		if err := os.Setenv("PATH", updatedPath); err != nil {
-			pterm.Error.Printf("Error setting PATH: %v\n", err)
-			return err
-		}
-		pterm.Info.Printf("Updated PATH: %q\n", updatedPath)
-	}
-	pterm.Debug.Printf("bypassed PATH update as already contained %q\n", goPkgBinPath)
-	return nil
-}
-
-// QualifyGoBinary provides a fully qualified path for an installed Go binary to avoid path issues.
-func QualifyGoBinary(binary string) (string, error) {
-	gopath := GetGoPath()
-
-	qualifiedPath := filepath.Join(gopath, "bin", binary)
-	if _, err := os.Stat(qualifiedPath); err != nil {
-		pterm.Error.Printfln("%q not found in bin", binary)
-		return "", err
-	}
-	pterm.Debug.Printfln("%q full path: %q", binary, qualifiedPath)
-	return qualifiedPath, nil
-}
-
 // ✨ Wrap runs golines powered by gofumpt.
 func (Go) Wrap() error {
 	magetoolsutils.CheckPtermDebug()
-	if err := AddGoPkgBinToPath(); err != nil {
+	appgolines := "golines"
+	appgofumpt := "gofumpt"
+	binary, err := resolveBinaryByInstall(appgolines, "github.com/segmentio/golines@latest")
+	if err != nil {
+		tracerr.PrintSourceColor(err)
+		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("unable to find %s: %v", appgolines, err)
 		return err
 	}
-	gopath := GetGoPath()
-
-	gfpath := filepath.Join(gopath, "bin", "gofumpt")
-	if _, err := os.Stat(gfpath); err != nil {
-		pterm.Error.Printf("gofumpt not found in bin, run mage go:init\n")
+	gofumpt, err := resolveBinaryByInstall(appgofumpt, "mvdan.cc/gofumpt@latest")
+	if err != nil {
+		tracerr.PrintSourceColor(err)
+		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("unable to find %s: %v", gofumpt, err)
 		return err
 	}
-	pterm.Debug.Printf("gofumpt full path: %q\n", gfpath)
 	if err := sh.Run(
-		"golines",
+		binary,
 		".",
 		"--base-formatter",
-		gfpath,
+		gofumpt,
 		"-w",
-		"--max-len=120",
+		fmt.Sprintf("--max-len=%d", _maxLength),
 		"--reformat-tags"); err != nil {
+		tracerr.PrintSourceColor(err)
 		return err
 	}
 	pterm.Success.Println("✅ Go Fmt")
@@ -297,8 +299,9 @@ func (Go) Doctor() {
 			{"GOARCH", runtime.GOARCH},
 			{"GOROOT", runtime.GOROOT()},
 		}).Render(); err != nil {
-		pterm.Error.Printf(
-			"pterm.DefaultTable.WithHasHeader of variable information failed. Continuing...\n%v",
+		tracerr.PrintSourceColor(err)
+		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln(
+			"pterm.DefaultTable.WithHasHeader of variable information failed. Continuing...%v",
 			err,
 		)
 	}
@@ -311,15 +314,74 @@ func (Go) LintConfig() error {
 	pterm.DefaultHeader.Println("🏥 LintConfig Diagnostic Checks")
 	pterm.DefaultSection.Println("🔍 golangci-lint linters with --fast")
 	if err := sh.RunV("golangci-lint", "linters", "--fast"); err != nil {
-		pterm.Error.Println("unable to run golangci-lint")
+		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Println("unable to run golangci-lint")
+		tracerr.PrintSourceColor(err)
 		return err
 	}
 	pterm.DefaultSection.Println("🔍  golangci-lint linters with plain run")
 	if err := sh.RunV("golangci-lint", "linters"); err != nil {
-		pterm.Error.Println("unable to run golangci-lint")
+		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Println("unable to run golangci-lint")
+		tracerr.PrintSourceColor(err)
 		return err
 	}
 
 	pterm.Success.Println("LintConfig Diagnostic Checks")
 	return nil
+}
+
+// resolveBinaryByInstall tries to qualify the Go tool path, but if can't find it, it will attempt to install and try again once.
+//
+// This can help with running in CI and not having to have a lot of setup code.
+func resolveBinaryByInstall(app, goInstallCmd string) (string, error) {
+	var binary string
+	var err error
+
+	binary, err = QualifyGoBinary(app)
+
+	if err != nil {
+		pterm.Info.Printfln("Couldn't find %s, so will attempt to install it", app)
+		err := tooling.SilentInstallTools([]string{goInstallCmd})
+		if err != nil {
+			return "", tracerr.Wrap(err)
+		}
+
+		binary, err = QualifyGoBinary(app)
+		if err != nil {
+			pterm.Error.WithShowLineNumber(true).
+				WithLineNumberOffset(1).
+				Printfln("second try to QualifyGoBinary failed: %v", err)
+			return "", tracerr.Wrap(err)
+		}
+	}
+	return binary, nil
+}
+
+// AddGoPkgBinToPath ensures the go/bin directory is available in path for cli tooling.
+func AddGoPkgBinToPath() error {
+	gopath := GetGoPath()
+	goPkgBinPath := filepath.Join(gopath, "bin")
+	if !strings.Contains(os.Getenv("PATH"), goPkgBinPath) {
+		pterm.Debug.Printf("Adding %q to PATH\n", goPkgBinPath)
+		updatedPath := strings.Join([]string{goPkgBinPath, os.Getenv("PATH")}, string(os.PathListSeparator))
+		if err := os.Setenv("PATH", updatedPath); err != nil {
+			pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("Error setting PATH: %v\n", err)
+			return tracerr.Wrap(err)
+		}
+		pterm.Info.Printf("Updated PATH: %q\n", updatedPath)
+	}
+	pterm.Debug.Printf("bypassed PATH update as already contained %q\n", goPkgBinPath)
+	return nil
+}
+
+// QualifyGoBinary provides a fully qualified path for an installed Go binary to avoid path issues.
+func QualifyGoBinary(binary string) (string, error) {
+	gopath := GetGoPath()
+
+	qualifiedPath := filepath.Join(gopath, "bin", binary)
+	if _, err := os.Stat(qualifiedPath); err != nil {
+		pterm.Warning.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("%q not found in bin", binary)
+		return "", tracerr.Wrap(err)
+	}
+	pterm.Debug.Printfln("%q full path: %q", binary, qualifiedPath)
+	return qualifiedPath, nil
 }

@@ -97,6 +97,7 @@ repos:
         types: [go]
         language: golang
         pass_filenames: true
+
       - id: golangci-lint
         name: golangci-lint
         description: Fast linters runner for Go.
@@ -104,17 +105,22 @@ repos:
         types: [go]
         language: golang
         pass_filenames: false
+
+
+        # pre-commit run --hook-stage push
       - id: gotest
         name: go-test-all
         description: Run integration tests for go
         #entry: GOTESTS='slow' go test ./... -json -v -shuffle=on -race -tags integration | tparse -notests -smallscreen -pulse 1s
         # no race conditions for this because we are doing build tasks here and not threadsafe to run parallel builds on every function
-        entry: GOTESTS='slow' go test ./... -json -v -shuffle=on  -tags integration | tparse -notests -smallscreen -pulse 1s
+        entry: zsh -c "GOTESTS='superslow' go test ./... -json -v -shuffle=on  -tags integration | tparse -notests -smallscreen -pulse 1s"
+        always_run: true # Always run full tests before push
         stages: [push]
         types: [go]
         language: golang
         pass_filenames: false
         verbose: true
+
       - id: gotest
         name: go-test-fast
         description: Run fast unit tests for go
@@ -125,3 +131,28 @@ repos:
         types: [go]
         language: golang
         pass_filenames: false
+        verbose: true
+
+
+  - repo: local
+    hooks:
+      - id: gocover
+        name: gocover
+        entry: zsh -c 'go tool cover -func=".artifacts/cover.out" -o=".artifacts/coverage.out"'
+        language: system
+        stages: [commit]
+
+      - id: gobadge
+        name: gobadge
+        entry: gobadge -filename=.artifacts/coverage.out
+        language: system
+        stages: [commit]
+
+        # github.com/AlexBeauchemin/gobadge@latest
+        # echo "🧪 running a full go test... this may take a few minutes"
+        # GOTESTS='superslow' go test ./... -v -json -coverprofile ./.artifacts/cover.out | tparse -all
+        # go tool cover -html=./.artifacts/cover.out -o ./.artifacts/coverage.html
+        # gopherbadger-md="README.md,coverage.md"
+        # git add README.md && git commit --amend --no-edit README.md
+        # git add coverage.md && git commit --amend --no-edit coverage.md
+        # git add coverage.md && git commit --amend --no-edit coverage_badge.png
