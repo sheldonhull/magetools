@@ -83,6 +83,8 @@ type Js mg.Namespace
 
 // Auth setups .yarnrc.yml in your $HOME path.
 func (Js) Auth() error {
-	pterm.Error.Printfln("`MY_VAR` is a required env var and is missing.\n\nexport MY_VAR=\"mytoken\"\n\n- Add this to your .envrc file\n- ensure `direnv allow` works to load automatically in this project.")
+	pterm.Error.Printfln(
+		"`MY_VAR` is a required env var and is missing.\n\nexport MY_VAR=\"mytoken\"\n\n- Add this to your .envrc file\n- ensure `direnv allow` works to load automatically in this project.",
+	)
 	return nil
 }

@@ -84,7 +84,7 @@ release:
 
   # You can change the name of the release.
   # Default is `{{.Tag}}` on OSS and `{{.PrefixedTag}}` on Pro.
-  name_template: "{{.ProjectName}}-{{.Version}} {{.Env.USER}}"
+  name_template: '{{.ProjectName}}-{{.Version}} {{.Env.USER}}'
 
   # You can disable this pipe in order to not upload any artifacts.
   # Defaults to false.

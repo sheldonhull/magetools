@@ -1,6 +1,6 @@
 # magetools
 
-![Coverage](https://img.shields.io/badge/Coverage-58.1%25-yellow)
+![Coverage](https://img.shields.io/badge/Coverage-54.0%25-yellow)
 
 General tooling helpers for simplifying cross repository automation using Mage.
 
