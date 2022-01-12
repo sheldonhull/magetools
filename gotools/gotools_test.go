@@ -2,7 +2,6 @@ package gotools_test
 
 import (
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -110,16 +109,4 @@ func ExampleGo_TestSum() {
 	// }
 
 	// Output:
-}
-
-func Test_QualifyGoBinary(t *testing.T) {
-	is := iz.New(t)
-	pterm.DisableOutput()
-	pterm.DisableStyling()
-	want := filepath.Join(gotools.GetGoPath(), "bin", "gofumpt")
-	got, err := gotools.QualifyGoBinary("gofumpt")
-	if err != nil {
-		pterm.Error.Printf("ExampleGo_QualifyGoBinary: %v\n", err)
-	}
-	is.Equal(want, got) // Filepath should match
 }

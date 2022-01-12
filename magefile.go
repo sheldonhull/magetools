@@ -22,7 +22,8 @@ import (
 
 	// mage:import
 	_ "github.com/sheldonhull/magetools/.tasks"
-
+	// mage:import
+	_ "github.com/sheldonhull/magetools/gittools" // gotools provides Go tasks such as linting and testing
 	// mage:import
 	_ "github.com/sheldonhull/magetools/gotools" // gotools provides Go tasks such as linting and testing
 

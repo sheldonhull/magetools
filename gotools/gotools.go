@@ -16,12 +16,12 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strings"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/pkg/magetoolsutils"
+	"github.com/sheldonhull/magetools/pkg/req"
 	"github.com/sheldonhull/magetools/tooling"
 	"github.com/ztrue/tracerr"
 	modfile "golang.org/x/mod/modfile"
@@ -147,10 +147,10 @@ func (Go) Test() error {
 // 🧪 Run gotestsum.
 func (Go) TestSum() error {
 	magetoolsutils.CheckPtermDebug()
-	appgofumpt := "gotestsum"
-	gofumpt, err := resolveBinaryByInstall(appgofumpt, "gotest.tools/gotestsum@latest")
+	appgotestsum := "gotestsum"
+	gotestsum, err := req.ResolveBinaryByInstall(appgotestsum, "gotest.tools/gotestsum@latest")
 	if err != nil {
-		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("unable to find %s: %v", gofumpt, err)
+		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("unable to find %s: %v", gotestsum, err)
 		return err
 	}
 
@@ -217,7 +217,7 @@ func (Go) Lint() error {
 func (Go) Fmt() error {
 	magetoolsutils.CheckPtermDebug()
 	appgofumpt := "gofumpt"
-	gofumpt, err := resolveBinaryByInstall(appgofumpt, "mvdan.cc/gofumpt@latest")
+	gofumpt, err := req.ResolveBinaryByInstall(appgofumpt, "mvdan.cc/gofumpt@latest")
 	if err != nil {
 		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("unable to find %s: %v", gofumpt, err)
 		return err
@@ -244,13 +244,13 @@ func (Go) Wrap() error {
 	magetoolsutils.CheckPtermDebug()
 	appgolines := "golines"
 	appgofumpt := "gofumpt"
-	binary, err := resolveBinaryByInstall(appgolines, "github.com/segmentio/golines@latest")
+	binary, err := req.ResolveBinaryByInstall(appgolines, "github.com/segmentio/golines@latest")
 	if err != nil {
 		tracerr.PrintSourceColor(err)
 		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("unable to find %s: %v", appgolines, err)
 		return err
 	}
-	gofumpt, err := resolveBinaryByInstall(appgofumpt, "mvdan.cc/gofumpt@latest")
+	gofumpt, err := req.ResolveBinaryByInstall(appgofumpt, "mvdan.cc/gofumpt@latest")
 	if err != nil {
 		tracerr.PrintSourceColor(err)
 		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("unable to find %s: %v", gofumpt, err)
@@ -327,61 +327,4 @@ func (Go) LintConfig() error {
 
 	pterm.Success.Println("LintConfig Diagnostic Checks")
 	return nil
-}
-
-// resolveBinaryByInstall tries to qualify the Go tool path, but if can't find it, it will attempt to install and try again once.
-//
-// This can help with running in CI and not having to have a lot of setup code.
-func resolveBinaryByInstall(app, goInstallCmd string) (string, error) {
-	var binary string
-	var err error
-
-	binary, err = QualifyGoBinary(app)
-
-	if err != nil {
-		pterm.Info.Printfln("Couldn't find %s, so will attempt to install it", app)
-		err := tooling.SilentInstallTools([]string{goInstallCmd})
-		if err != nil {
-			return "", tracerr.Wrap(err)
-		}
-
-		binary, err = QualifyGoBinary(app)
-		if err != nil {
-			pterm.Error.WithShowLineNumber(true).
-				WithLineNumberOffset(1).
-				Printfln("second try to QualifyGoBinary failed: %v", err)
-			return "", tracerr.Wrap(err)
-		}
-	}
-	return binary, nil
-}
-
-// AddGoPkgBinToPath ensures the go/bin directory is available in path for cli tooling.
-func AddGoPkgBinToPath() error {
-	gopath := GetGoPath()
-	goPkgBinPath := filepath.Join(gopath, "bin")
-	if !strings.Contains(os.Getenv("PATH"), goPkgBinPath) {
-		pterm.Debug.Printf("Adding %q to PATH\n", goPkgBinPath)
-		updatedPath := strings.Join([]string{goPkgBinPath, os.Getenv("PATH")}, string(os.PathListSeparator))
-		if err := os.Setenv("PATH", updatedPath); err != nil {
-			pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("Error setting PATH: %v\n", err)
-			return tracerr.Wrap(err)
-		}
-		pterm.Info.Printf("Updated PATH: %q\n", updatedPath)
-	}
-	pterm.Debug.Printf("bypassed PATH update as already contained %q\n", goPkgBinPath)
-	return nil
-}
-
-// QualifyGoBinary provides a fully qualified path for an installed Go binary to avoid path issues.
-func QualifyGoBinary(binary string) (string, error) {
-	gopath := GetGoPath()
-
-	qualifiedPath := filepath.Join(gopath, "bin", binary)
-	if _, err := os.Stat(qualifiedPath); err != nil {
-		pterm.Warning.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("%q not found in bin", binary)
-		return "", tracerr.Wrap(err)
-	}
-	pterm.Debug.Printfln("%q full path: %q", binary, qualifiedPath)
-	return qualifiedPath, nil
 }
