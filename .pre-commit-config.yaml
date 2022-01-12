@@ -112,7 +112,7 @@ repos:
 
 
         # pre-commit run --hook-stage push
-      - id: gotest
+      - id: go-test-all
         name: go-test-all
         description: Run integration tests for go
         #entry: GOTESTS='slow' go test ./... -json -v -shuffle=on -race -tags integration | tparse -notests -smallscreen -pulse 1s
