@@ -118,8 +118,9 @@ repos:
         #entry: GOTESTS='slow' go test ./... -json -v -shuffle=on -race -tags integration | tparse -notests -smallscreen -pulse 1s
         # no race conditions for this because we are doing build tasks here and not threadsafe to run parallel builds on every function
         #entry: zsh -c "GOTESTS='superslow' go test ./... -json -v -shuffle=on  -tags integration | tparse -notests -smallscreen -pulse 1s"
-        entry: zsh -c "GOTESTS='superslow' GOTEST_FLAGS='--tags=integration' gotestsum --format pkgname --junitfile .artifacts/junit.xml --jsonfile .artifacts/gotest.json
-          -- -coverpkg=./... -coverprofile=.artifacts/cover.out -covermode atomic -shuffle=on -tags=integration ./..."
+        entry: zsh -c "(mkdir -p .artifacts/ || echo '.artifacts already exists') && GOTESTS='superslow' GOTEST_FLAGS='--tags=integration' gotestsum --format
+          pkgname --junitfile .artifacts/junit.xml --jsonfile .artifacts/gotest.json -- -coverpkg=./... -coverprofile=.artifacts/cover.out -covermode atomic
+          -shuffle=on -tags=integration ./..."
         always_run: true # Always run full tests before push
         stages: [commit]
         types: [go]
