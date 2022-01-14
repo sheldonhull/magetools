@@ -20,7 +20,7 @@ repos:
     rev: 0.1.0 # or specific tag
     hooks:
       - id: yamlfmt
-        args: [--mapping, '2', --sequence, '4', --offset, '2']
+        args: [--mapping, '2', --sequence, '4', --offset, '2', --width, '200'] # set width high to avoid breaking a few pre-commit style inline scripts
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.26.3 # or higher tag
     hooks:
@@ -44,7 +44,7 @@ repos:
         args: [--autofix, --no-ensure-ascii]
 
       - id: check-yaml
-      - id: detect-private-key
+      # - id: detect-private-key
       - id: end-of-file-fixer
       - id: fix-byte-order-marker
       - id: check-added-large-files
@@ -78,14 +78,18 @@ repos:
     rev: v0.3.2
     hooks:
       - id: markdownlint-cli2
-  - repo: local
+  - repo: https://github.com/zricethezav/gitleaks
+    rev: v8.2.0
     hooks:
       - id: gitleaks
-        name: gitleaks
-        entry: gitleaks --commit=latest --no-git --format json --path=. --report=.artifacts/gitleaks.json --quiet
-        language: system
-        pass_filenames: false
-        stages: [push]
+  # - repo: local
+  #   hooks:
+  #     - id: gitleaks
+  #       name: gitleaks
+  #       entry: gitleaks --commit=latest --no-git --format json --path=. --report=.artifacts/gitleaks.json --quiet
+  #       language: system
+  #       pass_filenames: false
+  #       stages: [push]
 
   # Go Local Hooks
   - repo: local
@@ -108,43 +112,45 @@ repos:
 
 
         # pre-commit run --hook-stage push
-      - id: gotest
+      - id: go-test-all
         name: go-test-all
         description: Run integration tests for go
         #entry: GOTESTS='slow' go test ./... -json -v -shuffle=on -race -tags integration | tparse -notests -smallscreen -pulse 1s
         # no race conditions for this because we are doing build tasks here and not threadsafe to run parallel builds on every function
-        entry: zsh -c "GOTESTS='superslow' go test ./... -json -v -shuffle=on  -tags integration | tparse -notests -smallscreen -pulse 1s"
+        #entry: zsh -c "GOTESTS='superslow' go test ./... -json -v -shuffle=on  -tags integration | tparse -notests -smallscreen -pulse 1s"
+        entry: zsh -c "(mkdir -p .artifacts/ || echo '.artifacts already exists') && GOTESTS='slow' GOTEST_FLAGS='--tags=integration' gotestsum --format pkgname --junitfile .artifacts/junit.xml --jsonfile
+          .artifacts/gotest.json -- -coverpkg=./... -coverprofile=.artifacts/cover.out -covermode atomic -shuffle=on -tags=integration ./..."
         always_run: true # Always run full tests before push
-        stages: [push]
-        types: [go]
-        language: golang
-        pass_filenames: false
-        verbose: true
-
-      - id: gotest
-        name: go-test-fast
-        description: Run fast unit tests for go
-        # entry: go test ./... -json -v -shuffle=on -race | tparse -notests -smallscreen -pulse 1s
-        # no race conditions for this because we are doing build tasks here and not threadsafe to run parallel builds on every function
-        entry: go test ./... -json -v -shuffle=on | tparse -notests -smallscreen -pulse 1s
         stages: [commit]
         types: [go]
         language: golang
         pass_filenames: false
         verbose: true
+
+      # - id: gotest
+      #   name: go-test-fast
+      #   description: Run fast unit tests for go
+      #   # entry: go test ./... -json -v -shuffle=on -race | tparse -notests -smallscreen -pulse 1s
+      #   # no race conditions for this because we are doing build tasks here and not threadsafe to run parallel builds on every function
+      #   entry: go test ./... -json -v -shuffle=on | tparse -notests -smallscreen -pulse 1s
+      #   stages: [commit]
+      #   types: [go]
+      #   language: golang
+      #   pass_filenames: false
+      #   verbose: true
 
 
   - repo: local
     hooks:
       - id: gocover
         name: gocover
-        entry: zsh -c 'go tool cover -func=".artifacts/cover.out" -o=".artifacts/coverage.out"'
+        entry: zsh -c '(mkdir -p .artifacts/ || echo ".artifacts already exists") && go tool cover -func=".artifacts/cover.out" -o=".artifacts/coverage.out"'
         language: system
         stages: [commit]
 
       - id: gobadge
         name: gobadge
-        entry: gobadge -filename=.artifacts/coverage.out
+        entry: zsh -c '(mkdir -p .artifacts/ || echo ".artifacts already exists") && gobadge -filename=.artifacts/coverage.out'
         language: system
         stages: [commit]
 

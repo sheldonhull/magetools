@@ -23,9 +23,10 @@ import (
 	// mage:import
 	_ "github.com/sheldonhull/magetools/.tasks"
 	// mage:import
-	_ "github.com/sheldonhull/magetools/gittools" // gotools provides Go tasks such as linting and testing
+	_ "github.com/sheldonhull/magetools/gittools" // gotools provides Git tooling to install git town and bit.
 	// mage:import
-	_ "github.com/sheldonhull/magetools/gotools" // gotools provides Go tasks such as linting and testing
+	_ "github.com/sheldonhull/magetools/gotools" // gotools provides Go tasks such as linting and testing.
+	// _ "github.com/sheldonhull/magetools/precommit" // precommit configures precommit setup and installation tasks.
 
 	// mage:import
 	_ "github.com/sheldonhull/magetools/licensing" // licensing provides a license checker and vendor tooling for the project

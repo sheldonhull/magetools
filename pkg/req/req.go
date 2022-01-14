@@ -66,21 +66,21 @@ func ResolveBinaryByInstall(app, goInstallCmd string) (string, error) {
 
 // addGoPkgBinToPath ensures the go/bin directory is available in path for cli tooling.
 // This isn't used right now as I prefer to use fully qualified tool paths which don't care about env var issues.
-func addGoPkgBinToPath() error {
-	gopath := GetGoPath()
-	goPkgBinPath := filepath.Join(gopath, "bin")
-	if !strings.Contains(os.Getenv("PATH"), goPkgBinPath) {
-		pterm.Debug.Printf("Adding %q to PATH\n", goPkgBinPath)
-		updatedPath := strings.Join([]string{goPkgBinPath, os.Getenv("PATH")}, string(os.PathListSeparator))
-		if err := os.Setenv("PATH", updatedPath); err != nil {
-			pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("Error setting PATH: %v\n", err)
-			return tracerr.Wrap(err)
-		}
-		pterm.Info.Printf("Updated PATH: %q\n", updatedPath)
-	}
-	pterm.Debug.Printf("bypassed PATH update as already contained %q\n", goPkgBinPath)
-	return nil
-}
+// func addGoPkgBinToPath() error {
+// 	gopath := GetGoPath()
+// 	goPkgBinPath := filepath.Join(gopath, "bin")
+// 	if !strings.Contains(os.Getenv("PATH"), goPkgBinPath) {
+// 		pterm.Debug.Printf("Adding %q to PATH\n", goPkgBinPath)
+// 		updatedPath := strings.Join([]string{goPkgBinPath, os.Getenv("PATH")}, string(os.PathListSeparator))
+// 		if err := os.Setenv("PATH", updatedPath); err != nil {
+// 			pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("Error setting PATH: %v\n", err)
+// 			return tracerr.Wrap(err)
+// 		}
+// 		pterm.Info.Printf("Updated PATH: %q\n", updatedPath)
+// 	}
+// 	pterm.Debug.Printf("bypassed PATH update as already contained %q\n", goPkgBinPath)
+// 	return nil
+// }
 
 // QualifyGoBinary provides a fully qualified path for an installed Go binary to avoid path issues.
 func QualifyGoBinary(binary string) (string, error) {
@@ -89,7 +89,9 @@ func QualifyGoBinary(binary string) (string, error) {
 	qualifiedPath := filepath.Join(gopath, "bin", binary)
 	pterm.Debug.Printfln("qualifiedPath to search for: %q", qualifiedPath)
 	if _, err := os.Stat(qualifiedPath); err != nil {
-		pterm.Warning.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("%q not found in bin. qualifiedPath searched: %q", binary, qualifiedPath)
+		pterm.Warning.WithShowLineNumber(true).
+			WithLineNumberOffset(1).
+			Printfln("%q not found in bin. qualifiedPath searched: %q", binary, qualifiedPath)
 		return "", tracerr.Wrap(err)
 	}
 	pterm.Debug.Printfln("%q full path: %q", binary, qualifiedPath)

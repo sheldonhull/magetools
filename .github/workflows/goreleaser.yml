@@ -1,10 +1,11 @@
+---
 name: goreleaser
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version To Tag'
+        description: Version To Tag
         required: true
         default: ''
 
