@@ -28,4 +28,6 @@ import (
 	// Example, importing the subdirectory tasks, but root doesn't have all the mage tasks (which can be split by file)
 	// mage:import
 	// _ "github.com/myrepo/tasks".
+	//
+	// _ "myrepo/magefiles/tasks"
 )
