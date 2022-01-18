@@ -24,12 +24,38 @@ linters:
     - goimports
     - gofmt
     - exhaustivestruct
+    - godox
   # presets:
   #   - bugs
   #   - unused
   # bugs|comment|complexity|error|format|import|metalinter|module|performance|sql|style|test|unused
   # fast: true
-
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - goerr113
+        - wrapcheck
+        - funlen # complexity length in tests isn't a big concern
+        - cyclop # complexity length in tests isn't a big concern
+        - gocognit # complexity length in tests isn't a big concern
+        - unparam # unused params in tests isn't as important
+        - varnamelen # don't worry about variable name length in test code (nice to keep clean, but not important enough to speed time on)
+        - revive # additional checks like constants and more aren't important in the test code
+    - linters:
+        - goerr113
+      text: do not define dynamic errors
+    - path: .*mage.*go
+      linters:
+        - goerr113
+        - wrapcheck
+    - linters:
+        - goerr113
+      text: magefiles don't need to worry about wrapping in the same way
+    - linters:
+        - govet
+        - revive
+      text: 'shadow: declaration of .err. shadows declaration' # err shadowing is a normal practice, don't worry about this
 run:
   skip-dirs:
     - cmd/test-files
@@ -38,6 +64,7 @@ run:
     - _tools
     - starter/*
     - _artifacts/
+    - _test.go
 
   # lint magefile, but ignore tools.go
   build-tags:

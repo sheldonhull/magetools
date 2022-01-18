@@ -8,6 +8,7 @@ import (
 	"github.com/pterm/pterm"
 	"github.com/sheldonhull/magetools/ci"
 	"github.com/sheldonhull/magetools/fancy"
+
 	// "github.com/sheldonhull/magetools/tooling"
 
 	// mage:import
@@ -58,7 +59,7 @@ func Init() error {
 	mg.SerialDeps(
 		Clean,
 		createDirectories,
-		(gotools.Go{}.Init()),
+		(gotools.Go{}.Init),
 		// tooling.SilentInstallTools(toolList),
 	)
 	// if err := (gotools.Go{}.Init()); err != nil {

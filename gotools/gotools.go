@@ -76,6 +76,9 @@ var toolList = []string{ //nolint:gochecknoglobals // ok to be global for toolin
 	"github.com/haya14busa/goplay/cmd/goplay@latest",
 	"github.com/go-delve/delve/cmd/dlv@latest",
 	"github.com/rogpeppe/godef@latest",
+
+	// Self setup mage
+	"github.com/magefile/mage@latest",
 }
 
 // getModuleName returns the name from the module file.
