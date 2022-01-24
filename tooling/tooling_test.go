@@ -37,28 +37,47 @@ func TestInstallTools(t *testing.T) {
 // Try cleaning a specific directory to see output if already ran
 // sudo rm -rf $(go env GOPATH)/pkg/mod/github.com/fatih.
 func TestGo_SilentInit(t *testing.T) {
-	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "slow") {
-		t.Skip("GOTESTS should include 'slow' to run this test")
-	}
-	is := iz.New(t)
-	if os.Getenv("PRESENTATION_TEST") != "1" {
-		t.Skip("PRESENTATION_TEST != 1 so skipping")
-	}
-	// pterm.DisableColor()
-	// pterm.DisableStyling()
-	toolList := []string{
-		"github.com/goreleaser/goreleaser@v0.174.1",
-		"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-		"github.com/dustinkirkland/golang-petname/cmd/petname@master",
-		"mvdan.cc/gofumpt@latest",
-		"golang.org/x/tools/gopls@latest",
-		"github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest",
-		"github.com/ramya-rao-a/go-outline@latest",
-		"github.com/cweill/gotests/gotests@latest",
-		"github.com/fatih/gomodifytags@latest",
-	}
-	err := tooling.SilentInstallTools(toolList)
-	is.NoErr(err) // Init should not fail
+	t.Run("install list of tools", func(t *testing.T) {
+		if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "slow") {
+			t.Skip("GOTESTS should include 'slow' to run this test")
+		}
+		is := iz.New(t)
+		if os.Getenv("PRESENTATION_TEST") != "1" {
+			t.Skip("PRESENTATION_TEST != 1 so skipping")
+		}
+		// pterm.DisableColor()
+		// pterm.DisableStyling()
+		toolList := []string{
+			"github.com/goreleaser/goreleaser@v0.174.1",
+			"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
+			"github.com/dustinkirkland/golang-petname/cmd/petname@master",
+			"mvdan.cc/gofumpt@latest",
+			"golang.org/x/tools/gopls@latest",
+			"github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest",
+			"github.com/ramya-rao-a/go-outline@latest",
+			"github.com/cweill/gotests/gotests@latest",
+			"github.com/fatih/gomodifytags@latest",
+		}
+		err := tooling.SilentInstallTools(toolList)
+		is.NoErr(err) // Init should not fail
+	})
+
+	t.Run("fail on item 2 and advise what failed", func(t *testing.T) {
+		if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "slow") {
+			t.Skip("GOTESTS should include 'slow' to run this test")
+		}
+		is := iz.New(t)
+		if os.Getenv("PRESENTATION_TEST") != "1" {
+			t.Skip("PRESENTATION_TEST != 1 so skipping")
+		}
+		toolList := []string{
+			"github.com/goreleaser/goreleaser@v0.174.1",
+			"github.com/golangci/golangci-lint/cmd/golangci-lintINVALID@master",
+			"github.com/dustinkirkland/golang-petname/cmd/petname@master",
+		}
+		err := tooling.SilentInstallTools(toolList)
+		is.True(err != nil) // An error should be returned with useful context should not fail
+	})
 }
 
 // This is a test for the minimal output, doesn't need to run unless manully invoked with:

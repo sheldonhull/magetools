@@ -60,6 +60,7 @@ func InstallTools(tools []string) error {
 // Originally found from: https://www.yellowduck.be/posts/reading-command-output-line-by-line/ and modified.
 //nolint:funlen // This is ok for now. Can refactor into smaller pieces later if needed.
 func SilentInstallTools(toolList []string) error {
+	var errorCount int
 	magetoolsutils.CheckPtermDebug()
 	if ci.IsCI() {
 		pterm.DisableStyling()
@@ -76,11 +77,7 @@ func SilentInstallTools(toolList []string) error {
 		// WithSequence("|", "/", "-", "|", "/", "-", "\\").
 
 	// spinnerLiveText, _ := pterm.DefaultSpinner.Start("InstallTools")
-	defer func() {
-		msg := fmt.Sprintf("SilentInstallTools: %s\n", humanize.Time(start))
-		spin.Success(msg) // Resolve spinner with success message.
-		// pterm.Success.Println(msg)
-	}()
+
 	pterm.Info.Printf("items to iterate through: %d", len(toolList))
 	for _, item := range toolList {
 		cmd := exec.Command("go", "install", item)
@@ -114,9 +111,12 @@ func SilentInstallTools(toolList []string) error {
 		// Start the command and check for errors
 		err := cmd.Start()
 		if err != nil {
+			pterm.Error.Printfln("unable to install: %q %v", item, err)
+			errorCount++
 			spin.Fail(err)
-			_ = spin.Stop()
-			return err
+			continue
+			// _ = spin.Stop()  // NOTE: continue installing other tools, don't stop everything, just fail this and count it
+			// return err
 		}
 
 		// Wait for all output to be processed
@@ -126,11 +126,21 @@ func SilentInstallTools(toolList []string) error {
 		err = cmd.Wait()
 		if err != nil {
 			spin.Fail(err)
-			_ = spin.Stop()
-			return err
+			errorCount++
+			pterm.Error.Printfln("unable to install: %q %v", item, err)
+			// _ = spin.Stop() // NOTE: continue installing other tools, don't stop everything, just fail this and count it
+			// return err
+			continue
 		}
 		spin.Success(item)
 	}
+
+	if errorCount > 0 {
+		pterm.Error.Printfln("SilentInstallTools: total errors: [%d] %s\n", errorCount, humanize.Time(start))
+		return fmt.Errorf("SilentInstallTools: total errors: [%d]", errorCount)
+	}
+	msg := fmt.Sprintf("SilentInstallTools: %s\n", humanize.Time(start))
+	pterm.Success.Println(msg)
 	return nil
 }
 
