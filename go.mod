@@ -14,7 +14,7 @@ require (
 	github.com/mfridman/tparse v0.9.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/otiai10/copy v1.7.0
-	github.com/pterm/pterm v0.12.33
+	github.com/pterm/pterm v0.12.36
 	github.com/rakyll/gotest v0.0.6
 	github.com/ztrue/tracerr v0.3.0
 	golang.org/x/mod v0.5.1
