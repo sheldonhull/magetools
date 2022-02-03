@@ -54,10 +54,10 @@ var toolList = []string{ //nolint:gochecknoglobals // ok to be global for toolin
 
 	// build tools
 	"github.com/goreleaser/goreleaser@v0.174.1",
-	"github.com/dustinkirkland/golang-petname/cmd/petname@master",
+	"github.com/dustinkirkland/golang-petname/cmd/petname@latest",
 	"github.com/AlexBeauchemin/gobadge@latest", // create a badge for your markdown from the coverage files.
 	// linting tools
-	"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
+	"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
 
 	// formatting tools
 	"github.com/segmentio/golines@latest", // handles nice clean line breaks of long lines
