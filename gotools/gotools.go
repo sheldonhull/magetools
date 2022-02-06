@@ -16,10 +16,12 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
+	"github.com/sheldonhull/magetools/ci"
 	"github.com/sheldonhull/magetools/pkg/magetoolsutils"
 	"github.com/sheldonhull/magetools/pkg/req"
 	"github.com/sheldonhull/magetools/tooling"
@@ -140,7 +142,7 @@ func (Go) Test() error {
 	}
 
 	pterm.Info.Println("Running go test")
-	if err := sh.RunV("go", "test", "./...", "-cover", "-shuffle", "on", "-race", vflag, testFlags); err != nil {
+	if err := sh.RunV("go", "test", "./...", "-cover", "-shuffle", "on", "-race", strings.TrimSpace(vflag), strings.TrimSpace(testFlags)); err != nil {
 		return err
 	}
 	pterm.Success.Println("✅ Go Test")
@@ -178,13 +180,16 @@ func (Go) TestSum() error {
 	if err := os.MkdirAll(artifactDir, os.FileMode(0o755)); err != nil { //nolint: gomnd // gomnd, acceptable per permissions
 		return err
 	}
+	format := "dots-v2"
+	if ci.IsCI() {
+		format = "pkgname"
+	}
 	pterm.Info.Println("Running go test")
 	if err := sh.RunV("gotestsum",
-		"--format", "pkgname",
+		"--format", format,
 		"--junitfile", junitFile,
 		"--jsonfile", jsonFile,
 		"--",
-
 		"-coverpkg=./...",
 		fmt.Sprintf("-coverprofile=%s", coverfile),
 		"-covermode", "atomic",
