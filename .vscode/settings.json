@@ -13,5 +13,19 @@
   "go.testTags": "mage testfiles integration",
   "go.testEnvVars": {
     "GOTESTS": "slow",
-  }
+  },
+  "workbench.colorCustomizations": {
+    "sash.hoverBorder": "#f1ba5b",
+    "statusBar.background": "#eda62c",
+    "statusBar.foreground": "#15202b",
+    "statusBarItem.hoverBackground": "#d48d12",
+    "statusBarItem.remoteBackground": "#eda62c",
+    "statusBarItem.remoteForeground": "#15202b",
+    "tab.activeBorder": "#f1ba5b",
+    "titleBar.activeBackground": "#eda62c",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#eda62c99",
+    "titleBar.inactiveForeground": "#15202b99"
+  },
+  "peacock.color": "#eda62c"
 }
