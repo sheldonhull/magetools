@@ -10,7 +10,7 @@ require (
 	github.com/gosuri/uilive v0.0.4 // indirect
 	github.com/gosuri/uiprogress v0.0.1
 	github.com/logrusorgru/aurora v2.0.3+incompatible // indirect
-	github.com/magefile/mage v1.12.1
+	github.com/magefile/mage v1.13.0
 	github.com/manifoldco/promptui v0.9.0
 	github.com/matryer/is v1.4.0
 	github.com/mfridman/tparse v0.9.0
