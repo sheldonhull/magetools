@@ -23,4 +23,5 @@ import (
 	_ "github.com/sheldonhull/magetools/gotools"   // Gotools contains tasks for setting up tooling with standard gofumpt, testing output, and setup of standard gopls tooling.
 	_ "github.com/sheldonhull/magetools/licensing" // Licensing is a tool for generating license audit capture.
 	_ "github.com/sheldonhull/magetools/tooling"   // Tooling has helpers to do low noise updates on actions like go install, go mod tidy, using pterm spinners.
+	_ "golang.org/x/sync/errgroup"                 // errgroup is a Go library for managing multiple tasks and wait for them to complete. Used by gotestsum right now.
 )

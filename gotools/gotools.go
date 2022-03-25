@@ -16,6 +16,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -53,7 +54,7 @@ const (
 var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
 
 	// build tools
-	"github.com/goreleaser/goreleaser@v0.174.1",
+	"github.com/goreleaser/goreleaser@v0.174.1", // NOTE: 2022-03-25: latest results in error with  undefined: strings.Cut note: module requires Go 1.18 WHEN BUILDING FROM SOURCE
 	"github.com/dustinkirkland/golang-petname/cmd/petname@latest",
 	"github.com/AlexBeauchemin/gobadge@latest", // create a badge for your markdown from the coverage files.
 	// linting tools
@@ -147,9 +148,19 @@ func (Go) Test() error {
 	return nil
 }
 
-// 🧪 Run gotestsum.
-func (Go) TestSum() error {
+// 🧪 Run gotestsum (Params: Path just like you pass to go test, ie ./..., pkg/, etc ).
+// If gotestsum is not installed, it will install it.
+//
+// - Test outputs junit, json, and coverfiles.
+//
+// - Test shuffles and adds race flag.
+//
+// - Test running manually like this from current repo: GOTEST_DISABLE_RACE=1 mage -d magefiles -w . -v  go:testsum ./pkg/...
+//
+//nolint:funlen,cyclop // Not refactoring this right now, it works and that's what matters ;-)
+func (Go) TestSum(path string) error {
 	magetoolsutils.CheckPtermDebug()
+	pterm.DefaultHeader.Println("GOTESTSUM")
 	appgotestsum := "gotestsum"
 	gotestsum, err := req.ResolveBinaryByInstall(appgotestsum, "gotest.tools/gotestsum@latest")
 	if err != nil {
@@ -165,6 +176,11 @@ func (Go) TestSum() error {
 	if testFlags != "" {
 		pterm.Info.Printf("GOTEST_FLAGS provided: %q\n", testFlags)
 	}
+	raceflag := "-race"
+	if os.Getenv("GOTEST_DISABLE_RACE") == "1" {
+		pterm.Debug.Println("Not running with race conditions per GOTEST_DISABLE_RACE provided")
+		raceflag = ""
+	}
 	// The artifact directory will atttempt to be set to the environment variable: BUILD_ARTIFACTSTAGINGDIRECTORY, but if it isn't set then it will default to .artifacts, which should be excluded in gitignore.
 	var artifactDir string
 	var ok bool
@@ -172,30 +188,67 @@ func (Go) TestSum() error {
 	if !ok {
 		artifactDir = ".artifacts"
 	}
+	pterm.Info.Printfln("test artifacts will be dropped in: %s", artifactDir)
 	junitFile := filepath.Join(artifactDir, "junit.xml")
 	jsonFile := filepath.Join(artifactDir, "gotest.json")
 	coverfile := filepath.Join(artifactDir, "cover.out")
 	if err := os.MkdirAll(artifactDir, os.FileMode(0o755)); err != nil { //nolint: gomnd // gomnd, acceptable per permissions
 		return err
 	}
-	pterm.Info.Println("Running go test")
-	if err := sh.RunV("gotestsum",
-		"--format", "pkgname",
-		"--junitfile", junitFile,
-		"--jsonfile", jsonFile,
-		"--",
+	additionalGoArgs := []string{}
+	additionalGoArgs = append(additionalGoArgs, "--format")
+	additionalGoArgs = append(additionalGoArgs, "pkgname")
+	additionalGoArgs = append(additionalGoArgs, "--junitfile "+junitFile)
+	additionalGoArgs = append(additionalGoArgs, "--jsonfile "+jsonFile)
+	additionalGoArgs = append(additionalGoArgs, fmt.Sprintf("--packages=%s", path))
 
-		"-coverpkg=./...",
-		fmt.Sprintf("-coverprofile=%s", coverfile),
-		"-covermode", "atomic",
-		"-shuffle=on",
-		"-race",
-		vflag,
-		testFlags,
-		"./...",
+	additionalGoArgs = append(additionalGoArgs, "--")
+	additionalGoArgs = append(additionalGoArgs, "-coverpkg=./...")
+	// additionalGoArgs = append(additionalGoArgs, "-covermode atomic")
+	additionalGoArgs = append(additionalGoArgs, "-coverprofile="+coverfile)
+	additionalGoArgs = append(additionalGoArgs, "-shuffle=on")
+	additionalGoArgs = append(additionalGoArgs, raceflag)
+	additionalGoArgs = append(additionalGoArgs, vflag)
+	additionalGoArgs = append(additionalGoArgs, testFlags)
+
+	// Trim out any empty args
+	cleanedGoArgs := make([]string, 0)
+	for i := range additionalGoArgs {
+		pterm.Debug.Printfln("additionalGoArgs[%d]: %q", i, additionalGoArgs[i])
+		trimmedString := strings.TrimSpace(additionalGoArgs[i])
+		if trimmedString == "" {
+			pterm.Debug.Printfln("[SKIP] empty string[%d]: %q", i, trimmedString)
+			continue
+		}
+		cleanedGoArgs = append(cleanedGoArgs, trimmedString)
+		pterm.Debug.Printfln("cleanedGoArgs[%d]: %q", i, trimmedString)
+	}
+	pterm.Debug.Printfln("final arguments for gotestsum: %+v", cleanedGoArgs)
+	pterm.Info.Println("Running go test")
+
+	// cmd := exec.Command("gotestsum", cleanedGoArgs...)
+	// cmd.Env = append([]string{}, os.Environ()...)
+	// cmd.Env = append(cmd.Env, "NODE_ENV=acceptance")
+	if err := sh.RunV(
+		gotestsum,
+		cleanedGoArgs...,
 	); err != nil {
+		if strings.Contains(err.Error(), "race") {
+			pterm.Warning.Println(
+				"If your package doesn't support race conditions, then add:\n\nGOTEST_DISABLE_RACE=1 mage go:testsum\n\nThis will remove the -race flag.",
+			)
+		}
+
 		return err
 	}
+	// 	// strings.Join(cleanedGoArgs, " "),
+	// ); err != nil {
+	// 	return err
+	// }
+	// if err := cmd.Run(); err != nil {
+	// 	return err
+	// }
+
 	pterm.Success.Println("✅ gotestsum")
 	return nil
 }

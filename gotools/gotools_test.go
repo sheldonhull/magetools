@@ -98,7 +98,7 @@ func ExampleGo_TestSum() {
 		// t.Skip("GOTESTS should include 'slow' to run this test")
 	}
 	// Running as mage task
-	if err := (gotools.Go{}.TestSum()); err != nil {
+	if err := (gotools.Go{}.TestSum("pkg")); err != nil {
 		pterm.Error.Printf("ExampleGo_TestSum: %v\n", err)
 	}
 

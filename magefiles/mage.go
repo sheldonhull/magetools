@@ -1,5 +1,7 @@
+//go:build mage
+
 // ⚡ Core Mage Tasks
-package tasks
+package main
 
 import (
 	"os"
@@ -11,12 +13,17 @@ import (
 
 	// mage:import
 	"github.com/sheldonhull/magetools/gotools"
+
+	// mage:import
+	_ "github.com/sheldonhull/magetools/gittools" // gotools provides Git tooling to install git town and bit.
+
+	// mage:import
+	_ "github.com/sheldonhull/magetools/licensing" // licensing provides a license checker and vendor tooling for the project
 )
 
 // Default target to run when none is specified
 // If not set, running mage will list available targets
 // var Default = Build.
-const ptermMargin = 10
 
 // artifactDirectory is a directory containing artifacts for the project and shouldn't be committed to source.
 const artifactDirectory = ".artifacts"
@@ -50,7 +57,7 @@ func createDirectories() error {
 }
 
 // Init runs multiple tasks to initialize all the requirements for running a project for a new contributor.
-func Init() error {
+func Init() { //nolint:deadcode // This is not dead code, and I find this insulting golangci-lint.
 	fancy.IntroScreen(ci.IsCI())
 	pterm.Success.Println("running Init()...")
 
@@ -60,10 +67,6 @@ func Init() error {
 		gotools.Go{}.Init,
 		// tooling.SilentInstallTools(toolList),
 	)
-	// if err := (gotools.Go{}.Init()); err != nil {
-	// 	return err
-	// }
-	return nil
 }
 
 // Clean up after yourself.
