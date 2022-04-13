@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
@@ -130,5 +131,26 @@ func (Install) Apps() error { //nolint:funlen // It's long and done for bootstra
 		return nil
 	}
 	pterm.Success.Println("[asdf] plugin install successful")
+	return nil
+}
+
+// 💾 AsdfDirenvSetup reruns asdf and direnv setup for proper hooks into loading .envrc automatically in your sessions.
+//
+// Need to remove the legacy direnvrc file to allow this to resetup correctly, so this does a removal of `$HOME/.config/direnv/direnvrc` to allow this to setup correctly.
+func (Install) AsdfDirenvSetup() error {
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+	pterm.Info.Println("🔨 Running direnv setup to ensure hooks with asdf are using latest version")
+	removefile := filepath.Join(dirname, ".config", "direnv", "direnvrc")
+
+	if err := sh.Rm(removefile); err != nil {
+		return fmt.Errorf("Need to remove file: %q to ensure direnv hooks setup correctly, unable to do this, so might need to remove the file manually and rerun mage install:asdfdirenvsetup: %v\n", removefile, err)
+	}
+	if err := sh.RunV("asdf", "direnv", "setup", "--shell", "zsh", "--version", "latest"); err != nil {
+		pterm.Error.Printfln("If asdf isn't found, then you might need to source this in your terminal first:\n\nsource \"${HOME}\\.asdf\\asdf.sh")
+		return fmt.Errorf("unable to run asdf direnv setup: %w", err)
+	}
 	return nil
 }
