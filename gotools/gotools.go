@@ -267,6 +267,19 @@ func (Go) Lint() error {
 	return nil
 }
 
+// 🔎  Run golangci-lint and apply any auto-fix.
+func (Go) Fix() error {
+	magetoolsutils.CheckPtermDebug()
+
+	pterm.Info.Println("Running golangci-lint with --fix flag enabled.")
+	if err := sh.RunV("golangci-lint", "run", "--fix"); err != nil {
+		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Println("golangci-lint failure")
+		return err
+	}
+	pterm.Success.Println("✅ Go Lint")
+	return nil
+}
+
 // ✨ Fmt runs gofumpt. Export SKIP_GOLINES=1 to skip golines.
 // Important. Make sure golangci-lint config disables gci, goimports, and gofmt.
 // This will perform all the sorting and other linters can cause conflicts in import ordering.
@@ -369,18 +382,23 @@ func (Go) LintConfig() error {
 	magetoolsutils.CheckPtermDebug()
 	pterm.DefaultHeader.Println("🏥 LintConfig Diagnostic Checks")
 	pterm.DefaultSection.Println("🔍 golangci-lint linters with --fast")
-	if err := sh.RunV("golangci-lint", "linters", "--fast"); err != nil {
+	var out string // using output instead of formatted colors straight to console so that test output with pterm can suppress.
+	var err error
+	out, err = sh.Output("golangci-lint", "linters", "--fast")
+	if err != nil {
 		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Println("unable to run golangci-lint")
 		tracerr.PrintSourceColor(err)
 		return err
 	}
+	pterm.DefaultBox.Println(out)
 	pterm.DefaultSection.Println("🔍  golangci-lint linters with plain run")
-	if err := sh.RunV("golangci-lint", "linters"); err != nil {
+	out, err = sh.Output("golangci-lint", "linters")
+	if err != nil {
 		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Println("unable to run golangci-lint")
 		tracerr.PrintSourceColor(err)
 		return err
 	}
-
+	pterm.DefaultBox.Println(out)
 	pterm.Success.Println("LintConfig Diagnostic Checks")
 	return nil
 }

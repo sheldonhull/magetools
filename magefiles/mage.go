@@ -12,13 +12,15 @@ import (
 	"github.com/sheldonhull/magetools/fancy"
 
 	// mage:import
+	"github.com/sheldonhull/magetools/gittools"
+
+	// mage:import
 	"github.com/sheldonhull/magetools/gotools"
 
 	// mage:import
-	_ "github.com/sheldonhull/magetools/gittools" // gotools provides Git tooling to install git town and bit.
-
-	// mage:import
 	_ "github.com/sheldonhull/magetools/licensing" // licensing provides a license checker and vendor tooling for the project
+	// mage:import
+	_ "github.com/sheldonhull/magetools/precommit"
 )
 
 // Default target to run when none is specified
@@ -65,6 +67,7 @@ func Init() { //nolint:deadcode // This is not dead code, and I find this insult
 		Clean,
 		createDirectories,
 		gotools.Go{}.Init,
+		gittools.Gittools{}.Init,
 		// tooling.SilentInstallTools(toolList),
 	)
 }
