@@ -24,8 +24,10 @@ linters:
     - goimports
     - gofmt
     - exhaustivestruct
+    - exhaustruct
     - godox
     - nonamedreturns # not useful, opinionated and I prefer clarity
+
   # presets:
   #   - bugs
   #   - unused

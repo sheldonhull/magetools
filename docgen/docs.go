@@ -20,8 +20,8 @@ type Docs mg.Namespace
 // docsDir is the directory where the licenses are stored.
 const docsDir = "docs/godocs"
 
-// ReadWriteOwnerGroup sets permissions based on same model as gomarkdoc.
-const ReadWriteOwnerGroup = 0o644
+// FullPermissions sets permissions based on same model as gomarkdoc.
+const FullPermissions = 0o777
 
 // toolList is a list of tooling to install for the project commands.
 var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
@@ -34,7 +34,7 @@ func (Docs) Init() error {
 	if err := tooling.InstallTools(toolList); err != nil {
 		return err
 	}
-	if err := os.MkdirAll(docsDir, ReadWriteOwnerGroup); err != nil {
+	if err := os.MkdirAll(docsDir, FullPermissions); err != nil {
 		return fmt.Errorf("unable to create the target directory: %w", err)
 	}
 	pterm.Success.Printfln("()Init mkdir: %s", docsDir)

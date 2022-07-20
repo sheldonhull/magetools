@@ -15,7 +15,7 @@ func TestInitAndGenerate(t *testing.T) {
 	var err error
 
 	defer func() {
-		err = os.RemoveAll("./docs")
+		err = os.RemoveAll("docs")
 		is.NoErr(err) // Clean should not fail
 	}()
 
@@ -25,6 +25,6 @@ func TestInitAndGenerate(t *testing.T) {
 	err = docgen.Docs{}.Generate("github")
 	is.NoErr(err) // should not error on generate
 
-	_, err = os.Stat("./docs/godocs")
+	_, err = os.Stat("docs/godocs")
 	is.NoErr(err) // should not error on finding docs/godocs
 }
