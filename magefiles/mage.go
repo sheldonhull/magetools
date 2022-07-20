@@ -12,6 +12,8 @@ import (
 	"github.com/sheldonhull/magetools/fancy"
 
 	// mage:import
+	_ "github.com/sheldonhull/magetools/docgen"
+	// mage:import
 	"github.com/sheldonhull/magetools/gittools"
 
 	// mage:import
@@ -30,7 +32,7 @@ import (
 // artifactDirectory is a directory containing artifacts for the project and shouldn't be committed to source.
 const artifactDirectory = ".artifacts"
 
-const permissionUserReadWriteExecute = 0o0700
+const permissionUserReadWriteExecute = 0o0777
 
 // tools is a list of Go tools to install to avoid polluting global modules.
 // Gotools module already sets up most of the basic go tools.
@@ -39,7 +41,6 @@ const permissionUserReadWriteExecute = 0o0700
 // 	"golang.org/x/tools/cmd/goimports@master",
 // 	"github.com/sqs/goreturns@master",
 // 	"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-// 	"github.com/dustinkirkland/golang-petname/cmd/petname@master",
 // 	"mvdan.cc/gofumpt@latest",
 // 	"github.com/daixiang0/gci@latest",
 // }

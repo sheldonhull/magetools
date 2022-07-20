@@ -24,7 +24,6 @@ func TestInstallTools(t *testing.T) {
 		"golang.org/x/tools/cmd/goimports@master",
 		"github.com/sqs/goreturns@master",
 		"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-		"github.com/dustinkirkland/golang-petname/cmd/petname@master",
 	}
 
 	err := tooling.InstallTools(toolList)
@@ -50,7 +49,6 @@ func TestGo_SilentInit(t *testing.T) {
 		toolList := []string{
 			"github.com/goreleaser/goreleaser@v0.174.1",
 			"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-			"github.com/dustinkirkland/golang-petname/cmd/petname@master",
 			"mvdan.cc/gofumpt@latest",
 			"golang.org/x/tools/gopls@latest",
 			"github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest",
@@ -73,7 +71,6 @@ func TestGo_SilentInit(t *testing.T) {
 		toolList := []string{
 			"github.com/goreleaser/goreleaser@v0.174.1",
 			"github.com/golangci/golangci-lint/cmd/golangci-lintINVALID@master",
-			"github.com/dustinkirkland/golang-petname/cmd/petname@master",
 		}
 		err := tooling.SilentInstallTools(toolList)
 		is.True(err != nil) // An error should be returned with useful context should not fail
@@ -111,7 +108,6 @@ func TestGoSpinnerStdOut(t *testing.T) {
 		toolList := []string{
 			"github.com/goreleaser/goreleaser@latest",
 			"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-			"github.com/dustinkirkland/golang-petname/cmd/petname@master",
 			"mvdan.cc/gofumpt@latest",
 			"golang.org/x/tools/gopls@latest",
 			"github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest",

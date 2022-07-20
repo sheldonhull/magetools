@@ -22,7 +22,7 @@ func TestGolang_InitAndClean(t *testing.T) {
 		is.NoErr(err) // Clean should not fail
 	}()
 
-	toolList := []string{"github.com/dustinkirkland/golang-petname/cmd/petname@master"}
+	toolList := []string{"github.com/AlexBeauchemin/gobadge@latest"}
 	err := tooling.InstallTools(toolList)
 	is.NoErr(err) // installing a tool should not fail
 }

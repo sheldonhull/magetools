@@ -48,15 +48,14 @@ const (
 
 // toolList is the list of tools to initially install when running a setup process in a project.
 //
-// This includes goreleaser, golangci-lint, petname (for random build/titles).
+// This includes goreleaser, golangci-lint, etc (for random build/titles).
 //
 // In addition, core tooling from VSCode Install Tool commands are included so using in a Codespace project doesn't require anything other than mage go:init.
 var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
 
 	// build tools
 	"github.com/goreleaser/goreleaser@v0.174.1", // NOTE: 2022-03-25: latest results in error with  undefined: strings.Cut note: module requires Go 1.18 WHEN BUILDING FROM SOURCE
-	"github.com/dustinkirkland/golang-petname/cmd/petname@latest",
-	"github.com/AlexBeauchemin/gobadge@latest", // create a badge for your markdown from the coverage files.
+	"github.com/AlexBeauchemin/gobadge@latest",  // create a badge for your markdown from the coverage files.
 	// linting tools
 	"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
 

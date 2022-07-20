@@ -10,7 +10,6 @@
 package tools
 
 import (
-	_ "github.com/dustinkirkland/golang-petname"            // Petname is a tool for generating random names for builds, terraform, or other helpers.
 	_ "github.com/gosuri/uiprogress"                        // Uiprogress provides progress bars for CLI tools that support go routines.
 	_ "github.com/magefile/mage/mg"                         // Mg contains helper magefile tasks from mage.
 	_ "github.com/magefile/mage/sh"                         // Sh contains helper shell tasks from mage.

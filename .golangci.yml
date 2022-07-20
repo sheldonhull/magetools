@@ -25,6 +25,7 @@ linters:
     - gofmt
     - exhaustivestruct
     - godox
+    - nonamedreturns # not useful, opinionated and I prefer clarity
   # presets:
   #   - bugs
   #   - unused

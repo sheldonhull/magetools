@@ -32,7 +32,6 @@ const permissionUserReadWriteExecute = 0o0700
 // 	"golang.org/x/tools/cmd/goimports@master",
 // 	"github.com/sqs/goreturns@master",
 // 	"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-// 	"github.com/dustinkirkland/golang-petname/cmd/petname@master",
 // 	"mvdan.cc/gofumpt@latest",
 // 	"github.com/daixiang0/gci@latest",
 // }

@@ -27,7 +27,6 @@ const mkdirPermissions = 0o700
 // 	"golang.org/x/tools/cmd/goimports@master",
 // 	"github.com/sqs/goreturns@master",
 // 	"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-// 	"github.com/dustinkirkland/golang-petname/cmd/petname@master"
 // }
 
 // createDirectories creates the local working directories for build artifacts and tooling.
