@@ -4,7 +4,10 @@ package magetoolsutils
 import (
 	"os"
 	"strconv"
+	"strings"
+	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/magefile/mage/mg"
 	"github.com/pterm/pterm"
 )
@@ -78,4 +81,9 @@ func CheckPtermDebug() { //nolint:cyclop,funlen // cyclop,funlen: i'm sure there
 		pterm.EnableDebugMessages()
 		return
 	}
+}
+
+// relTime returns just a simple relative time humanized, without the "ago" suffix.
+func RelTime(t time.Time) string {
+	return strings.ReplaceAll(humanize.Time(t), " ago", "")
 }

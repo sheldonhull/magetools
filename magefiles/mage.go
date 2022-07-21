@@ -20,6 +20,9 @@ import (
 	"github.com/sheldonhull/magetools/gotools"
 
 	// mage:import
+	_ "github.com/sheldonhull/magetools/adr"
+
+	// mage:import
 	_ "github.com/sheldonhull/magetools/licensing" // licensing provides a license checker and vendor tooling for the project
 	// mage:import
 	_ "github.com/sheldonhull/magetools/precommit"
