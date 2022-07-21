@@ -1,6 +1,6 @@
 module github.com/sheldonhull/magetools
 
-go 1.16
+go 1.18
 
 require (
 	github.com/bitfield/script v0.18.4
