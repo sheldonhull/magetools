@@ -14,10 +14,9 @@ require (
 	github.com/matryer/is v1.4.0
 	github.com/mfridman/tparse v0.9.0
 	github.com/otiai10/copy v1.7.0
-	github.com/pterm/pterm v0.12.36
+	github.com/pterm/pterm v0.12.44
 	github.com/rakyll/gotest v0.0.6
 	github.com/ztrue/tracerr v0.3.0
 	golang.org/x/mod v0.5.1
-	golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 )
