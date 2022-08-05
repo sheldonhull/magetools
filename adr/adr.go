@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/olekukonko/tablewriter"
@@ -29,6 +30,11 @@ const permissionUserReadWriteExecute = os.FileMode(0o777)
 
 // adrReportFile provides the path to the summarized adr report file.
 const adrReportFile = "docs/adr/adr-report.md"
+
+// relTime returns just a simple relative time humanized, without the "ago" suffix.
+func relTime(t time.Time) string {
+	return strings.ReplaceAll(humanize.Time(t), " ago", "")
+}
 
 // ⚙️ Init installs the adr tool and ensures the target directory default is created and ready to go.
 //
@@ -73,11 +79,16 @@ func getAdrReportFile() string {
 }
 
 // 📘 Report rebuilds the ADR summary report page.
-func (Adr) Report() error {
+// If the binary isn't installed, it automatically does this too.
+func (Adr) Report() error { //nolint:funlen // i'm ok leaving this a long function for now.
+	binary, err := req.ResolveBinaryByInstall("adrgen", "github.com/asiermarques/adrgen@latest")
+	if err != nil {
+		return err
+	}
 	start := time.Now()
 	mtu.CheckPtermDebug()
 	b := bytes.Buffer{}
-	c := exec.Command("adrgen", "list")
+	c := exec.Command(binary, "list")
 	c.Stdout = &b
 	if err := c.Run(); err != nil {
 		return err
@@ -100,7 +111,14 @@ func (Adr) Report() error {
 
 	for scanner.Scan() {
 		line := scanner.Text()
+
+		line = strings.TrimSpace(line)
+		if line == "" {
+			pterm.Debug.Println("empty line")
+			continue
+		}
 		line = strings.Trim(line, "|")
+
 		if !startParsing {
 			pterm.Debug.Printf("startParsing is: %v\n", startParsing)
 
@@ -119,13 +137,12 @@ func (Adr) Report() error {
 		table.Append(splitString)
 	}
 	table.Render() // Send output.
-
-	adrReport := getAdrReportFile()
-	if err := os.WriteFile(adrReport, []byte(tableString.String()), permissionUserReadWriteExecute); err != nil {
-		pterm.Error.Printf("adrReportFile write [%s]\n", mtu.RelTime(start))
+	filepath := getAdrReportFile()
+	if err := os.WriteFile(filepath, []byte(tableString.String()), permissionUserReadWriteExecute); err != nil {
+		pterm.Error.Printf("adrReportFile write [%s]\n", relTime(start))
 		return err
 	}
-	pterm.Success.Printf("adrReportFile generated [%s]\n", mtu.RelTime(start))
+	pterm.Success.Printf("adrReportFile generated [%s]\n", relTime(start))
 
 	return nil
 }
