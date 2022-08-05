@@ -213,8 +213,10 @@ func (Go) TestSum(path string) error {
 	additionalGoArgs := []string{}
 	additionalGoArgs = append(additionalGoArgs, "--format")
 	additionalGoArgs = append(additionalGoArgs, "pkgname")
-	additionalGoArgs = append(additionalGoArgs, "--junitfile "+junitFile)
-	additionalGoArgs = append(additionalGoArgs, "--jsonfile "+jsonFile)
+	additionalGoArgs = append(additionalGoArgs, "--junitfile")
+	additionalGoArgs = append(additionalGoArgs, junitFile)
+	additionalGoArgs = append(additionalGoArgs, "--jsonfile")
+	additionalGoArgs = append(additionalGoArgs, jsonFile)
 	additionalGoArgs = append(additionalGoArgs, fmt.Sprintf("--packages=%s", path))
 
 	additionalGoArgs = append(additionalGoArgs, "--")
