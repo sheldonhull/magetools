@@ -21,14 +21,23 @@ require (
 	atomicgo.dev/cursor v0.1.1 // indirect
 	atomicgo.dev/keyboard v0.2.8 // indirect
 	bitbucket.org/creachadair/shell v0.0.7 // indirect
+	github.com/charmbracelet/lipgloss v0.4.0 // indirect
+	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/containerd/console v1.0.3 // indirect
+	github.com/fatih/color v1.9.0 // indirect
 	github.com/gookit/color v1.5.0 // indirect
 	github.com/gosuri/uilive v0.0.4 // indirect
 	github.com/itchyny/gojq v0.12.7 // indirect
 	github.com/itchyny/timefmt-go v0.1.3 // indirect
 	github.com/lithammer/fuzzysearch v1.1.5 // indirect
 	github.com/logrusorgru/aurora v2.0.3+incompatible // indirect
+	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
+	github.com/mattn/go-colorable v0.1.4 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
+	github.com/muesli/reflow v0.3.0 // indirect
+	github.com/muesli/termenv v0.11.0 // indirect
+	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	golang.org/x/sys v0.0.0-20220513210249-45d2b4557a2a // indirect

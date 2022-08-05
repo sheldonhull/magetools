@@ -21,6 +21,7 @@ import (
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
+	"github.com/sheldonhull/magetools/ci"
 	"github.com/sheldonhull/magetools/pkg/magetoolsutils"
 	"github.com/sheldonhull/magetools/pkg/req"
 	"github.com/sheldonhull/magetools/tooling"
@@ -54,8 +55,8 @@ const (
 var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
 
 	// build tools
-	"github.com/goreleaser/goreleaser@v0.174.1", // NOTE: 2022-03-25: latest results in error with  undefined: strings.Cut note: module requires Go 1.18 WHEN BUILDING FROM SOURCE
-	"github.com/AlexBeauchemin/gobadge@latest",  // create a badge for your markdown from the coverage files.
+	"github.com/goreleaser/goreleaser@latest",  // NOTE: 2022-03-25: latest results in error with  undefined: strings.Cut note: module requires Go 1.18 WHEN BUILDING FROM SOURCE
+	"github.com/AlexBeauchemin/gobadge@latest", // create a badge for your markdown from the coverage files.
 	// linting tools
 	"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
 
@@ -79,6 +80,14 @@ var toolList = []string{ //nolint:gochecknoglobals // ok to be global for toolin
 
 	// Self setup mage
 	"github.com/magefile/mage@latest",
+}
+
+// CIToolList is key go tools likely required for CI.
+// This separates out the tools that are dev specific (like a language server tool) and others that would still be needed in CI systems.
+var ciToolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
+	"github.com/goreleaser/goreleaser@latest", // NOTE: 2022-03-25: latest results in error with  undefined: strings.Cut note: module requires Go 1.18 WHEN BUILDING FROM SOURCE
+	"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
+	"gotest.tools/gotestsum@latest", // ability to run tests with junit, json output, xml, and more.
 }
 
 // getModuleName returns the name from the module file.
@@ -111,6 +120,13 @@ func (Go) GetModuleName() string {
 func (Go) Init() error {
 	magetoolsutils.CheckPtermDebug()
 	pterm.DefaultHeader.Println("Go Init()")
+	if ci.IsCI() {
+		if err := tooling.SilentInstallTools(ciToolList); err != nil {
+			return err
+		}
+		pterm.Info.Println("CI detected, installing CI tools, and returning early")
+		return nil
+	}
 	if err := tooling.SilentInstallTools(toolList); err != nil {
 		return err
 	}
