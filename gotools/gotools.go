@@ -214,7 +214,13 @@ func (Go) TestSum(path string) error {
 	}
 	additionalGoArgs := []string{}
 	additionalGoArgs = append(additionalGoArgs, "--format")
-	additionalGoArgs = append(additionalGoArgs, "pkgname")
+
+	if os.Getenv("TESTSUM_FORMAT") != "" {
+		additionalGoArgs = append(additionalGoArgs, os.Getenv("TESTSUM_FORMAT"))
+	} else {
+		additionalGoArgs = append(additionalGoArgs, "pkgname")
+	}
+
 	additionalGoArgs = append(additionalGoArgs, "--junitfile")
 	additionalGoArgs = append(additionalGoArgs, junitFile)
 	additionalGoArgs = append(additionalGoArgs, "--jsonfile")
@@ -277,7 +283,19 @@ func (Go) Lint() error {
 	magetoolsutils.CheckPtermDebug()
 
 	pterm.Info.Println("Running golangci-lint")
-	if err := sh.RunV("golangci-lint", "run"); err != nil {
+
+	golangcilint, err := req.ResolveBinaryByInstall(
+		"golangci-lint",
+		"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
+	)
+	if err != nil {
+		pterm.Error.WithShowLineNumber(true).
+			WithLineNumberOffset(1).
+			Printfln("unable to find %s: %v", "golangci-lint", err)
+		return err
+	}
+
+	if err := sh.RunV(golangcilint, "run"); err != nil {
 		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Println("golangci-lint failure")
 
 		return err
@@ -291,7 +309,18 @@ func (Go) Fix() error {
 	magetoolsutils.CheckPtermDebug()
 
 	pterm.Info.Println("Running golangci-lint with --fix flag enabled.")
-	if err := sh.RunV("golangci-lint", "run", "--fix"); err != nil {
+	golangcilint, err := req.ResolveBinaryByInstall(
+		"golangci-lint",
+		"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
+	)
+	if err != nil {
+		pterm.Error.WithShowLineNumber(true).
+			WithLineNumberOffset(1).
+			Printfln("unable to find %s: %v", "golangci-lint", err)
+		return err
+	}
+
+	if err := sh.RunV(golangcilint, "run", "--fix"); err != nil {
 		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Println("golangci-lint failure")
 		return err
 	}
@@ -403,7 +432,19 @@ func (Go) LintConfig() error {
 	pterm.DefaultSection.Println("🔍 golangci-lint linters with --fast")
 	var out string // using output instead of formatted colors straight to console so that test output with pterm can suppress.
 	var err error
-	out, err = sh.Output("golangci-lint", "linters", "--fast")
+
+	golangcilint, err := req.ResolveBinaryByInstall(
+		"golangci-lint",
+		"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
+	)
+	if err != nil {
+		pterm.Error.WithShowLineNumber(true).
+			WithLineNumberOffset(1).
+			Printfln("unable to find %s: %v", "golangci-lint", err)
+		return err
+	}
+
+	out, err = sh.Output(golangcilint, "linters", "--fast")
 	if err != nil {
 		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Println("unable to run golangci-lint")
 		tracerr.PrintSourceColor(err)
@@ -411,7 +452,7 @@ func (Go) LintConfig() error {
 	}
 	pterm.DefaultBox.Println(out)
 	pterm.DefaultSection.Println("🔍  golangci-lint linters with plain run")
-	out, err = sh.Output("golangci-lint", "linters")
+	out, err = sh.Output(golangcilint, "linters")
 	if err != nil {
 		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Println("unable to run golangci-lint")
 		tracerr.PrintSourceColor(err)
