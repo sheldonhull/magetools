@@ -14,5 +14,4 @@
   "go.testEnvVars": {
     "GOTESTS": "slow",
   },
-  "peacock.color": "#eda62c"
 }
