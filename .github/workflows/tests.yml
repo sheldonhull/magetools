@@ -33,3 +33,6 @@ jobs:
         with:
           version: latest
           args: go:testsum ./...
+        env:
+          # Race conditions will be hit due to the cli driven tasks and binaries being called.
+          GOTEST_DISABLE_RACE: 1
