@@ -1,0 +1,35 @@
+---
+name: go-tests
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v3
+
+      # https://github.com/magnetikonline/action-golang-cache
+      - name: Setup Golang with cache
+        uses: magnetikonline/action-golang-cache@v3
+        with:
+          go-version-file: go.mod
+
+      - name: mage-tidy
+        uses: magefile/mage-action@v2
+        with:
+          version: latest
+          args: go:tidy
+
+      - name: mage-test
+        uses: magefile/mage-action@v2
+        with:
+          version: latest
+          args: go:testsum ./...

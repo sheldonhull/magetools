@@ -73,7 +73,6 @@ repos:
     hooks:
       - id: format-sql
 
-
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.3.2
     hooks:
@@ -110,7 +109,6 @@ repos:
         language: golang
         pass_filenames: false
 
-
         # pre-commit run --hook-stage push
       - id: go-test-all
         name: go-test-all
@@ -129,38 +127,45 @@ repos:
         pass_filenames: false
         verbose: true
 
-      # - id: gotest
-      #   name: go-test-fast
-      #   description: Run fast unit tests for go
-      #   # entry: go test ./... -json -v -shuffle=on -race | tparse -notests -smallscreen -pulse 1s
-      #   # no race conditions for this because we are doing build tasks here and not threadsafe to run parallel builds on every function
-      #   entry: go test ./... -json -v -shuffle=on | tparse -notests -smallscreen -pulse 1s
-      #   stages: [commit]
-      #   types: [go]
-      #   language: golang
-      #   pass_filenames: false
-      #   verbose: true
+  # - repo: local
+  #   hooks:
+  #     - id: gocover
+  #       name: gocover
+  #       entry: git-chglog -o CHANGELOG.md
+  #       language: system
+  #       stages: [commit]
 
+  # - id: gotest
+  #   name: go-test-fast
+  #   description: Run fast unit tests for go
+  #   # entry: go test ./... -json -v -shuffle=on -race | tparse -notests -smallscreen -pulse 1s
+  #   # no race conditions for this because we are doing build tasks here and not threadsafe to run parallel builds on every function
+  #   entry: go test ./... -json -v -shuffle=on | tparse -notests -smallscreen -pulse 1s
+  #   stages: [commit]
+  #   types: [go]
+  #   language: golang
+  #   pass_filenames: false
+  #   verbose: true
 
-  - repo: local
-    hooks:
-      - id: gocover
-        name: gocover
-        entry: zsh -c '(mkdir -p .artifacts/ || echo ".artifacts already exists") && go tool cover -func=".artifacts/cover.out" -o=".artifacts/coverage.out"'
-        language: system
-        stages: [commit]
+  # - repo: local
+  #   hooks:
+  #     - id: gocover
+  #       name: gocover
+  #       entry: zsh -c '(mkdir -p .artifacts/ || echo ".artifacts already exists") && go tool cover -func=".artifacts/cover.out" -o=".artifacts/coverage.out"'
+  #       language: system
+  #       stages: [commit]
 
-      - id: gobadge
-        name: gobadge
-        entry: zsh -c '(mkdir -p .artifacts/ || echo ".artifacts already exists") && gobadge -filename=.artifacts/coverage.out'
-        language: system
-        stages: [commit]
+  #     - id: gobadge
+  #       name: gobadge
+  #       entry: zsh -c '(mkdir -p .artifacts/ || echo ".artifacts already exists") && gobadge -filename=.artifacts/coverage.out'
+  #       language: system
+  #       stages: [commit]
 
-        # github.com/AlexBeauchemin/gobadge@latest
-        # echo "🧪 running a full go test... this may take a few minutes"
-        # GOTESTS='superslow' go test ./... -v -json -coverprofile ./.artifacts/cover.out | tparse -all
-        # go tool cover -html=./.artifacts/cover.out -o ./.artifacts/coverage.html
-        # gopherbadger-md="README.md,coverage.md"
-        # git add README.md && git commit --amend --no-edit README.md
-        # git add coverage.md && git commit --amend --no-edit coverage.md
-        # git add coverage.md && git commit --amend --no-edit coverage_badge.png
+  # github.com/AlexBeauchemin/gobadge@latest
+  # echo "🧪 running a full go test... this may take a few minutes"
+  # GOTESTS='superslow' go test ./... -v -json -coverprofile ./.artifacts/cover.out | tparse -all
+  # go tool cover -html=./.artifacts/cover.out -o ./.artifacts/coverage.html
+  # gopherbadger-md="README.md,coverage.md"
+  # git add README.md && git commit --amend --no-edit README.md
+  # git add coverage.md && git commit --amend --no-edit coverage.md
+  # git add coverage.md && git commit --amend --no-edit coverage_badge.png

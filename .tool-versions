@@ -1,3 +1,4 @@
 mage 1.13.0
-golang 1.18.2
-go-sdk 1.18.2
+golang 1.19
+go-sdk 1.19
+git-chglog 0.15.1
