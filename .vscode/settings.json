@@ -6,13 +6,9 @@
     "licensing",
     "gittools"
   ],
-  "go.testFlags": [
-    "--shuffle=on",
-    "-v"
-  ],
+  "go.testFlags": ["--shuffle=on", "-v"],
   "go.testTags": "mage testfiles integration",
   "go.testEnvVars": {
-    "GOTESTS": "slow",
-  },
-  "peacock.color": "#eda62c"
+    "GOTESTS": "slow"
+  }
 }
