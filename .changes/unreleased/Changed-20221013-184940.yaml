@@ -1,0 +1,5 @@
+kind: Changed
+body:
+  Improved gotestsum with `TESTSUM_FORMAT` environment variable that can be used
+  to adjust the execution type.
+time: 2022-10-13T18:49:40.82044-05:00

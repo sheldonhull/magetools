@@ -6,7 +6,7 @@ on:
       tag:
         description: Optional tag to forcibly use
         required: false
-        default: ''
+        default: ""
 
 jobs:
   add-reviews:
@@ -17,7 +17,7 @@ jobs:
         with:
           # Commit message that will be used in the bump commit
           # (Optional) Default: ⬆️ bump everywhere to {{version}}
-          commit-message: 'feat: 🚀 release {{ version }}'
+          commit-message: "feat: 🚀 release {{ version }}"
           git-token: ${{ github.token }}
 
           # The type of the GitHub release
