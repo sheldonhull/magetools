@@ -1,38 +1,38 @@
 ---
 name: release
 on:
+  push:
+    #   tags:
+    #     - 'v*'
+    branches: [main]
+    paths: [CHANGELOG.md] # your changelog file if different
   workflow_dispatch:
-    inputs:
-      tag:
-        description: Optional tag to forcibly use
-        required: false
-        default: ""
-
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  add-reviews:
+  goreleaser:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
-      - uses: undergroundwires/bump-everywhere@master
+      - uses: actions/checkout@v3
+
+      # https://github.com/magnetikonline/action-golang-cache
+      - name: Setup Golang with cache
+        uses: magnetikonline/action-golang-cache@09043845c4b214830a4ae9eb6f5c61d3d3fd37b0 # renovate: tag=v3
         with:
-          # Commit message that will be used in the bump commit
-          # (Optional) Default: ⬆️ bump everywhere to {{version}}
-          commit-message: "feat: 🚀 release {{ version }}"
-          git-token: ${{ github.token }}
+          go-version-file: go.mod
 
-          # The type of the GitHub release
-          # Options: 'release' | 'prerelease' | 'draft' | 'none' (does not release)
-          # (Optional) Default: 'release'
-          release-type: release
-
-          # Personal access token (PAT) used to release to GitHub.
-          # Used only if release-type is not "none"
-          # If you use default, it'll not trigger other actions, but your own PAT then it triggers new actions
-          # (Optional) Default: ${{ github.token }}
-          release-token: ${{ github.token }}
-
-          # Git branch to push the changes such as version tags, CHANGELOG file, version changes...
-          # Configuring this should not be needed for most use-cases.
-          # Use this only if you DO NOT use a single main default branch (e.g. `master` or `main`).
-          # (Optional) Default: Default "git clone" behavior. Checks out to default branch of remote.
-          # branch: 'main'
+      - name: mage-tidy
+        uses: magefile/mage-action@5f7a9a23cfef763949ca41834b868167adbd1b59 # renovate: tag=v2
+        with:
+          version: latest
+          args: init
+      - name: mage-release
+        uses: magefile/mage-action@5f7a9a23cfef763949ca41834b868167adbd1b59 # renovate: tag=v2
+        with:
+          version: latest
+          args: release
+        env:
+          # GitHub sets this automatically
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

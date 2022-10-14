@@ -1,10 +1,10 @@
 ---
 name: go-tests
 on:
-  pull_request:
+  # pull_request:
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
     tags:
       - v*
   workflow_dispatch:
@@ -12,7 +12,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
 
@@ -36,3 +36,17 @@ jobs:
         env:
           # Race conditions will be hit due to the cli driven tasks and binaries being called.
           GOTEST_DISABLE_RACE: 1
+          GOTESTS: 'slow'
+          GOTEST_FLAGS: '--tags=integration'
+
+      - name: Upload coverage reports to Codecov
+        run: |
+          # improved codecov with signature verification
+          curl https://uploader.codecov.io/verification.gpg | gpg --no-default-keyring --keyring trustedkeys.gpg --import # One-time step
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
+          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM.sig
+          gpgv codecov.SHA256SUM.sig codecov.SHA256SUM
+          shasum -a 256 -c codecov.SHA256SUM
+          chmod +x codecov
+          ./codecov

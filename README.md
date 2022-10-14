@@ -4,8 +4,6 @@
 
 General tooling helpers for simplifying cross repository automation using Mage.
 
-<a href='https://github.com/jpoles1/gopherbadger' target='_blank'>![gopherbadger-tag-do-not-edit](https://img.shields.io/badge/Go%20Coverage-34%25-brightgreen.svg?longCache=true&style=flat)</a>
-
 The test coverage shown is informal, as these aren't setup always with full standard tests.
 Primarily the tests just import and run to confirm no errors.
 When possible, I do test the functionality.
@@ -106,4 +104,3 @@ Run this using: `go run main.go` and it should work just like using `mage` direc
 
 Possibly best to setup with a dedicated templating tool in the future (something like Cookiecutter) but for now this is just an easy copy and paste in VSCode.
 
-[remote-imports-with-gokey]: https://github.com/goyek/goyek/discussions/114
