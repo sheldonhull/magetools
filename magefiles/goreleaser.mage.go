@@ -81,9 +81,9 @@ func Release() error {
 		return err
 	}
 
-	if _, err = checkEnvVar("DOCKER_ORG", true); err != nil {
-		return err
-	}
+	// If _, err = checkEnvVar("DOCKER_ORG", true); err != nil {
+	// 	return err
+	// }.
 
 	changieBinary, err := req.ResolveBinaryByInstall("changie", "github.com/miniscruff/changie@latest")
 	if err != nil {
