@@ -1,4 +1,0 @@
-kind: Changed
-body: Gotools package now checks for existence of a binary such as goreleaser or golangci-lint
-  before trying to install via source.
-time: 2022-10-13T19:17:20.472393-05:00

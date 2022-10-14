@@ -26,6 +26,20 @@ lint:
     - shfmt@3.5.0
     - taplo@release-taplo-cli-0.7.0
     - yamllint@1.28.0
+  ignore:
+    - linters: [ALL]
+      paths:
+        - .devcontainer/*
+        - configs/*
+        - .changes/*
+    - linters: [markdownlint]
+      paths:
+        # in progress changelog notes
+        - .changes/*.md
+    - linters: [yamllint]
+      paths:
+        - .changes/unreleased/*.yaml
+
 cli:
   version: 0.18.1-beta
 plugins:
