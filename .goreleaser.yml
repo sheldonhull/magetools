@@ -25,7 +25,6 @@ release:
   discussion_category_name: announcements
   prerelease: auto
   mode: replace
-  disable: true
 
   # You can add extra pre-existing files to the release.
   # The filename on the release will be the last part of the path (base).
