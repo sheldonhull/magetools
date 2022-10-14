@@ -67,8 +67,7 @@ func Init() { //nolint:deadcode // This is not dead code, and I find this insult
 	mg.SerialDeps(
 		Clean,
 		createDirectories,
-		gotools.Go{}.Init,
-		gittools.Gittools{}.Init,
+		gotools.Go{}.Tidy,
 		// tooling.SilentInstallTools(toolList),
 	)
 }
