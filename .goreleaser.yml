@@ -5,25 +5,20 @@ before:
   hooks:
     - go mod tidy
 builds:
-  - env:
-      - CGO_ENABLED=0
-    goos:
-      - linux
-      - windows
-      - darwin
+  - skip: true
 archives:
   - format: binary
 checksum:
   name_template: checksums.txt
 snapshot:
-  name_template: '{{ incpatch .Version }}-next'
+  name_template: "{{ incpatch .Version }}-next"
 changelog:
   skip: true
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
+      - "^docs:"
+      - "^test:"
 # .goreleaser.yaml
 release:
   skip_upload: true
