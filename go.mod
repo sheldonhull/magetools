@@ -6,7 +6,7 @@ require (
 	github.com/bitfield/script v0.20.2
 	github.com/dustin/go-humanize v1.0.0
 	github.com/gosuri/uiprogress v0.0.1
-	github.com/magefile/mage v1.13.0
+	github.com/magefile/mage v1.14.0
 	github.com/manifoldco/promptui v0.9.0
 	github.com/matryer/is v1.4.0
 	github.com/mfridman/tparse v0.11.1
