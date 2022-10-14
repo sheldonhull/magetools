@@ -14,6 +14,7 @@ import (
 	"go/build"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -34,7 +35,7 @@ type (
 )
 
 const (
-	// _maxLength is the maximum length allowed before golines will wrap functional options and similar style calls.
+	// MaxLength is the maximum length allowed before golines will wrap functional options and similar style calls.
 	//
 	// For example:
 	//
@@ -44,7 +45,7 @@ const (
 	//	Str(bar).
 	//	Str(taco).
 	//	Msg("foo")
-	_maxLength = 120
+	maxLength = 120
 )
 
 // toolList is the list of tools to initially install when running a setup process in a project.
@@ -179,11 +180,19 @@ func (Go) TestSum(path string) error {
 	magetoolsutils.CheckPtermDebug()
 	pterm.DefaultHeader.Println("GOTESTSUM")
 	appgotestsum := "gotestsum"
-	gotestsum, err := req.ResolveBinaryByInstall(appgotestsum, "gotest.tools/gotestsum@latest")
+	var gotestsum string
+	var err error
+	gotestsum, err = exec.LookPath("gotestsum")
 	if err != nil {
-		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("unable to find %s: %v", gotestsum, err)
-		return err
+		gotestsum, err = req.ResolveBinaryByInstall(appgotestsum, "gotest.tools/gotestsum@latest")
+		if err != nil {
+			pterm.Error.WithShowLineNumber(true).
+				WithLineNumberOffset(1).
+				Printfln("unable to find %s: %v", appgotestsum, err)
+			return err
+		}
 	}
+	pterm.Info.Printfln("gotestsum found: %s", gotestsum)
 
 	var vflag string
 	if mg.Verbose() {
@@ -284,10 +293,24 @@ func (Go) Lint() error {
 
 	pterm.Info.Println("Running golangci-lint")
 
-	golangcilint, err := req.ResolveBinaryByInstall(
-		"golangci-lint",
-		"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
-	)
+	appgolangcilint := "golangci-lint"
+	var golangcilint string
+	var err error
+	golangcilint, err = exec.LookPath(appgolangcilint)
+	if err != nil {
+		golangcilint, err = req.ResolveBinaryByInstall(
+			appgolangcilint,
+			"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
+		)
+		if err != nil {
+			pterm.Error.WithShowLineNumber(true).
+				WithLineNumberOffset(1).
+				Printfln("unable to find %s: %v", appgolangcilint, err)
+			return err
+		}
+	}
+	pterm.Info.Printfln("gotestsum found: %s", golangcilint)
+
 	if err != nil {
 		pterm.Error.WithShowLineNumber(true).
 			WithLineNumberOffset(1).
@@ -379,7 +402,7 @@ func (Go) Wrap() error {
 		"--base-formatter",
 		gofumpt,
 		"-w",
-		fmt.Sprintf("--max-len=%d", _maxLength),
+		fmt.Sprintf("--max-len=%d", maxLength),
 		"--reformat-tags"); err != nil {
 		tracerr.PrintSourceColor(err)
 		return err
