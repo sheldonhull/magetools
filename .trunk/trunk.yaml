@@ -32,6 +32,7 @@ lint:
         - .devcontainer/*
         - configs/*
         - .changes/*
+        - vendor/*
     - linters: [markdownlint]
       paths:
         # in progress changelog notes

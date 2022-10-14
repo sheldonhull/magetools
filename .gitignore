@@ -21,7 +21,7 @@
 # vendor/
 
 ### Go Patch ###
-/vendor/
+# /vendor/
 /Godeps/
 
 ### macOS ###
@@ -92,7 +92,6 @@ node_modules/
 .yarn/
 
 dist/
-
 
 licensing/.licenses/
 docker/.devcontainer
