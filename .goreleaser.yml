@@ -3,10 +3,7 @@
 # Make sure to check the documentation at https://goreleaser.com
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod tidy
-    # you may remove this if you don't need go generate
-    - go generate ./...
 builds:
   - env:
       - CGO_ENABLED=0
@@ -16,12 +13,6 @@ builds:
       - darwin
 archives:
   - format: binary
-  # - replacements:
-  #     darwin: Darwin
-  #     linux: Linux
-  #     windows: Windows
-  #     386: i386
-  #     amd64: x86_64
 checksum:
   name_template: checksums.txt
 snapshot:
@@ -35,59 +26,10 @@ changelog:
       - '^test:'
 # .goreleaser.yaml
 release:
-  # IDs of the archives to use.
-  # Defaults to all.
-  ids: {}
-
-  # If set to true, will not auto-publish the release.
-  # Default is false.
-  draft: true
-
-  # If set, will create a release discussion in the category specified.
-  #
-  # Warning: do not use categories in the 'Announcement' format.
-  #  Check https://github.com/goreleaser/goreleaser/issues/2304 for more info.
-  #
-  # Default is empty.
+  skip_upload: true
   discussion_category_name: announcements
-
-  # If set to auto, will mark the release as not ready for production
-  # in case there is an indicator for this in the tag e.g. v1.0.0-rc1
-  # If set to true, will mark the release as not ready for production.
-  # Default is false.
   prerelease: auto
-
-  # What to do with the release notes in case there the release already exists.
-  #
-  # Valid options are:
-  # - `keep-existing`: keep the existing notes
-  # - `append`: append the current release notes to the existing notes
-  # - `prepend`: prepend the current release notes to the existing notes
-  # - `replace`: replace existing notes
-  #
-  # Default is `keep-existing`.
-  mode: append
-
-  # Header template for the release body.
-  # Defaults to empty.
-  header: |
-    ## Magetools ({{ .Date }})
-
-    New release.
-
-  # Footer template for the release body.
-  # Defaults to empty.
-  footer: |
-    ## Thanks!
-
-    Those were the changes on {{ .Tag }}!
-
-  # You can change the name of the release.
-  # Default is `{{.Tag}}` on OSS and `{{.PrefixedTag}}` on Pro.
-  name_template: '{{.ProjectName}}-{{.Version}} {{.Env.USER}}'
-
-  # You can disable this pipe in order to not upload any artifacts.
-  # Defaults to false.
+  mode: replace
   disable: true
 
   # You can add extra pre-existing files to the release.
