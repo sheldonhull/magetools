@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - uses: actions/checkout@v3
+
       # - uses: aquaproj/aqua-installer@v1.1.2
       #   with:
       #     aqua_version: v1.20.2
@@ -27,9 +29,8 @@ jobs:
           # echo "$HOME/.local/share/aquaproj-aqua/bin" >> $GITHUB_PATH
           # [[ -e "${AQUA_CONFIG}" ]] && echo "✅ AQUA_CONFIG: ${AQUA_CONFIG} exists" ||  echo "::error ❗ unable to validate the target file: ${AQUA_CONFIG} exists"
           ls -lla "${{ github.workspace }}"
-
         env:
-          # AQUA_CONFIG: aqua.yaml
+          AQUA_CONFIG: '${{ github.workspace }}/aqua.yaml'
           AQUA_LOG_LEVEL: debug
           AQUA_OPTS: ""
       - name: env-config-go
