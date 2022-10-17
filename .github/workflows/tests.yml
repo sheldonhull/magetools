@@ -14,7 +14,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ${{ env.GITHUB_WORKSPACE }}
+        working-directory: "${{ env.GITHUB_WORKSPACE }}"
     steps:
       - name: aqua-install
         run: |
