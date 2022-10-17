@@ -14,25 +14,39 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
-
-      # https://github.com/magnetikonline/action-golang-cache
-      - name: Setup Golang with cache
-        uses: magnetikonline/action-golang-cache@v3
+      - name: aqua-install
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/v1.1.2/aqua-installer | bash -s -- -i /usr/local/bin/aqua
+          echo "${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin" >> $GITHUB_PATH
+          [[ -e "${AQUA_CONFIG}" ]] && echo "✅ AQUA_CONFIG: ${AQUA_CONFIG} exists" ||  echo "::error ❗ unable to validate the target file: ${AQUA_CONFIG} exists"
+          aqua install # --only-link
+        env:
+          AQUA_CONFIG: aqua.ci.yaml
+          AQUA_LOG_LEVEL: debug
+          AQUA_OPTS: ""
+      - name: env-config-go
+        run: |
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+      - name: Setup Golang caches
+        uses: actions/cache@v3
         with:
-          go-version-file: go.mod
+          path: |
+            ${HOME}/.cache/go-build
+            ${HOME}/go/pkg/mod
+          key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-
 
-      - name: mage-tidy
-        uses: magefile/mage-action@v2
-        with:
-          version: latest
-          args: go:tidy
-
-      - name: mage-test
-        uses: magefile/mage-action@v2
-        with:
-          version: latest
-          args: go:testsum ./...
+      - name: mage-init
+        run: |
+          export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:${PATH}"
+          export PATH="$(go env GOPATH)/bin:${PATH}"
+          mage init
+      - name: mage-testsum
+        run: |
+          export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:${PATH}"
+          export PATH="$(go env GOPATH)/bin:${PATH}"
+          mage go:testsum ./...
         env:
           # Race conditions will be hit due to the cli driven tasks and binaries being called.
           GOTEST_DISABLE_RACE: 1
