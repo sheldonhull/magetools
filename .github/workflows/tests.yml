@@ -20,7 +20,6 @@ jobs:
           curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/v1.1.2/aqua-installer | bash -s -- -i /usr/local/bin/aqua
           echo "$HOME/.local/share/aquaproj-aqua/bin" >> $GITHUB_PATH
           # [[ -e "${AQUA_CONFIG}" ]] && echo "✅ AQUA_CONFIG: ${AQUA_CONFIG} exists" ||  echo "::error ❗ unable to validate the target file: ${AQUA_CONFIG} exists"
-          aqua install # --only-link
         env:
           # AQUA_CONFIG: aqua.yaml
           AQUA_LOG_LEVEL: debug
@@ -40,8 +39,9 @@ jobs:
 
       - name: mage-init
         run: |
-          export PATH="$HOME/.local/share/aquaproj-aqua/bin:${PATH}"
+          export PATH="${HOME}/.local/share/aquaproj-aqua/bin:${PATH}"
           export PATH="$(go env GOPATH)/bin:${PATH}"
+          aqua install # --only-link
           mage init
       - name: mage-testsum
         run: |
