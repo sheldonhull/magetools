@@ -1,0 +1,5 @@
+kind: Changed
+body: Disabled `licensing` module tests. It's too problematic with output when non-go
+  code is found. This licensing module will likely be deprecated soon as well as better
+  solutions out there with renovate, fossa, synk, and others.
+time: 2022-10-17T16:26:05.262392-05:00
