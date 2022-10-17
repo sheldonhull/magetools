@@ -43,13 +43,13 @@ jobs:
 
       - name: mage-init
         run: |
-          export PATH="${HOME}/.local/share/aquaproj-aqua/bin:${PATH}"
+          export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua:${PATH}"
           export PATH="$(go env GOPATH)/bin:${PATH}"
           # aqua install # --only-link
           mage init
       - name: mage-testsum
         run: |
-          # export PATH="$HOME/.local/share/aquaproj-aqua/bin:${PATH}"
+          export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua:${PATH}"
           export PATH="$(go env GOPATH)/bin:${PATH}"
           mage go:testsum ./...
         env:
