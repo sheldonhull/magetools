@@ -1,7 +1,7 @@
 ---
 name: go-tests
 on:
-  # pull_request:
+  pull_request:
   push:
     # branches:
     #   - main
@@ -36,8 +36,8 @@ jobs:
         env:
           # Race conditions will be hit due to the cli driven tasks and binaries being called.
           GOTEST_DISABLE_RACE: 1
-          GOTESTS: 'slow'
-          GOTEST_FLAGS: '--tags=integration'
+          GOTESTS: "slow"
+          GOTEST_FLAGS: "--tags=integration"
 
       - name: Upload coverage reports to Codecov
         run: |
