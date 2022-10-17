@@ -28,7 +28,7 @@ linters-settings:
     require-specific: true
   gofumpt:
     # Select the Go version to target. The default is `1.15`.
-    lang-version: '1.18'
+    lang-version: "1.18"
 
     # Choose whether or not to use the extra rules that are disabled
     # by default
@@ -68,7 +68,7 @@ linters-settings:
       # specify an error message to output when a blacklisted package is used
       - github.com/sirupsen/logrus: logging is allowed only by zerolog. Please use zerolog
       # - log: Use zerolog # Disabled temporarily
-      - io/ioutil: 'io/ioutil was deprecated in Go 1.16: https://tip.golang.org/doc/go1.16#ioutil'
+      - io/ioutil: "io/ioutil was deprecated in Go 1.16: https://tip.golang.org/doc/go1.16#ioutil"
     # improved go mod checks
     gomodguard:
       blocked:
@@ -223,6 +223,7 @@ linters:
     - execinquery # Causes error in mtservice by https://github.com/golangci/golangci-lint/issues/2835, v1.46.0. Should remove from here after the bug is fixed.
     - nonamedreturns # Added by https://github.com/golangci/golangci-lint/pull/2701, v1.46.0. Named returns are useful for defer. May remove from here and use nolint in future task.
     - forbidigo # Disabled 2022-07-22 until migrating to a structured logger package. FMT is allowed for now
+    - godot
 # VSCode sets golangci-lint fast flag to avoid IDE issues in this project.
 # Disabled and instead scoping lint on save to current package.
 # To check everything run command Lint: Workspace
@@ -275,7 +276,7 @@ issues:
     - linters:
         - govet
         - revive
-      text: 'shadow: declaration of .err. shadows declaration' # err shadowing is a normal practice, don't worry about this
+      text: "shadow: declaration of .err. shadows declaration" # err shadowing is a normal practice, don't worry about this
     - path: mocks
       linters:
         - godot

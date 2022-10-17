@@ -14,7 +14,6 @@ import (
 	"go/build"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -54,43 +53,11 @@ const (
 //
 // In addition, core tooling from VSCode Install Tool commands are included so using in a Codespace project doesn't require anything other than mage go:init.
 var toolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
-
-	// build tools
-	"github.com/goreleaser/goreleaser@latest",  // NOTE: 2022-03-25: latest results in error with  undefined: strings.Cut note: module requires Go 1.18 WHEN BUILDING FROM SOURCE
-	"github.com/AlexBeauchemin/gobadge@latest", // create a badge for your markdown from the coverage files.
-	// linting tools
-	"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
-	"honnef.co/go/tools/cmd/staticcheck@latest", // stacticcheck is a trimmed down alternative to golangci-lint
-	// formatting tools
-	"github.com/segmentio/golines@latest", // handles nice clean line breaks of long lines
-	"mvdan.cc/gofumpt@latest",
-
-	// Testing tools
-	"github.com/mfridman/tparse@latest",                  // nice table output after running test
-	"gotest.tools/gotestsum@latest",                      // ability to run tests with junit, json output, xml, and more.
-	"github.com/bitfield/gotestdox/cmd/gotestdox@latest", // gotestdox provides work based output on tests.
-	"golang.org/x/tools/gopls@latest",
-	"github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest",
-	"github.com/ramya-rao-a/go-outline@latest",
-	"github.com/cweill/gotests/gotests@latest",
-	"github.com/fatih/gomodifytags@latest",
-	"github.com/josharian/impl@latest",
-	"github.com/haya14busa/goplay/cmd/goplay@latest",
-	"github.com/go-delve/delve/cmd/dlv@latest",
-	"github.com/rogpeppe/godef@latest",
-
-	// Self setup mage
-	"github.com/magefile/mage@latest",
 }
 
 // CIToolList is key go tools likely required for CI.
 // This separates out the tools that are dev specific (like a language server tool) and others that would still be needed in CI systems.
 var ciToolList = []string{ //nolint:gochecknoglobals // ok to be global for tooling setup
-	"github.com/goreleaser/goreleaser@latest", // NOTE: 2022-03-25: latest results in error with  undefined: strings.Cut note: module requires Go 1.18 WHEN BUILDING FROM SOURCE
-	"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
-	"gotest.tools/gotestsum@latest",                      // ability to run tests with junit, json output, xml, and more.
-	"github.com/bitfield/gotestdox/cmd/gotestdox@latest", // gotestdox provides work based output on tests.
-
 }
 
 // getModuleName returns the name from the module file.
@@ -182,16 +149,14 @@ func (Go) TestSum(path string) error {
 	appgotestsum := "gotestsum"
 	var gotestsum string
 	var err error
-	gotestsum, err = exec.LookPath("gotestsum")
+	gotestsum, err = req.ResolveBinaryByInstall("gotestsum", "gotest.tools/gotestsum@latest")
 	if err != nil {
-		gotestsum, err = req.ResolveBinaryByInstall(appgotestsum, "gotest.tools/gotestsum@latest")
-		if err != nil {
-			pterm.Error.WithShowLineNumber(true).
-				WithLineNumberOffset(1).
-				Printfln("unable to find %s: %v", appgotestsum, err)
-			return err
-		}
+		pterm.Error.WithShowLineNumber(true).
+			WithLineNumberOffset(1).
+			Printfln("unable to find %s: %v", appgotestsum, err)
+		return err
 	}
+
 	pterm.Info.Printfln("gotestsum found: %s", gotestsum)
 
 	var vflag string
@@ -296,18 +261,15 @@ func (Go) Lint() error {
 	appgolangcilint := "golangci-lint"
 	var golangcilint string
 	var err error
-	golangcilint, err = exec.LookPath(appgolangcilint)
+	golangcilint, err = req.ResolveBinaryByInstall(
+		appgolangcilint,
+		"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
+	)
 	if err != nil {
-		golangcilint, err = req.ResolveBinaryByInstall(
-			appgolangcilint,
-			"github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
-		)
-		if err != nil {
-			pterm.Error.WithShowLineNumber(true).
-				WithLineNumberOffset(1).
-				Printfln("unable to find %s: %v", appgolangcilint, err)
-			return err
-		}
+		pterm.Error.WithShowLineNumber(true).
+			WithLineNumberOffset(1).
+			Printfln("unable to find %s: %v", appgolangcilint, err)
+		return err
 	}
 	pterm.Info.Printfln("gotestsum found: %s", golangcilint)
 
