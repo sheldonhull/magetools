@@ -1,3 +1,7 @@
+// Secrets package runs gitleaks
+//
+// Deprecated: Removing this as trunk and pre-commit resolve running this in a more consistent way.
+// There isn't a need to wrap up these commands in mage.
 package secrets
 
 import (

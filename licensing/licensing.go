@@ -1,3 +1,8 @@
+// Licensing package wraps up go-license to run checks against licenses and validate forbidden license types aren't detected.
+//
+// Deprecated: This is likely to be removed in an upcoming release as not used and problematic to check output.
+// I'll validate usage (which shouldn't be anyone) and update major version release if I remove this so it won't break anything for folks.
+
 package licensing
 
 // This set of tasks helps run Google's licensing tool to check for problem licenses, comply with credit, and also saving source when required.

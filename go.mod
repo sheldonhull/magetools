@@ -10,7 +10,6 @@ require (
 	github.com/manifoldco/promptui v0.9.0
 	github.com/matryer/is v1.4.0
 	github.com/mfridman/tparse v0.11.1
-	github.com/otiai10/copy v1.7.0
 	github.com/pterm/pterm v0.12.44
 	github.com/rakyll/gotest v0.0.6
 	github.com/ztrue/tracerr v0.3.0

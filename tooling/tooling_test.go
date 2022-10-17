@@ -20,10 +20,9 @@ func TestInstallTools(t *testing.T) {
 	// pterm.DisableStyling()
 
 	toolList := []string{
-		"github.com/goreleaser/goreleaser@v0.174.1",
-		"golang.org/x/tools/cmd/goimports@master",
-		"github.com/sqs/goreturns@master",
-		"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
+		"github.com/ramya-rao-a/go-outline@latest",
+		"github.com/cweill/gotests/gotests@latest",
+		"github.com/fatih/gomodifytags@latest",
 	}
 
 	err := tooling.InstallTools(toolList)
@@ -47,11 +46,6 @@ func TestGo_SilentInit(t *testing.T) {
 		// pterm.DisableColor()
 		// pterm.DisableStyling()
 		toolList := []string{
-			"github.com/goreleaser/goreleaser@v0.174.1",
-			"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-			"mvdan.cc/gofumpt@latest",
-			"golang.org/x/tools/gopls@latest",
-			"github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest",
 			"github.com/ramya-rao-a/go-outline@latest",
 			"github.com/cweill/gotests/gotests@latest",
 			"github.com/fatih/gomodifytags@latest",
@@ -69,7 +63,7 @@ func TestGo_SilentInit(t *testing.T) {
 			t.Skip("PRESENTATION_TEST != 1 so skipping")
 		}
 		toolList := []string{
-			"github.com/goreleaser/goreleaser@v0.174.1",
+			"github.com/ramya-rao-a/go-outline@latest",
 			"github.com/golangci/golangci-lint/cmd/golangci-lintINVALID@master",
 		}
 		err := tooling.SilentInstallTools(toolList)
@@ -106,11 +100,6 @@ func TestGoSpinnerStdOut(t *testing.T) {
 		}
 
 		toolList := []string{
-			"github.com/goreleaser/goreleaser@latest",
-			"github.com/golangci/golangci-lint/cmd/golangci-lint@master",
-			"mvdan.cc/gofumpt@latest",
-			"golang.org/x/tools/gopls@latest",
-			"github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest",
 			"github.com/ramya-rao-a/go-outline@latest",
 			"github.com/cweill/gotests/gotests@latest",
 			"github.com/fatih/gomodifytags@latest",

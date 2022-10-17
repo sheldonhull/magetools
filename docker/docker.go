@@ -1,4 +1,7 @@
 // Docker package provides common docker commands.
+//
+// Deprecated: Devcontainer commands will move to their own package eventually.
+// Stop relying on this as devcontainer ecosystem is changing and use vscode to install latest cli.
 package docker
 
 import (
@@ -63,23 +66,8 @@ func (Devcontainer) Build() error {
 		pterm.Warning.Println("No Dockerfile found in .devcontainer/Dockerfile")
 		return err
 	}
-	wd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-	projectDir := filepath.Base(wd)
 
-	c := []string{
-		"build",
-		"--pull",
-		"--rm",
-		"-f",
-		".devcontainer/Dockerfile",
-		"-t",
-		projectDir + ":latest",
-		".devcontainer",
-	}
-	return sh.RunV("docker", c...)
+	return sh.RunV("devcontainer", "build", "--workspace-folder", ".")
 }
 
 // 🧹 DockerPrune cleans up images.

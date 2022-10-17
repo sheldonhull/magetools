@@ -13,8 +13,6 @@ import (
 
 	// mage:import
 	_ "github.com/sheldonhull/magetools/docgen"
-	// mage:import
-	"github.com/sheldonhull/magetools/gittools"
 
 	// mage:import
 	"github.com/sheldonhull/magetools/gotools"

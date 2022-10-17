@@ -1,29 +1,25 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.191.0/containers/codespaces-linux/.devcontainer/base.Dockerfile
+FROM mcr.microsoft.com/devcontainers/base:ubuntu
+# BUILD ARGS FROM DEVCONTAINER JSON
+ARG DEVCONTAINER_USER
+ARG GOPATH
 
-FROM mcr.microsoft.com/vscode/devcontainers/universal:2-focal
-
-
-# ** [Optional] Uncomment this section to install additional packages. **
-# USER root
-#
-# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
-#
-# USER codespace
 USER root
-COPY library-scripts/*.sh library-scripts/*.env /tmp/library-scripts/
-RUN echo "✅ install starship prompt" \
-  && bash /tmp/library-scripts/install-starship.sh \
-  && apt-get autoremove && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
+ENV DOCKER_BUILDKIT=1
+ENV GOPATH=$GOPATH
+ENV MAGEFILE_ENABLE_COLOR=1
+ENV TRUNK_LAUNCHER_QUIET=true
+ENV PATH="$GOPATH/bin:/home/$DEVCONTAINER_USER/.local/share/aquaproj-aqua/bin:/home/$DEVCONTAINER_USER/go/bin:$PATH"
+# ENV PATH="${GOPATH}/bin:${PATH}" --> this uses HOST path , use the $PATH variable instead
+USER $DEVCONTAINER_USER
+COPY files/.zshrc /home/$DEVCONTAINER_USER/.zshrc
+COPY files/first-run-notice.txt /home/$DEVCONTAINER_USER/first-run-notice.txt
 
-USER codespace
+RUN mkdir -p /home/$DEVCONTAINER_USER/.minikube \
+  && chown $DEVCONTAINER_USER /home/$DEVCONTAINER_USER/.minikube \
+  && /bin/bash -c 'set -euo pipefail && curl https://get.trunk.io -fsSL | bash -s -- -y' \
+  && /bin/bash -c 'set -euo pipefail && curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/v1.0.0/aqua-installer | bash'
 
-# RUN go install github.com/jpoles1/gopherbadger@master \
-#   # && go install github.com/golangci/golangci-lint/cmd/golangci-lint \
-#   # && GO111MODULE=on go get mvdan.cc/gofumpt \
-#   # && GO111MODULE='off'  go get golang.org/x/tools/cmd/goimports \
-#   # && GO111MODULE='off' go get github.com/daixiang0/gci \
-#   && go install github.com/itchyny/gojq/cmd/gojq@latest \
-#   && go install github.com/owenrumney/squealer/cmd/squealer@latest \
-#   && GO111MODULE=on go get github.com/zricethezav/gitleaks/v7 \
-#   go install github.com/git-town/git-town@latest
+
+VOLUME [ "/var/lib/docker" ]
+CMD ["sleep", "infinity"]
+# ENTRYPOINT ["/usr/local/share/docker-init.sh"]
