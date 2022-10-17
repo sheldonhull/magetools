@@ -9,7 +9,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ${GITHUB_WORKSPACE}
+    working-directory: ${{ env.GITHUB_WORKSPACE }}
 jobs:
   test:
     runs-on: ubuntu-latest
