@@ -1,6 +1,6 @@
 # magetools
 
-![Coverage](https://img.shields.io/badge/Coverage-51.9%25-yellow)
+[![codecov](https://codecov.io/gh/sheldonhull/magetools/branch/main/graph/badge.svg?token=FPHYYO5ZF2)](https://codecov.io/gh/sheldonhull/magetools)
 
 General tooling helpers for simplifying cross repository automation using Mage.
 
@@ -47,8 +47,8 @@ I need a way to bootstrap projects quickly with some tasks, so these directories
 
 1. `simple-single-file`: The simpliest for small projects, contains all tasks in single file.
 2. `root-imports-with-tasks-in-subdirectory`: Organized for normal projects, this provides a zero-install run (using `go run mage.go taskname`) and also organizes tasks into subdirectory.
-This allows the root of the project to remain clean.
-Tasks can then be easily split into files in the tasks directory such as: `mage.git.go, mage.js.go, etc`.
+   This allows the root of the project to remain clean.
+   Tasks can then be easily split into files in the tasks directory such as: `mage.git.go, mage.js.go, etc`.
 
 ## Why [dot] prefix in directory?
 
@@ -98,9 +98,8 @@ From the [Mage Docs], see [mage.go](starter/root-imports-with-tasks-in-subdirect
 
 Run this using: `go run main.go` and it should work just like using `mage` directly.
 
-[Mage Docs]: https://magefile.org/zeroinstall
+[mage docs]: https://magefile.org/zeroinstall
 
 ## Future
 
 Possibly best to setup with a dedicated templating tool in the future (something like Cookiecutter) but for now this is just an easy copy and paste in VSCode.
-
