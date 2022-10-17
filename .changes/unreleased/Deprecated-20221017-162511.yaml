@@ -1,6 +1,0 @@
-kind: Deprecated
-body: Licensing package (no uses noted on github), gittools, docker.devcontainer commands.
-  These all are not used or minimal impact. Once removed I'll bump the main version
-  of the magetools to allow for better upgrade path and avoid impacting any current
-  uses.
-time: 2022-10-17T16:25:11.691126-05:00

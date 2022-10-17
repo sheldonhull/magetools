@@ -1,6 +1,0 @@
-kind: Changed
-body: Resolved devcontainer configuration breaking with newer devcontainer configuration.
-  Also improved handling of arguments, loading, and aqua initialization. This is is
-  primarily impactful to any devcontainer based development, and not significant to
-  any usage of the library itself.
-time: 2022-10-17T16:27:07.057818-05:00

@@ -33,10 +33,10 @@ lint:
         - configs/*
         - .changes/*
         - vendor/*
-    - linters: [markdownlint]
-      paths:
-        # in progress changelog notes
-        - .changes/*.md
+    # - linters: [markdownlint]
+    #   paths:
+    #     # in progress changelog notes
+    #     - .changes/*.md
     - linters: [yamllint]
       paths:
         - .changes/unreleased/*.yaml
