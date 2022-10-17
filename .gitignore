@@ -98,3 +98,4 @@ docker/.devcontainer
 .artifacts/
 precommit/.pre-commit.config.yaml
 precommit/.pre-commit-config.yaml
+codecov
