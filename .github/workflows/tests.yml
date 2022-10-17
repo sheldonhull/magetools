@@ -18,6 +18,7 @@ jobs:
       - uses: aquaproj/aqua-installer@v1.1.2
         with:
           aqua_version: v1.20.2
+          enable_aqua_install: true
       # - name: aqua-install
       #   run: |
       #     curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/v1.1.2/aqua-installer | bash -s -- -i /usr/local/bin/aqua
