@@ -271,14 +271,6 @@ func (Go) Lint() error {
 		return err
 	}
 	pterm.Info.Printfln("gotestsum found: %s", golangcilint)
-
-	if err != nil {
-		pterm.Error.WithShowLineNumber(true).
-			WithLineNumberOffset(1).
-			Printfln("unable to find %s: %v", "golangci-lint", err)
-		return err
-	}
-
 	if err := sh.RunV(golangcilint, "run"); err != nil {
 		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Println("golangci-lint failure")
 
