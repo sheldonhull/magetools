@@ -20,7 +20,7 @@ jobs:
           aqua_version: v1.20.2
           enable_aqua_install: true
           aqua_opts: ""
-          working_directory: "${GITHUB_WORKSPACE}"
+          working_directory: "${{ github.workspace }}"
       # - name: aqua-install
       #   run: |
       #     curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/v1.1.2/aqua-installer | bash -s -- -i /usr/local/bin/aqua
