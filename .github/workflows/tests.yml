@@ -24,7 +24,8 @@ jobs:
         env:
           # AQUA_CONFIG: '${{ github.workspace }}/aqua.yaml'
           AQUA_LOG_LEVEL: debug
-          AQUA_OPTS: ""
+          AQUA_OPTS:
+            ""
             # working_directory: "${{ github.workspace }}"
 
       # - name: aqua-install

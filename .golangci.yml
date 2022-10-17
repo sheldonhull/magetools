@@ -183,8 +183,13 @@ linters-settings:
     enableAllRules: true
     exclude:
       - .*_test.go
-#    severity: warning
-#    rules:
+    #    severity: warning
+    #    rules:
+    rules:
+      - name: var-naming
+        severity: error
+        #arguments:
+
 #      - name: indent-error-flow
 #        severity: warning
 #      - name: add-constant
@@ -223,7 +228,13 @@ linters:
     - execinquery # Causes error in mtservice by https://github.com/golangci/golangci-lint/issues/2835, v1.46.0. Should remove from here after the bug is fixed.
     - nonamedreturns # Added by https://github.com/golangci/golangci-lint/pull/2701, v1.46.0. Named returns are useful for defer. May remove from here and use nolint in future task.
     - forbidigo # Disabled 2022-07-22 until migrating to a structured logger package. FMT is allowed for now
-    - godot
+    - structcheck # abandoned
+    - varcheck # abandoned
+    - deadcode # abandoned
+    - ifshort # abandoned
+    - godox # for periods
+    - godot # stop bugging me
+
 # VSCode sets golangci-lint fast flag to avoid IDE issues in this project.
 # Disabled and instead scoping lint on save to current package.
 # To check everything run command Lint: Workspace
@@ -270,6 +281,7 @@ issues:
         - cyclop # a lot of these are a longer automation tasks and not worth breaking down
         - gocognit # a lot of these are a longer automation tasks and not worth breaking down
         - maintidx # a lot of these are a longer automation tasks and not worth breaking down
+        - deadcode # not appliable to standalone tasks
     - linters:
         - goerr113
       text: magefiles don't need to worry about wrapping in the same way
@@ -281,10 +293,11 @@ issues:
       linters:
         - godot
       text: mocked files do not need to be checked
+
     # - linters:
     #     - revive
     #   text: 'add-constant: avoid magic numbers like ''(\d*)'', create a named constant for it'
 
   # Show only new issues created after git revision `REV`
   whole-files: false # Only evaluate the sections of changed code rather than the entire file
-  new-from-rev: HEAD~
+  # ONLY REQUIRED FOR OLD PROJECTS, NEW SHOULD COVER ALL ISSUES: new-from-rev: HEAD~

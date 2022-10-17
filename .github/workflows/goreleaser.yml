@@ -7,7 +7,7 @@ on:
       version:
         description: Version To Tag
         required: true
-        default: ''
+        default: ""
 
 jobs:
   goreleaser:

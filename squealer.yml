@@ -11,7 +11,7 @@ rules:
     description: Check for Slack webhook
   - rule: xox[baprs]-([0-9a-zA-Z]{10,48})?
     description: Check for Slack token
-  - rule: '-----BEGIN ((EC|PGP|DSA|RSA|OPENSSH) )?PRIVATE KEY( BLOCK)?-----'
+  - rule: "-----BEGIN ((EC|PGP|DSA|RSA|OPENSSH) )?PRIVATE KEY( BLOCK)?-----"
     description: Check for Private Asymetric Key
 ignore_paths:
   - vendor
