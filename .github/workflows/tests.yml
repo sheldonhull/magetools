@@ -6,15 +6,14 @@ on:
     tags:
       - v*
   workflow_dispatch:
-
+defaults:
+  run:
+    shell: bash
+    working-directory: .
 jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    defaults:
-      run:
-        shell: bash
-        working-directory: "${{ env.GITHUB_WORKSPACE }}"
     steps:
       - name: aqua-install
         run: |
