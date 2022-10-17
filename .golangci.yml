@@ -236,7 +236,6 @@ linters:
     - godot # stop bugging me
     - nosnakecase # not active anymore
 
-
 # VSCode sets golangci-lint fast flag to avoid IDE issues in this project.
 # Disabled and instead scoping lint on save to current package.
 # To check everything run command Lint: Workspace
