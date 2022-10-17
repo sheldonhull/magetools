@@ -12,7 +12,6 @@ package gotools
 import (
 	"fmt"
 	"go/build"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -64,12 +63,12 @@ var ciToolList = []string{ //nolint:gochecknoglobals // ok to be global for tool
 // Original help on this was: https://stackoverflow.com/a/63393712/68698
 func (Go) GetModuleName() string {
 	magetoolsutils.CheckPtermDebug()
-	goModBytes, err := ioutil.ReadFile("go.mod")
+	goModBytes, err := os.ReadFile("go.mod")
 	if err != nil {
 		pterm.Warning.WithShowLineNumber(true).WithLineNumberOffset(1).Println("getModuleName() can't find ./go.mod")
 		// Running one more check above the parent directory in case this is running in a test or nested directory for some reason.
 		// Only 1 level lookback for now.
-		goModBytes, err = ioutil.ReadFile("../go.mod")
+		goModBytes, err = os.ReadFile("../go.mod")
 		if err != nil {
 			pterm.Warning.WithShowLineNumber(true).
 				WithLineNumberOffset(1).
