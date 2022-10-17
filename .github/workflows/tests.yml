@@ -19,7 +19,7 @@ jobs:
           [[ -e "${AQUA_CONFIG}" ]] && echo "✅ AQUA_CONFIG: ${AQUA_CONFIG} exists" ||  echo "::error ❗ unable to validate the target file: ${AQUA_CONFIG} exists"
           aqua install --only-link
         env:
-          # AQUA_CONFIG: aqua.ci.yaml
+          AQUA_CONFIG: aqua.yaml
           AQUA_LOG_LEVEL: debug
           AQUA_OPTS: ""
       - name: env-config-go
