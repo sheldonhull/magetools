@@ -6,7 +6,10 @@ on:
     tags:
       - v*
   workflow_dispatch:
-
+defaults:
+  run:
+    shell: bash
+    working-directory: $GITHUB_WORKSPACE
 jobs:
   test:
     runs-on: ubuntu-latest
