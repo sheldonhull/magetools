@@ -10,5 +10,6 @@
   "go.testTags": "mage testfiles integration",
   "go.testEnvVars": {
     "GOTESTS": "slow"
-  }
+  },
+  "github-actions.workflows.pinned.workflows": [".github/workflows/tests.yml"]
 }

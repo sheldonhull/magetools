@@ -36,7 +36,7 @@ lint:
     - linters: [markdownlint]
       paths:
         # in progress changelog notes
-        - .changes/*.md
+        - docs/godocs/*
     - linters: [yamllint]
       paths:
         - .changes/unreleased/*.yaml
