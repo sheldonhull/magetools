@@ -15,7 +15,6 @@ coverage:
 # sample regex patterns
 ignore:
   - "magefiles"
-  - "examples"
   - ".trunk"
   - ".vscode"
   - ".devcontainer"
@@ -23,3 +22,4 @@ ignore:
   - "examples"
   - "starter"
   - ".licenses"
+  - ".examples"

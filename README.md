@@ -2,13 +2,17 @@
 
 [![codecov](https://codecov.io/gh/sheldonhull/magetools/branch/main/graph/badge.svg?token=FPHYYO5ZF2)](https://codecov.io/gh/sheldonhull/magetools)
 
-General tooling helpers for simplifying cross repository automation using Mage.
+General tooling helpers for simplifying cross-repository automation using Mage.
 
 The test coverage shown is informal, as these aren't setup always with full standard tests.
 Primarily the tests just import and run to confirm no errors.
 When possible, I do test the functionality.
 
 Mage is a good case of a little magic making things faster and easier to adopt, while making it a bit trickier to test functions IMO.
+
+## Getting Bootstrapped On A New Repo
+
+Jump start a new repo with the [GitHub - sheldonhull/scripts-to-rule-them-all-go](https://github.com/sheldonhull/scripts-to-rule-them-all-go)
 
 ## Other Go Focused Tools for Task Automation
 
@@ -58,7 +62,7 @@ I prefer to the dot prefix and underscore isn't very common from what I've obser
 
 ## Tip
 
-Include `mage_output_file.go` in your gitignore file to avoid it causing consternation in your git diff monitoring tooling.
+Include `mage_output_file.go` in your `gitignore` file to avoid it causing consternation in your git diff monitoring tooling.
 
 ## Examples
 
@@ -94,12 +98,7 @@ $ENV:GOPRIVATE='github.com/sheldonhull/*'
 
 ## Allow Zero Install Run
 
-From the [Mage Docs], see [mage.go](starter/root-imports-with-tasks-in-subdirectory/mage.go).
-
+From the [Mage Docs].
 Run this using: `go run main.go` and it should work just like using `mage` directly.
 
 [mage docs]: https://magefile.org/zeroinstall
-
-## Future
-
-Possibly best to setup with a dedicated templating tool in the future (something like Cookiecutter) but for now this is just an easy copy and paste in VSCode.
