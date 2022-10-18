@@ -1,3 +1,5 @@
+//go:build examples
+
 // Licensing package wraps up go-license to run checks against licenses and validate forbidden license types aren't detected.
 //
 // Deprecated: This is likely to be removed in an upcoming release as not used and problematic to check output.

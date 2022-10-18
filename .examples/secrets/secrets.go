@@ -1,3 +1,5 @@
+//go:build examples
+
 // Secrets package runs gitleaks
 //
 // Deprecated: Removing this as trunk and pre-commit resolve running this in a more consistent way.

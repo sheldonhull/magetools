@@ -1,3 +1,5 @@
+//go:build examples
+
 // retool tooling helps bootstrap a project with locally vendored executables and tools.
 // This runs tooling from local `_tools` directory, rather than installing globally.
 package retool

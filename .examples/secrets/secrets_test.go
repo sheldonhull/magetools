@@ -1,3 +1,5 @@
+//go:build examples
+
 package secrets_test
 
 import (

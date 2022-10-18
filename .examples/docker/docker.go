@@ -1,3 +1,5 @@
+//go:build examples
+
 // Docker package provides common docker commands.
 //
 // Deprecated: Devcontainer commands will move to their own package eventually.

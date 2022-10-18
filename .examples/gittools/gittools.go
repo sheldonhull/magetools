@@ -1,3 +1,5 @@
+//go:build examples
+
 // Package gittools provides automatic setup of some useful git tooling like Bit and Git Town
 //
 // Deprecated: This should be done via aqua, brew, or another tooling solution, as magetools isn't the best fit for this.
