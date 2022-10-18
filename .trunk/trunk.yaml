@@ -42,7 +42,7 @@ lint:
         - .changes/unreleased/*.yaml
     - linters: [golangci-lint]
       paths:
-        - .examples/
+        - .examples/*
 
 cli:
   version: 0.18.1-beta
