@@ -1,7 +1,6 @@
 package pterm
 
 import (
-	"os"
 	"strings"
 
 	"atomicgo.dev/cursor"
@@ -32,25 +31,30 @@ type InteractiveTextInputPrinter struct {
 }
 
 // WithDefaultText sets the default text.
-func (p *InteractiveTextInputPrinter) WithDefaultText(text string) *InteractiveTextInputPrinter {
+func (p InteractiveTextInputPrinter) WithDefaultText(text string) *InteractiveTextInputPrinter {
 	p.DefaultText = text
-	return p
+	return &p
 }
 
 // WithTextStyle sets the text style.
-func (p *InteractiveTextInputPrinter) WithTextStyle(style *Style) *InteractiveTextInputPrinter {
+func (p InteractiveTextInputPrinter) WithTextStyle(style *Style) *InteractiveTextInputPrinter {
 	p.TextStyle = style
-	return p
+	return &p
 }
 
 // WithMultiLine sets the multi line flag.
-func (p *InteractiveTextInputPrinter) WithMultiLine(multiLine ...bool) *InteractiveTextInputPrinter {
+func (p InteractiveTextInputPrinter) WithMultiLine(multiLine ...bool) *InteractiveTextInputPrinter {
 	p.MultiLine = internal.WithBoolean(multiLine)
-	return p
+	return &p
 }
 
 // Show shows the interactive select menu and returns the selected entry.
-func (p *InteractiveTextInputPrinter) Show(text ...string) (string, error) {
+func (p InteractiveTextInputPrinter) Show(text ...string) (string, error) {
+	// should be the first defer statement to make sure it is executed last
+	// and all the needed cleanup can be done before
+	cancel, exit := internal.NewCancelationSignal()
+	defer exit()
+
 	var areaText string
 
 	if len(text) == 0 || Sprint(text[0]) == "" {
@@ -130,7 +134,8 @@ func (p *InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 				p.cursorXPos = 0
 			}
 		case keys.CtrlC:
-			os.Exit(0)
+			cancel()
+			return true, nil
 		case keys.Down:
 			if p.cursorYPos+1 < len(p.input) {
 				p.cursorXPos = (internal.GetStringMaxWidth(p.input[p.cursorYPos]) + p.cursorXPos) - internal.GetStringMaxWidth(p.input[p.cursorYPos+1])
@@ -176,6 +181,9 @@ func (p *InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 		return "", err
 	}
 
+	// Add new line
+	Println()
+
 	for i, s := range p.input {
 		if i < len(p.input)-1 {
 			areaText += s + "\n"
@@ -187,7 +195,7 @@ func (p *InteractiveTextInputPrinter) Show(text ...string) (string, error) {
 	return strings.ReplaceAll(areaText, p.text, ""), nil
 }
 
-func (p *InteractiveTextInputPrinter) updateArea(area *AreaPrinter) string {
+func (p InteractiveTextInputPrinter) updateArea(area *AreaPrinter) string {
 	if !p.MultiLine {
 		p.cursorYPos = 0
 	}
