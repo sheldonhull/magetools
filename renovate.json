@@ -1,3 +1,3 @@
 {
-  "extends": ["github>sheldonhull/renovate"]
+  "extends": ["github>sheldonhull/renovate:renovate.json5"]
 }
