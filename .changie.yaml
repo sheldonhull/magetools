@@ -1,4 +1,5 @@
 ---
+auto: patch
 changesDir: .changes
 unreleasedDir: unreleased
 headerPath: header.tpl.md
@@ -6,17 +7,36 @@ changelogPath: CHANGELOG.md
 versionExt: md
 versionFormat: '## {{.Version}} - {{.Time.Format "2006-01-02"}}'
 kindFormat: "### {{.Kind}}"
-changeFormat: "- {{.Body}}"
+changeFormat: "- {{ .Body -}}"
 kinds:
-  - label: Added
-  - label: Changed
-  - label: Deprecated
-  - label: Removed
-  - label: Fixed
-  - label: Security
+  - label: 🤖 CI
+  - label: 🤖 Development
+  - label: 🎉 Feature
+  - label: 🔨 Refactor
+  - label: ⬇️ Deprecated
+  - label: 🐛 Bug Fix
+  - label: 🔥 Breaking Change
+  - label: 🔒 Security
+  - label: ⬆️ Dependencies
 newlines:
+  afterChange: 0
   afterChangelogHeader: 1
-  beforeChangelogVersion: 1
-  endOfVersion: 1
-  afterKind: 2
-  afterVersion: 2
+  afterChangelogVersion: 1
+  afterComponent: 1
+  afterFooterFile: 1
+  afterFooter: 1
+  afterHeaderFile: 1
+  afterHeaderTemplate: 1
+  afterKind: 1
+  afterVersion: 1
+
+  beforeChange: 0
+  beforeChangelogVersion: 0
+  beforeComponent: 0
+  beforeFooterFile: 0
+  beforeFooterTemplate: 0
+  beforeHeaderFile: 0
+  beforeHeaderTemplate: 0
+  beforeKind: 0
+  beforeVersion: 0
+  endOfVersion: 0
