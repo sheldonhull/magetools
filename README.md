@@ -1,6 +1,6 @@
 # magetools
 
-[![codecov](https://codecov.io/gh/sheldonhull/magetools/branch/main/graph/badge.svg?token=FPHYYO5ZF2)](https://codecov.io/gh/sheldonhull/magetools)
+![Codecov](https://img.shields.io/codecov/c/github/sheldonhull/magetools?style=for-the-badge&token=FPHYYO5ZF2)
 
 General tooling helpers for simplifying cross-repository automation using Mage.
 
