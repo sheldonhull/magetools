@@ -1,0 +1,4 @@
+kind: "\U0001F528 Refactor"
+body: Improve `ci.IsCI()` to detect GitHub specifically, Gitlab, and then resolve
+  CI=1 as generic CI instead.
+time: 2023-02-23T16:29:57.599929-06:00

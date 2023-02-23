@@ -21,9 +21,11 @@ func Test_DetectCI(t *testing.T) {
 		want   bool
 	}{
 		{name: "no ci", envVar: "NOTIMPORTANT", want: false},
-		{name: "github actions", envVar: "CI", want: true},
+		{name: "github actions", envVar: "GITHUB_ACTIONS", want: true},
+		{name: "gitlab runner", envVar: "GITLAB_CI", want: true},
 		{name: "azure devops", envVar: "AGENT_ID", want: true},
 		{name: "netlify", envVar: "NETLIFY", want: true},
+		{name: "generic CI", envVar: "CI", want: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
