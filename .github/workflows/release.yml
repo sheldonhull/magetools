@@ -15,21 +15,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
 
       # https://github.com/magnetikonline/action-golang-cache
       - name: Setup Golang with cache
-        uses: magnetikonline/action-golang-cache@c1837bcc2faeefe64828382704e6b1ad0a61fb63 # tag=v3
+        uses: magnetikonline/action-golang-cache@797f193169d3c8ba6f60d90f50ecdadd2583fbd8 # v3
         with:
           go-version-file: go.mod
 
       - name: mage-tidy
-        uses: magefile/mage-action@5f7a9a23cfef763949ca41834b868167adbd1b59 # renovate: tag=v2
+        uses: magefile/mage-action@3b833fb24c0d19eed3aa760b9eb285b4b84f420f # v2
         with:
           version: latest
           args: init
       - name: mage-release
-        uses: magefile/mage-action@5f7a9a23cfef763949ca41834b868167adbd1b59 # renovate: tag=v2
+        uses: magefile/mage-action@3b833fb24c0d19eed3aa760b9eb285b4b84f420f # v2
         with:
           version: latest
           args: release
