@@ -12,20 +12,22 @@ runtimes:
     - node@16.14.2
     - python@3.10.3
 lint:
+  disabled:
+    - cspell
   enabled:
     - actionlint@1.6.23
     - dotenv-linter@3.3.0
     - git-diff-check
-    - gitleaks@8.15.3
-    - gofmt@1.16.7
-    - golangci-lint@1.51.1
+    - gitleaks@8.16.1
+    - gofmt@1.19.3
+    - golangci-lint@1.52.2
     - hadolint@2.12.0
     - markdownlint@0.33.0
-    - prettier@2.8.4
+    - prettier@2.8.7
     - shellcheck@0.9.0
     - shfmt@3.5.0
     - taplo@0.8.0
-    - yamllint@1.29.0
+    - yamllint@1.30.0
   ignore:
     - linters: [ALL]
       paths:
@@ -45,9 +47,9 @@ lint:
         - .examples/*
 
 cli:
-  version: 1.4.1
+  version: 1.7.0
 plugins:
   sources:
     - id: trunk
-      ref: v0.0.5
+      ref: v0.0.11
       uri: https://github.com/trunk-io/plugins
