@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/bitfield/script v0.21.4
-	github.com/dustin/go-humanize v1.0.0
+	github.com/dustin/go-humanize v1.0.1
 	github.com/magefile/mage v1.14.0
 	github.com/matryer/is v1.4.1
 	github.com/pterm/pterm v0.12.58
