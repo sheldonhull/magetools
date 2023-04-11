@@ -8,16 +8,33 @@ versionExt: md
 versionFormat: '## {{.Version}} - {{.Time.Format "2006-01-02"}}'
 kindFormat: "### {{.Kind}}"
 changeFormat: "- {{ .Body -}}"
+body:
+  block: true
 kinds:
-  - label: 🤖 CI
-  - label: 🤖 Development
-  - label: 🎉 Feature
-  - label: 🔨 Refactor
-  - label: ⬇️ Deprecated
-  - label: 🐛 Bug Fix
-  - label: 🔥 Breaking Change
-  - label: 🔒 Security
+  - label: 🤖 CI & Build
+    auto: patch
+  - label: 🎉 New Product Feature
+    auto: minor
+  - label: 📘 Documentation
+    auto: patch
   - label: ⬆️ Dependencies
+    auto: patch
+  - label: 🐛 Bug Fix
+    auto: patch
+  - label: 🧪 Tests
+    auto: patch
+  - label: 🔨 Developer Experience
+    auto: patch
+  - label: 🔨 Refactor
+    auto: patch
+  - label: 🔥 Breaking Change
+    auto: minor
+  - label: 🔒 Security
+    auto: patch
+  - label: ⬇️ Deprecated
+    auto: minor
+  - label: 🔥 Major Version Change (Breaking Changes)
+    auto: major
 newlines:
   afterChange: 0
   afterChangelogHeader: 1
@@ -37,6 +54,6 @@ newlines:
   beforeFooterTemplate: 0
   beforeHeaderFile: 0
   beforeHeaderTemplate: 0
-  beforeKind: 0
+  beforeKind: 1
   beforeVersion: 0
   endOfVersion: 0
