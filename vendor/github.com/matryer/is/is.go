@@ -22,7 +22,6 @@
 // the helper methods:
 //
 //	func Test(t *testing.T) {
-//
 //		// always start tests with this
 //		is := is.New(t)
 //
@@ -32,7 +31,6 @@
 //
 //		body := readBody(r)
 //		is.True(strings.Contains(body, "Hi there"))
-//
 //	}
 package is
 
@@ -45,8 +43,8 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strconv"
 	"strings"
-	"testing"
 )
 
 // T reports when failures occur.
@@ -75,7 +73,19 @@ type I struct {
 var noColorFlag bool
 
 func init() {
-	envNoColor := os.Getenv("IS_NO_COLOR") == "true"
+	var envNoColor bool
+
+	// prefer https://no-color.org (with any value)
+	if _, ok := os.LookupEnv("NO_COLOR"); ok {
+		envNoColor = true
+	}
+
+	if v, ok := os.LookupEnv("IS_NO_COLOR"); ok {
+		if b, err := strconv.ParseBool(v); err == nil {
+			envNoColor = b
+		}
+	}
+
 	flag.BoolVar(&noColorFlag, "nocolor", envNoColor, "turns off colors")
 }
 
@@ -171,7 +181,7 @@ func (is *I) Equal(a, b interface{}) {
 //			// TODO: test
 //		})
 //	}
-func (is *I) New(t *testing.T) *I {
+func (is *I) New(t T) *I {
 	return New(t)
 }
 
@@ -186,7 +196,7 @@ func (is *I) New(t *testing.T) *I {
 //			// TODO: test
 //		})
 //	}
-func (is *I) NewRelaxed(t *testing.T) *I {
+func (is *I) NewRelaxed(t T) *I {
 	return NewRelaxed(t)
 }
 
@@ -258,17 +268,19 @@ func loadComment(path string, line int) (string, bool) {
 	s := bufio.NewScanner(f)
 	i := 1
 	for s.Scan() {
-		if i == line {
-			text := s.Text()
-			commentI := strings.Index(text, "// ")
-			if commentI == -1 {
-				return "", false // no comment
-			}
-			text = text[commentI+2:]
-			text = strings.TrimSpace(text)
-			return text, true
+		if i != line {
+			i++
+			continue
 		}
-		i++
+
+		text := s.Text()
+		commentI := strings.Index(text, "// ")
+		if commentI == -1 {
+			return "", false // no comment
+		}
+		text = text[commentI+2:]
+		text = strings.TrimSpace(text)
+		return text, true
 	}
 	return "", false
 }
@@ -284,33 +296,34 @@ func loadArguments(path string, line int) (string, bool) {
 	s := bufio.NewScanner(f)
 	i := 1
 	for s.Scan() {
-		if i == line {
-			text := s.Text()
-			braceI := strings.Index(text, "(")
-			if braceI == -1 {
-				return "", false
-			}
-			text = text[braceI+1:]
-			cs := bufio.NewScanner(strings.NewReader(text))
-			cs.Split(bufio.ScanBytes)
-			j := 0
-			c := 1
-			for cs.Scan() {
-				switch cs.Text() {
-				case ")":
-					c--
-				case "(":
-					c++
-				}
-				if c == 0 {
-					break
-				}
-				j++
-			}
-			text = text[:j]
-			return text, true
+		if i != line {
+			i++
+			continue
 		}
-		i++
+		text := s.Text()
+		braceI := strings.Index(text, "(")
+		if braceI == -1 {
+			return "", false
+		}
+		text = text[braceI+1:]
+		cs := bufio.NewScanner(strings.NewReader(text))
+		cs.Split(bufio.ScanBytes)
+		j := 0
+		c := 1
+		for cs.Scan() {
+			switch cs.Text() {
+			case ")":
+				c--
+			case "(":
+				c++
+			}
+			if c == 0 {
+				break
+			}
+			j++
+		}
+		text = text[:j]
+		return text, true
 	}
 	return "", false
 }
