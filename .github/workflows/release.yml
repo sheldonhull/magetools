@@ -19,7 +19,7 @@ jobs:
 
       # https://github.com/magnetikonline/action-golang-cache
       - name: Setup Golang with cache
-        uses: magnetikonline/action-golang-cache@797f193169d3c8ba6f60d90f50ecdadd2583fbd8 # v3
+        uses: magnetikonline/action-golang-cache@777394c89f8ed6fcf1649505277c46c1cd06494d # v4
         with:
           go-version-file: go.mod
 
