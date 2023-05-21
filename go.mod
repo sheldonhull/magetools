@@ -9,7 +9,7 @@ require (
 	github.com/matryer/is v1.4.1
 	github.com/pterm/pterm v0.12.58
 	github.com/ztrue/tracerr v0.3.0
-	golang.org/x/mod v0.8.0
+	golang.org/x/mod v0.10.0
 )
 
 require (
