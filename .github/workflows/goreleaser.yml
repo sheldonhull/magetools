@@ -28,7 +28,7 @@ jobs:
           # whatchanged --output CHANGELOG.md
           export GORELEASER_CURRENT_TAG="${{ github.event.inputs.version }}" && echo $GORELEASER_CURRENT_TAG >> $GITHUB_ENV
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@b508e2e3ef3b19d4e4146d4f8fb3ba9db644a757 # v3
+        uses: goreleaser/goreleaser-action@f82d6c1c344bcacabba2c841718984797f664a6b # v4
         with:
           # either 'goreleaser' (default) or 'goreleaser-pro'
           distribution: goreleaser
