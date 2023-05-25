@@ -6,10 +6,10 @@ atomicgo.dev/cursor
 atomicgo.dev/keyboard
 atomicgo.dev/keyboard/internal
 atomicgo.dev/keyboard/keys
-# bitbucket.org/creachadair/shell v0.0.7
-## explicit; go 1.16
-bitbucket.org/creachadair/shell
-# github.com/bitfield/script v0.21.4
+# atomicgo.dev/schedule v0.0.2
+## explicit; go 1.18
+atomicgo.dev/schedule
+# github.com/bitfield/script v0.22.0
 ## explicit; go 1.12
 github.com/bitfield/script
 # github.com/containerd/console v1.0.3
@@ -21,16 +21,16 @@ github.com/dustin/go-humanize
 # github.com/gookit/color v1.5.3
 ## explicit; go 1.18
 github.com/gookit/color
-# github.com/itchyny/gojq v0.12.7
-## explicit; go 1.16
+# github.com/itchyny/gojq v0.12.12
+## explicit; go 1.18
 github.com/itchyny/gojq
-# github.com/itchyny/timefmt-go v0.1.3
-## explicit; go 1.14
+# github.com/itchyny/timefmt-go v0.1.5
+## explicit; go 1.17
 github.com/itchyny/timefmt-go
-# github.com/lithammer/fuzzysearch v1.1.5
+# github.com/lithammer/fuzzysearch v1.1.8
 ## explicit; go 1.15
 github.com/lithammer/fuzzysearch/fuzzy
-# github.com/magefile/mage v1.14.0
+# github.com/magefile/mage v1.15.0
 ## explicit; go 1.12
 github.com/magefile/mage/mg
 github.com/magefile/mage/sh
@@ -40,7 +40,7 @@ github.com/matryer/is
 # github.com/mattn/go-runewidth v0.0.14
 ## explicit; go 1.9
 github.com/mattn/go-runewidth
-# github.com/pterm/pterm v0.12.58
+# github.com/pterm/pterm v0.12.62
 ## explicit; go 1.18
 github.com/pterm/pterm
 github.com/pterm/pterm/internal
@@ -59,16 +59,16 @@ golang.org/x/mod/internal/lazyregexp
 golang.org/x/mod/modfile
 golang.org/x/mod/module
 golang.org/x/mod/semver
-# golang.org/x/sys v0.6.0
+# golang.org/x/sys v0.8.0
 ## explicit; go 1.17
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/term v0.6.0
+# golang.org/x/term v0.8.0
 ## explicit; go 1.17
 golang.org/x/term
-# golang.org/x/text v0.8.0
+# golang.org/x/text v0.9.0
 ## explicit; go 1.17
 golang.org/x/text/cases
 golang.org/x/text/internal
@@ -79,3 +79,10 @@ golang.org/x/text/language
 golang.org/x/text/runes
 golang.org/x/text/transform
 golang.org/x/text/unicode/norm
+# mvdan.cc/sh/v3 v3.6.0
+## explicit; go 1.18
+mvdan.cc/sh/v3/expand
+mvdan.cc/sh/v3/fileutil
+mvdan.cc/sh/v3/pattern
+mvdan.cc/sh/v3/shell
+mvdan.cc/sh/v3/syntax
