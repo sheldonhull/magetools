@@ -1,3 +1,0 @@
-kind: "\U0001F41B Bug Fix"
-body: Label on `go:lint` incorrectly stated `gotestsum` found. This is fixed.
-time: 2023-04-11T13:29:01.104722-05:00
