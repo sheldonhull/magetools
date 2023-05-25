@@ -1,4 +1,11 @@
 version: 0.1
+cli:
+  version: 1.10.0
+plugins:
+  sources:
+    - id: trunk
+      ref: v0.0.17
+      uri: https://github.com/trunk-io/plugins
 actions:
   enabled:
     - trunk-announce
@@ -8,7 +15,7 @@ actions:
     - trunk-upgrade-available
 runtimes:
   enabled:
-    - go@SYSTEM
+    - go@1.20.4
     - node@18.12.1
     - python@3.10.8
 lint:
@@ -20,7 +27,7 @@ lint:
     - git-diff-check
     - gitleaks@8.16.2
     - gofmt@1.19.3
-    - golangci-lint@SYSTEM
+    - golangci-lint@1.52.1
     - hadolint@2.12.0
     - markdownlint@0.33.0
     - prettier@2.8.7
@@ -45,11 +52,3 @@ lint:
     - linters: [golangci-lint]
       paths:
         - .examples/*
-
-cli:
-  version: 1.7.0
-plugins:
-  sources:
-    - id: trunk
-      ref: v0.0.15
-      uri: https://github.com/trunk-io/plugins
