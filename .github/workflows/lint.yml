@@ -24,6 +24,6 @@ jobs:
       # - name: golangci-lint
       #   uses: reviewdog/action-golangci-lint@70498f2d1f75a55ee9a4d719e74e21ed68aebea3 # renovate: tag=v2
       - name: trunk-check
-        uses: trunk-io/trunk-action@e5f1a3f123a2440f9cd28e036495a1c1f2a20568 # v1
+        uses: trunk-io/trunk-action@585ad971e85a2a7cc5f62b1468f7bbc7262ef599 # v1
         with:
           arguments: --github-annotate-new-only=false
