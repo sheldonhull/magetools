@@ -39,8 +39,10 @@ func TestGo_Fmt(t *testing.T) {
 func TestGo_Wrap(t *testing.T) {
 	is := iz.New(t)
 	// pterm.DisableOutput()
-	err := gotools.Go{}.Wrap()
-	is.NoErr(err) // Fmt should not fail with golines
+	err := gotools.Go{}.Fmt()
+	is.NoErr(err) // Fmt should not fail with gofumpt
+	err = gotools.Go{}.Wrap()
+	is.NoErr(err) // Fmt should not fail with golines which needs gofumpt
 }
 
 func TestGo_Lint(t *testing.T) {
