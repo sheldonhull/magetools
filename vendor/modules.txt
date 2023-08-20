@@ -1,4 +1,4 @@
-# atomicgo.dev/cursor v0.1.3
+# atomicgo.dev/cursor v0.2.0
 ## explicit; go 1.15
 atomicgo.dev/cursor
 # atomicgo.dev/keyboard v0.2.9
@@ -37,10 +37,10 @@ github.com/magefile/mage/sh
 # github.com/matryer/is v1.4.1
 ## explicit; go 1.14
 github.com/matryer/is
-# github.com/mattn/go-runewidth v0.0.14
+# github.com/mattn/go-runewidth v0.0.15
 ## explicit; go 1.9
 github.com/mattn/go-runewidth
-# github.com/pterm/pterm v0.12.63
+# github.com/pterm/pterm v0.12.65
 ## explicit; go 1.18
 github.com/pterm/pterm
 github.com/pterm/pterm/internal
