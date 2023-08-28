@@ -7,7 +7,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/magefile/mage v1.15.0
 	github.com/matryer/is v1.4.1
-	github.com/pterm/pterm v0.12.66
+	github.com/pterm/pterm v0.12.67
 	github.com/ztrue/tracerr v0.4.0
 	golang.org/x/mod v0.12.0
 )
