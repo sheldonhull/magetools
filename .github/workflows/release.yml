@@ -24,12 +24,12 @@ jobs:
           go-version-file: go.mod
 
       - name: mage-tidy
-        uses: magefile/mage-action@3b833fb24c0d19eed3aa760b9eb285b4b84f420f # v2
+        uses: magefile/mage-action@bed74f487871c92ba8e9aa957bbf3e05bf9c9aea # v2
         with:
           version: latest
           args: init
       - name: mage-release
-        uses: magefile/mage-action@3b833fb24c0d19eed3aa760b9eb285b4b84f420f # v2
+        uses: magefile/mage-action@bed74f487871c92ba8e9aa957bbf3e05bf9c9aea # v2
         with:
           version: latest
           args: release
