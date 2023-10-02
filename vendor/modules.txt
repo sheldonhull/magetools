@@ -40,8 +40,8 @@ github.com/matryer/is
 # github.com/mattn/go-runewidth v0.0.15
 ## explicit; go 1.9
 github.com/mattn/go-runewidth
-# github.com/pterm/pterm v0.12.67
-## explicit; go 1.18
+# github.com/pterm/pterm v0.12.69
+## explicit; go 1.21
 github.com/pterm/pterm
 github.com/pterm/pterm/internal
 # github.com/rivo/uniseg v0.4.4
