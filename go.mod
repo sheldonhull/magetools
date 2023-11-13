@@ -11,7 +11,7 @@ require (
 	github.com/matryer/is v1.4.1
 	github.com/pterm/pterm v0.12.70
 	github.com/ztrue/tracerr v0.4.0
-	golang.org/x/mod v0.13.0
+	golang.org/x/mod v0.14.0
 )
 
 require (
