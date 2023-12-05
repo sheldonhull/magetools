@@ -7,7 +7,7 @@
 #   require_checksum: true
 registries:
   - type: standard
-    ref: v4.92.2 # renovate: depName=aquaproj/aqua-registry
+    ref: v4.97.0 # renovate: depName=aquaproj/aqua-registry
 packages:
   - name: miniscruff/changie@v1.16.0
   - name: goreleaser/goreleaser@v1.22.1
@@ -16,4 +16,4 @@ packages:
   - name: golang/go@go1.21.4
   - name: gotestyourself/gotestsum@v1.11.0
   - name: BurntSushi/ripgrep@13.0.0
-  - name: direnv/direnv@v2.32.3
+  - name: direnv/direnv@v2.33.0
