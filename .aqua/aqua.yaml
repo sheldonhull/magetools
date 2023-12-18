@@ -7,9 +7,9 @@
 #   require_checksum: true
 registries:
   - type: standard
-    ref: v4.101.0 # renovate: depName=aquaproj/aqua-registry
+    ref: v4.106.0 # renovate: depName=aquaproj/aqua-registry
 packages:
-  - name: miniscruff/changie@v1.16.1
+  - name: miniscruff/changie@v1.17.0
   - name: goreleaser/goreleaser@v1.22.1
   - name: magefile/mage@v1.15.0
   - name: golangci/golangci-lint@v1.55.2
