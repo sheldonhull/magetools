@@ -17,3 +17,4 @@ packages:
   - name: gotestyourself/gotestsum@v1.11.0
   - name: BurntSushi/ripgrep@14.1.0
   - name: direnv/direnv@v2.33.0
+  - name: mvdan/gofumpt@v0.5.0
