@@ -255,6 +255,7 @@ issues:
         - gocognit # a lot of these are a longer automation tasks and not worth breaking down
         - maintidx # a lot of these are a longer automation tasks and not worth breaking down
         - deadcode # not appliable to standalone tasks
+        - perfsprint # performance on basic output of mage is not something to be concerned about
     - linters:
         - goerr113
       text: magefiles don't need to worry about wrapping in the same way
