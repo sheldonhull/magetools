@@ -208,6 +208,7 @@ linters:
     - godot # stop bugging me
     - nosnakecase # not active anymore
     - depguard
+    - perfsprint # seems like much premature optimization for things not running in high concurrency or scale
 # VSCode sets golangci-lint fast flag to avoid IDE issues in this project.
 # Disabled and instead scoping lint on save to current package.
 # To check everything run command Lint: Workspace
