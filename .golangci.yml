@@ -56,16 +56,15 @@ linters-settings:
         bson: camel
         avro: snake
         mapstructure: kebab
-    errcheck:
-      check-type-assertions: true
-      check-blank: false
-      ignore: fmt:.*,io/ioutil:^Read.*
-      exclude-functions:
-        - io/ioutil.ReadFile
-        - io.Copy(*bytes.Buffer)
-        - io.Copy(os.Stdout)
-        - io.Closer.Close
-        - io.Closer.Body.Close
+  errcheck:
+    check-type-assertions: true
+    check-blank: false
+    exclude-functions:
+      - io/ioutil.ReadFile
+      - io.Copy(*bytes.Buffer)
+      - io.Copy(os.Stdout)
+      - io.Closer.Close
+      - io.Closer.Body.Close
   govet:
     enable-all: true
     disable:
