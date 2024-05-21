@@ -11,6 +11,7 @@ import (
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
+	"github.com/sheldonhull/magetools/ci"
 	"github.com/sheldonhull/magetools/pkg/magetoolsutils"
 )
 
@@ -19,6 +20,8 @@ type Trunk mg.Namespace
 
 // ⚙️ Init installs trunk and ensures the plugins are setup.
 func (Trunk) Init() {
+	magetoolsutils.CheckPtermDebug()
+	pterm.DefaultSection.Println("(Trunk) Init")
 	mg.SerialDeps(
 		Trunk{}.Install,
 		Trunk{}.InstallPlugins,
@@ -28,6 +31,7 @@ func (Trunk) Init() {
 // ⚙️ InstallTrunk installs trunk.io tooling if it isn't already found.
 func (Trunk) Install() error {
 	magetoolsutils.CheckPtermDebug()
+	pterm.DefaultSection.Println("(Trunk) Install")
 
 	_, err := exec.LookPath("trunk")
 	if err != nil && os.IsNotExist(err) {
@@ -44,10 +48,26 @@ func (Trunk) Install() error {
 
 // ⚙️ InstallPlugins ensures the required runtimes are installed.
 func (Trunk) InstallPlugins() error {
-	return sh.RunV("trunk", "install")
+	magetoolsutils.CheckPtermDebug()
+	pterm.DefaultSection.Println("(Trunk) InstallPlugins")
+	trunkArgs := []string{
+		"install",
+	}
+	if ci.IsCI() {
+		trunkArgs = append(trunkArgs, "--ci")
+	}
+	return sh.RunV("trunk", trunkArgs...)
 }
 
 // ⚙️ Upgrade upgrades trunk using itself and also the plugins.
 func (Trunk) Upgrade() error {
-	return sh.RunV("trunk", "upgrade")
+	magetoolsutils.CheckPtermDebug()
+	pterm.DefaultSection.Println("(Trunk) Upgrade")
+	trunkArgs := []string{
+		"upgrade",
+	}
+	if ci.IsCI() {
+		trunkArgs = append(trunkArgs, "--ci")
+	}
+	return sh.RunV("trunk", trunkArgs...)
 }

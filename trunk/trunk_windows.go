@@ -11,6 +11,7 @@ import (
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
+	"github.com/sheldonhull/magetools/ci"
 	"github.com/sheldonhull/magetools/pkg/magetoolsutils"
 )
 
@@ -19,6 +20,7 @@ type Trunk mg.Namespace
 
 // ⚙️ Init installs trunk and ensures the plugins are setup.
 func (Trunk) Init() {
+	pterm.DefaultSection.Println("(Trunk) Init")
 	mg.SerialDeps(
 		Trunk{}.Install,
 		Trunk{}.InstallPlugins,
@@ -28,6 +30,7 @@ func (Trunk) Init() {
 // ⚙️ InstallTrunk installs trunk.io tooling if it isn't already found.
 func (Trunk) Install() error {
 	magetoolsutils.CheckPtermDebug()
+	pterm.DefaultSection.Println("(Trunk) Install")
 	prefixPath()
 	// if there's a package.json then use npm install with npm install -D @trunkio/launcher, else install as a global tool
 	_, err := exec.LookPath("trunk")
@@ -54,6 +57,7 @@ func (Trunk) Install() error {
 
 // prefixPath checks for trunk installed as a dev dependency, and if so, prepends the node modules bin/trunk path to the PATH so it can be referenced without npm in front.
 func prefixPath() {
+	magetoolsutils.CheckPtermDebug()
 	if _, err := os.Stat("node_modules/.bin/trunk"); err == nil {
 		pterm.Debug.Printfln("Found trunk.io installed as a dev dependency, prefixing PATH")
 		os.Setenv("PATH", "node_modules/.bin"+string(os.PathListSeparator)+os.Getenv("PATH"))
@@ -62,12 +66,28 @@ func prefixPath() {
 
 // ⚙️ InstallPlugins ensures the required runtimes are installed.
 func (Trunk) InstallPlugins() error {
+	magetoolsutils.CheckPtermDebug()
+	pterm.DefaultSection.Println("(Trunk) InstallPlugins")
 	prefixPath()
-	return sh.RunV("trunk", "install")
+	trunkArgs := []string{
+		"install",
+	}
+	if ci.IsCI() {
+		trunkArgs = append(trunkArgs, "--ci")
+	}
+	return sh.RunV("trunk", trunkArgs...)
 }
 
 // ⚙️ Upgrade upgrades trunk using itself and also the plugins.
 func (Trunk) Upgrade() error {
+	magetoolsutils.CheckPtermDebug()
+	pterm.DefaultSection.Println("(Trunk) Upgrade")
 	prefixPath()
-	return sh.RunV("trunk", "upgrade")
+	trunkArgs := []string{
+		"upgrade",
+	}
+	if ci.IsCI() {
+		trunkArgs = append(trunkArgs, "--ci")
+	}
+	return sh.RunV("trunk", trunkArgs...)
 }
