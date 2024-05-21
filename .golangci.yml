@@ -102,6 +102,9 @@ linters-settings:
     rules:
       - name: var-naming
         severity: error
+      - name: line-length-limit
+        arguments:
+          - 120
 
 linters:
   enable-all: true
