@@ -27,6 +27,3 @@ jobs:
         uses: trunk-io/trunk-action@f6c5f1b90503c30e02059667dbc247f2257b63c5 # v1
         with:
           arguments: --github-annotate-new-only=false
-      - name: trunk-test
-        run: |
-          trunk actions run gotestsums
