@@ -25,4 +25,4 @@ jobs:
           trunk install
       - name: trunk-test
         run: |
-          trunk actions run gotestsums
+          trunk actions run gotestsum
