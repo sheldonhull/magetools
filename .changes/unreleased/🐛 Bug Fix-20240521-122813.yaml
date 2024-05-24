@@ -1,3 +1,0 @@
-kind: "bug-fix"
-body: Trunk upgrade was set to install, not upgrade tooling, so now it does what it should have done in the first place... before the coder in question got in way and didn't use his noggin.
-time: 2024-05-21T12:28:13.507347-05:00
