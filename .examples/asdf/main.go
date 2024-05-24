@@ -146,10 +146,16 @@ func (Install) AsdfDirenvSetup() error {
 	removefile := filepath.Join(dirname, ".config", "direnv", "direnvrc")
 
 	if err := sh.Rm(removefile); err != nil {
-		return fmt.Errorf("Need to remove file: %q to ensure direnv hooks setup correctly, unable to do this, so might need to remove the file manually and rerun mage install:asdfdirenvsetup: %v\n", removefile, err)
+		return fmt.Errorf(
+			"Need to remove file: %q to ensure direnv hooks setup correctly, unable to do this, so might need to remove the file manually and rerun mage install:asdfdirenvsetup: %v\n",
+			removefile,
+			err,
+		)
 	}
 	if err := sh.RunV("asdf", "direnv", "setup", "--shell", "zsh", "--version", "latest"); err != nil {
-		pterm.Error.Printfln("If asdf isn't found, then you might need to source this in your terminal first:\n\nsource \"${HOME}\\.asdf\\asdf.sh")
+		pterm.Error.Printfln(
+			"If asdf isn't found, then you might need to source this in your terminal first:\n\nsource \"${HOME}\\.asdf\\asdf.sh",
+		)
 		return fmt.Errorf("unable to run asdf direnv setup: %w", err)
 	}
 	return nil

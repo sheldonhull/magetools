@@ -129,7 +129,7 @@ func (Azure) InstallCLI() error {
 	return nil
 }
 
-// 🔑 AksAuth loops through the clusters and generates a kubeconfig for each one in your `$HOME/.kube/config`` with overwrite set true.
+// 🔑 AksAuth loops through the clusters and generates a kubeconfig for each one in your `$HOME/.kube/config“ with overwrite set true.
 func (Azure) AksAuth() error {
 	mtu.CheckPtermDebug()
 	pterm.DefaultHeader.Println("Generating Kubeconfig")

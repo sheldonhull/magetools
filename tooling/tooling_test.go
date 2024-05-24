@@ -79,13 +79,13 @@ func TestGo_SilentInit(t *testing.T) {
 //
 // PRESENTATION_TEST=1 go test ./tooling/ -tags integration -run ^TestGoSpinnerStdOut$  -timeout 30s -v -shuffle on
 //
-// Try cleaning a specific directory to see output if already ran
+// # Try cleaning a specific directory to see output if already ran
 //
 // find  $(go env GOPATH)/pkg/mod/github.com -name fatih -maxdepth 2 -type d -depth
 //
 // find  $(go env GOPATH)/pkg/mod/github.com -name fatih -maxdepth 2 -depth -type d -exec sudo rm -rf {} \;.
 //
-//  find  $(go env GOPATH)/pkg/mod/github.com -name golangci -maxdepth 2 -depth -type d -exec sudo rm  -rf {} \;.
+//	find  $(go env GOPATH)/pkg/mod/github.com -name golangci -maxdepth 2 -depth -type d -exec sudo rm  -rf {} \;.
 //
 // find  $(go env GOPATH)/pkg/mod/github.com -name gosuri -maxdepth 2 -depth -type d -exec sudo rm -rf {} \;
 func TestGoSpinnerStdOut(t *testing.T) {

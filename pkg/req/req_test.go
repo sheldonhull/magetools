@@ -46,7 +46,11 @@ func Test_ResolveBinaryByInstall(t *testing.T) {
 	pterm.DisableStyling()
 	app := "gofumpt"
 	goInstallCmd := "mvdan.cc/gofumpt@latest"
-	want = filepath.Join(req.GetGoPath(), "bin", app) // THIS IS OPTIONAL!!! Might be installed via another method (binaries for example, so no longer requiring path, just cleaning up in case it needs it).
+	want = filepath.Join(
+		req.GetGoPath(),
+		"bin",
+		app,
+	) // THIS IS OPTIONAL!!! Might be installed via another method (binaries for example, so no longer requiring path, just cleaning up in case it needs it).
 	pterm.Debug.Printfln("want: filepath: %s", want)
 	got, err = req.ResolveBinaryByInstall(app, goInstallCmd)
 	is.NoErr(err)      // ResolveBinaryByInstall should not error.

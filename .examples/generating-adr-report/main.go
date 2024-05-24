@@ -4,9 +4,6 @@
 This is an example of using mage to generate a report on `adrgen` managed files in a repo.
 
 This parses the text output of the table and splits into a text slice that gets converted into a markdown formatted table.
-
-
-
 */
 package main
 

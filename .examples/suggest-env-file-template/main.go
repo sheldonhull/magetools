@@ -12,7 +12,6 @@ Let's say you need to startup a docker compose setup and you expect an .env file
 Use mage to solve this problem by doing a quick check for the missing .env file, and prompting for creating from a copy of an existing environment file.
 
 This would improve the workflow for any new contributors and eliminate any wasted time figuring out what to do again in the future.
-
 */
 package main
 

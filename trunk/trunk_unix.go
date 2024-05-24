@@ -35,7 +35,9 @@ func (Trunk) Install() error {
 
 	_, err := exec.LookPath("trunk")
 	if err != nil && os.IsNotExist(err) {
-		pterm.Warning.Printfln("unable to resolve aqua cli tool, please install for automated project tooling setup: https://aquaproj.github.io/docs/tutorial-basics/quick-start#install-aqua")
+		pterm.Warning.Printfln(
+			"unable to resolve aqua cli tool, please install for automated project tooling setup: https://aquaproj.github.io/docs/tutorial-basics/quick-start#install-aqua",
+		)
 		_, err := script.Exec("curl https://get.trunk.io -fsSL").Exec("bash -s -- -y").Stdout()
 		if err != nil {
 			return err

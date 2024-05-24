@@ -15,7 +15,6 @@ import (
 	"github.com/pterm/pterm"
 )
 
-//
 // installPython3 is a setup helper to ensure python3 is setup on new systems for pre-commit tooling.
 //
 // Yes this should be done in Docker, or in OS, but in this case I'm trying to simplify bootstrap of a project and automatically handle pre-commit setup in case the environment doesn't have that already setup.

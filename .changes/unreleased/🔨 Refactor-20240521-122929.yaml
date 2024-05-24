@@ -1,4 +1,4 @@
-kind: "\U0001F528 Refactor"
+kind: refactor
 body: |-
   Trunk package now supports installing for windows, via the newer trunk npm based install, while maintaining the bash install for linux/darwin.
   If the project has a package.json, then it will install as dev dependency, otherwise as a global tool.

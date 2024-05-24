@@ -12,7 +12,10 @@ import (
 	"github.com/sheldonhull/magetools/pkg/req"
 )
 
-func checkEnvVar(envVar string, required bool) (string, error) { //nolint:unused // Useful function to keep right now, though it's not used. I'll move to a build helpers package or something in the future.
+func checkEnvVar(
+	envVar string,
+	required bool,
+) (string, error) { //nolint:unused // Useful function to keep right now, though it's not used. I'll move to a build helpers package or something in the future.
 	envVarValue := os.Getenv(envVar)
 	if envVarValue == "" && required {
 		pterm.Error.Printfln(

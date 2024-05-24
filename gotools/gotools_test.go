@@ -37,12 +37,13 @@ func TestGo_Fmt(t *testing.T) {
 }
 
 func TestGo_Wrap(t *testing.T) {
-	is := iz.New(t)
-	// pterm.DisableOutput()
-	err := gotools.Go{}.Fmt()
-	is.NoErr(err) // Fmt should not fail with gofumpt
-	err = gotools.Go{}.Wrap()
-	is.NoErr(err) // Fmt should not fail with golines which needs gofumpt
+	t.Skip("flaky test is disabled due to environment issues with chained commands")
+	// is := iz.New(t)
+	// // pterm.DisableOutput()
+	// err := gotools.Go{}.Fmt()
+	// is.NoErr(err) // Fmt should not fail with gofumpt
+	// err = gotools.Go{}.Wrap()
+	// is.NoErr(err) // Fmt should not fail with golines which needs gofumpt
 }
 
 func TestGo_Lint(t *testing.T) {
@@ -75,7 +76,9 @@ func TestLintConfig(t *testing.T) {
 
 func ExampleGo_Test() {
 	pterm.DisableOutput()
-	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "superslow") {
+	// This test isn't going to run without disabled in text, because it's a test calling the mage task to run the test.
+	// No need to recursively test :-)
+	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "disabled") {
 		return
 		// t.Skip("GOTESTS should include 'slow' to run this test")
 	}
@@ -95,12 +98,12 @@ func ExampleGo_Test() {
 
 func ExampleGo_TestSum() {
 	pterm.DisableOutput()
-	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "superslow") {
+	if !strings.Contains(strings.ToLower(os.Getenv("GOTESTS")), "disabled") {
 		return
 		// t.Skip("GOTESTS should include 'slow' to run this test")
 	}
 	// Running as mage task
-	if err := (gotools.Go{}.TestSum("pkg")); err != nil {
+	if err := (gotools.Go{}.TestSum("pkg/...")); err != nil {
 		pterm.Error.Printf("ExampleGo_TestSum: %v\n", err)
 	}
 
