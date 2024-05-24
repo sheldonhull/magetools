@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
       - uses: aquaproj/aqua-installer@fd2089d1f56724d6456f24d58605e6964deae124 # v2.3.2
         with:
-          aqua_version: v2.27.4
+          aqua_version: v2.28.1
           enable_aqua_install: true
           # aqua_opts: ""
         env:
