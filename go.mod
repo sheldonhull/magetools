@@ -2,7 +2,7 @@ module github.com/sheldonhull/magetools
 
 go 1.21
 
-toolchain go1.22.3
+toolchain go1.22.4
 
 require (
 	github.com/bitfield/script v0.22.1
