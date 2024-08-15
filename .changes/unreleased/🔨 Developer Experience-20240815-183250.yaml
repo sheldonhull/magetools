@@ -1,0 +1,3 @@
+kind: "\U0001F528 Developer Experience"
+body: Improve the error output with shellescape library so the command that failed can be rerun manually easily.
+time: 2024-08-15T18:32:50.392527-05:00

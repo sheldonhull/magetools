@@ -17,6 +17,7 @@ import (
 	"runtime"
 	"strings"
 
+	"al.essio.dev/pkg/shellescape"
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"github.com/pterm/pterm"
@@ -25,7 +26,7 @@ import (
 	"github.com/sheldonhull/magetools/pkg/req"
 	"github.com/sheldonhull/magetools/tooling"
 	"github.com/ztrue/tracerr"
-	modfile "golang.org/x/mod/modfile"
+	"golang.org/x/mod/modfile"
 )
 
 type (
@@ -125,7 +126,9 @@ func (Go) Test() error {
 	}
 
 	pterm.Info.Println("Running go test")
-	if err := sh.RunV("go", "test", "./...", "-cover", "-shuffle", "on", "-race", vflag, testFlags); err != nil {
+	gotestArgs := []string{"test", "./...", "-cover", "-shuffle", "on", "-race", vflag, testFlags}
+	if err := sh.RunV("go", gotestArgs...); err != nil {
+		pterm.Error.Println("go", shellescape.QuoteCommand(gotestArgs))
 		return err
 	}
 	pterm.Success.Println("✅ Go Test")
@@ -236,7 +239,7 @@ func (Go) TestSum(path string) error {
 				"If your package doesn't support race conditions, then add:\n\nGOTEST_DISABLE_RACE=1 mage go:testsum\n\nThis will remove the -race flag.",
 			)
 		}
-
+		pterm.Error.Println(gotestsum, shellescape.QuoteCommand(cleanedGoArgs))
 		return err
 	}
 	// 	// strings.Join(cleanedGoArgs, " "),
@@ -349,6 +352,14 @@ func (Go) Wrap() error {
 		pterm.Error.WithShowLineNumber(true).WithLineNumberOffset(1).Printfln("unable to find %s: %v", gofumpt, err)
 		return err
 	}
+	gofumptArgs := []string{
+		".",
+		"--base-formatter",
+		gofumpt,
+		"-w",
+		fmt.Sprintf("--max-len=%d", maxLength),
+		"--reformat-tags",
+	}
 	if err := sh.Run(
 		binary,
 		".",
@@ -356,11 +367,15 @@ func (Go) Wrap() error {
 		gofumpt,
 		"-w",
 		fmt.Sprintf("--max-len=%d", maxLength),
-		"--reformat-tags"); err != nil {
+		"--reformat-tags",
+	); err != nil {
 		tracerr.PrintSourceColor(err)
+		pterm.Error.Println(gofumpt, shellescape.QuoteCommand(gofumptArgs))
 		return err
 	}
 	pterm.Success.Println("✅ Go Fmt")
+	pterm.Debug.Println(gofumpt, shellescape.QuoteCommand(gofumptArgs))
+
 	return nil
 }
 

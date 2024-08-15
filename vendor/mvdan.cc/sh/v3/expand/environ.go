@@ -5,6 +5,7 @@ package expand
 
 import (
 	"runtime"
+	"slices"
 	"sort"
 	"strings"
 )
@@ -60,7 +61,7 @@ const (
 // and a value.
 //
 // A Variable is unset if its Kind field is Unset, which can be checked via
-// Variable.IsSet. The zero value of a Variable is thus a valid unset variable.
+// [Variable.IsSet]. The zero value of a Variable is thus a valid unset variable.
 //
 // If a variable is set, its Value field will be a []string if it is an indexed
 // array, a map[string]string if it's an associative array, or a string
@@ -152,7 +153,7 @@ func ListEnviron(pairs ...string) Environ {
 // listEnvironWithUpper implements ListEnviron, but letting the tests specify
 // whether to uppercase all names or not.
 func listEnvironWithUpper(upper bool, pairs ...string) Environ {
-	list := append([]string{}, pairs...)
+	list := slices.Clone(pairs)
 	if upper {
 		// Uppercase before sorting, so that we can remove duplicates
 		// without the need for linear search nor a map.

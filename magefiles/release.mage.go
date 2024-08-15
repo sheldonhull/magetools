@@ -57,7 +57,9 @@ func (Changelog) Bump() error {
 		return err
 	}
 	if err := sh.RunV("trunk", "check", "--ci"); err != nil {
-		pterm.Warning.Printfln("trunk check failure. This is non-terminating for the mage task, but you should check it before merging")
+		pterm.Warning.Printfln(
+			"trunk check failure. This is non-terminating for the mage task, but you should check it before merging",
+		)
 	}
 	if err := sh.RunV("git", "add", ".changes/*"); err != nil {
 		return err
@@ -108,7 +110,9 @@ func (Changelog) Merge() error {
 		return err
 	}
 	if err := sh.RunV("trunk", "check", "--ci"); err != nil {
-		pterm.Warning.Printfln("trunk check failure. This is non-terminating for the mage task, but you should check it before merging")
+		pterm.Warning.Printfln(
+			"trunk check failure. This is non-terminating for the mage task, but you should check it before merging",
+		)
 	}
 	if err := sh.RunV("git", "add", ".changes/*"); err != nil {
 		return err

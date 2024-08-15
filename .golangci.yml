@@ -102,8 +102,9 @@ linters-settings:
       - name: var-naming
         severity: error
       - name: line-length-limit
-        arguments:
-          - 120
+        disabled: true
+      - name: add-constant
+        severity: warning
 
 linters:
   enable-all: true
@@ -141,7 +142,7 @@ linters:
     - funlen #OVERRIDE: ok using for bot, lots of quick long commands i worked on
     - cyclop #OVERRIDE: ok using for bot, lots of quick long commands i worked on
     - gocognit #OVERRIDE: ok using for bot, lots of quick long commands i worked on
-
+    - perfsprint
 run:
   timeout: 5m
   build-tags:

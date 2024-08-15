@@ -31,7 +31,7 @@ const (
 	// LangBash corresponds to the GNU Bash language, as described in its
 	// manual at https://www.gnu.org/software/bash/manual/bash.html.
 	//
-	// We currently follow Bash version 5.1.
+	// We currently follow Bash version 5.2.
 	//
 	// Its string representation is "bash".
 	LangBash LangVariant = iota
@@ -230,8 +230,7 @@ func (w *wrappedReader) Read(p []byte) (n int, err error) {
 // called with said statements.
 //
 // If a line ending in an incomplete statement is parsed, the function will be
-// called with any fully parsed statements, and Parser.Incomplete will return
-// true.
+// called with any fully parsed statements, and [Parser.Incomplete] will return true.
 //
 // One can imagine a simple interactive shell implementation as follows:
 //
@@ -390,9 +389,6 @@ type Parser struct {
 
 	// lastBquoteEsc is how many times the last backquote token was escaped
 	lastBquoteEsc int
-	// buriedBquotes is like openBquotes, but saved for when the parser
-	// comes out of single quotes
-	buriedBquotes int
 
 	rxOpenParens int
 	rxFirstPart  bool
@@ -414,7 +410,7 @@ type Parser struct {
 // it needs to finish properly parsing a statement.
 //
 // It is only safe to call while the parser is blocked on a read. For an example
-// use case, see the documentation for Parser.Interactive.
+// use case, see [Parser.Interactive].
 func (p *Parser) Incomplete() bool {
 	// If we're in a quote state other than noState, we're parsing a node
 	// such as a double-quoted string.
@@ -436,7 +432,7 @@ func (p *Parser) reset() {
 	p.openStmts = 0
 	p.heredocs, p.buriedHdocs = p.heredocs[:0], 0
 	p.parsingDoc = false
-	p.openBquotes, p.buriedBquotes = 0, 0
+	p.openBquotes = 0
 	p.accComs, p.curComs = nil, &p.accComs
 	p.litBatch = nil
 	p.wordBatch = nil
@@ -738,7 +734,7 @@ func (p *Parser) quoteErr(lpos Pos, quote token) {
 		p.tok.String(), quote)
 }
 
-func (p *Parser) matchingErr(lpos Pos, left, right interface{}) {
+func (p *Parser) matchingErr(lpos Pos, left, right any) {
 	p.posErr(lpos, "reached %s without matching %s with %s",
 		p.tok.String(), left, right)
 }
@@ -762,7 +758,7 @@ func (p *Parser) errPass(err error) {
 }
 
 // IsIncomplete reports whether a Parser error could have been avoided with
-// extra input bytes. For example, if an io.EOF was encountered while there was
+// extra input bytes. For example, if an [io.EOF] was encountered while there was
 // an unclosed quote or parenthesis.
 func IsIncomplete(err error) bool {
 	perr, ok := err.(ParseError)
@@ -804,8 +800,8 @@ func IsKeyword(word string) bool {
 // the parser cannot recover.
 type ParseError struct {
 	Filename string
-	Pos
-	Text string
+	Pos      Pos
+	Text     string
 
 	Incomplete bool
 }
@@ -822,9 +818,9 @@ func (e ParseError) Error() string {
 // in the current language variant, and what languages support it.
 type LangError struct {
 	Filename string
-	Pos
-	Feature string
-	Langs   []LangVariant
+	Pos      Pos
+	Feature  string
+	Langs    []LangVariant
 }
 
 func (e LangError) Error() string {
@@ -849,7 +845,7 @@ func (e LangError) Error() string {
 	return buf.String()
 }
 
-func (p *Parser) posErr(pos Pos, format string, a ...interface{}) {
+func (p *Parser) posErr(pos Pos, format string, a ...any) {
 	p.errPass(ParseError{
 		Filename:   p.f.Name,
 		Pos:        pos,
@@ -858,7 +854,7 @@ func (p *Parser) posErr(pos Pos, format string, a ...interface{}) {
 	})
 }
 
-func (p *Parser) curErr(format string, a ...interface{}) {
+func (p *Parser) curErr(format string, a ...any) {
 	p.posErr(p.pos, format, a...)
 }
 
@@ -1124,10 +1120,6 @@ func (p *Parser) wordPart() WordPart {
 			case '\'':
 				sq.Right = p.nextPos()
 				sq.Value = p.endLit()
-
-				// restore openBquotes
-				p.openBquotes = p.buriedBquotes
-				p.buriedBquotes = 0
 
 				p.rune()
 				p.next()
@@ -1628,6 +1620,9 @@ func (p *Parser) doRedirect(s *Stmt) {
 	if !p.lang.isBash() && r.N != nil && r.N.Value[0] == '{' {
 		p.langErr(r.N.Pos(), "{varname} redirects", LangBash)
 	}
+	if p.lang == LangPOSIX && (p.tok == rdrAll || p.tok == appAll) {
+		p.langErr(p.pos, "&> redirects", LangBash, LangMirBSDKorn)
+	}
 	r.Op, r.OpPos = RedirOperator(p.tok), p.pos
 	p.next()
 	switch r.Op {
@@ -2078,7 +2073,7 @@ func (p *Parser) caseClause(s *Stmt) {
 
 func (p *Parser) caseItems(stop string) (items []*CaseItem) {
 	p.got(_Newl)
-	for p.tok != _EOF && !(p.tok == _LitWord && p.val == stop) {
+	for p.tok != _EOF && (p.tok != _LitWord || p.val != stop) {
 		ci := &CaseItem{}
 		ci.Comments, p.accComs = p.accComs, nil
 		p.got(leftParen)
@@ -2146,7 +2141,7 @@ func (p *Parser) testClause(s *Stmt) {
 	if _, ok := p.gotRsrv("]]"); ok || p.tok == _EOF {
 		p.posErr(tc.Left, "test clause requires at least one expression")
 	}
-	tc.X = p.testExpr(dblLeftBrack, tc.Left, false)
+	tc.X = p.testExpr(false)
 	if tc.X == nil {
 		p.followErrExp(tc.Left, "[[")
 	}
@@ -2158,13 +2153,13 @@ func (p *Parser) testClause(s *Stmt) {
 	s.Cmd = tc
 }
 
-func (p *Parser) testExpr(ftok token, fpos Pos, pastAndOr bool) TestExpr {
+func (p *Parser) testExpr(pastAndOr bool) TestExpr {
 	p.got(_Newl)
 	var left TestExpr
 	if pastAndOr {
 		left = p.testExprBase()
 	} else {
-		left = p.testExpr(ftok, fpos, true)
+		left = p.testExpr(true)
 	}
 	if left == nil {
 		return left
@@ -2198,7 +2193,7 @@ func (p *Parser) testExpr(ftok token, fpos Pos, pastAndOr bool) TestExpr {
 	switch b.Op {
 	case AndTest, OrTest:
 		p.next()
-		if b.Y = p.testExpr(token(b.Op), b.OpPos, false); b.Y == nil {
+		if b.Y = p.testExpr(false); b.Y == nil {
 			p.followErrExp(b.OpPos, b.Op.String())
 		}
 	case TsReMatch:
@@ -2244,7 +2239,7 @@ func (p *Parser) testExprBase() TestExpr {
 	case exclMark:
 		u := &UnaryTest{OpPos: p.pos, Op: TsNot}
 		p.next()
-		if u.X = p.testExpr(token(u.Op), u.OpPos, false); u.X == nil {
+		if u.X = p.testExpr(false); u.X == nil {
 			p.followErrExp(u.OpPos, u.Op.String())
 		}
 		return u
@@ -2259,7 +2254,7 @@ func (p *Parser) testExprBase() TestExpr {
 	case leftParen:
 		pe := &ParenTest{Lparen: p.pos}
 		p.next()
-		if pe.X = p.testExpr(leftParen, pe.Lparen, false); pe.X == nil {
+		if pe.X = p.testExpr(false); pe.X == nil {
 			p.followErrExp(pe.Lparen, "(")
 		}
 		pe.Rparen = p.matched(pe.Lparen, leftParen, rightParen)
@@ -2420,6 +2415,10 @@ loop:
 				ce.Assigns = append(ce.Assigns, p.getAssign(true))
 				break
 			}
+			// Avoid failing later with the confusing "} can only be used to close a block".
+			if p.lang == LangPOSIX && p.val == "{" && w != nil && w.Lit() == "function" {
+				p.curErr("the %q builtin is a bash feature; tried parsing as posix", "function")
+			}
 			ce.Args = append(ce.Args, p.wordOne(p.lit(p.pos, p.val)))
 			p.next()
 		case _Lit:
@@ -2451,7 +2450,7 @@ loop:
 			// Note that we'll only keep the first error that happens.
 			if len(ce.Args) > 0 {
 				if cmd := ce.Args[0].Lit(); p.lang == LangPOSIX && isBashCompoundCommand(_LitWord, cmd) {
-					p.curErr("the %q builtin exists in bash; tried parsing as posix", cmd)
+					p.curErr("the %q builtin is a bash feature; tried parsing as posix", cmd)
 				}
 			}
 			p.curErr("a command can only contain words and redirects; encountered %s", p.tok)

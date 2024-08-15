@@ -44,7 +44,10 @@ func (Datadog) Event() error {
 		pterm.Warning.Println("unable to find tag, proceeding with empty tag value")
 	}
 	buildPipeline := fmt.Sprintf(
-		"https://dev.azure.com/%s/%s/_build/results?buildId=%s&view=results", AzureDevopsOrg, AzureDevopsProject, os.Getenv("BUILD_BUILDID"),
+		"https://dev.azure.com/%s/%s/_build/results?buildId=%s&view=results",
+		AzureDevopsOrg,
+		AzureDevopsProject,
+		os.Getenv("BUILD_BUILDID"),
 	) // TODO: Remove hard coded values and generate based on build variables.
 	var alertType string
 	switch strings.ToLower(os.Getenv("AGENT_JOBSTATUS")) {

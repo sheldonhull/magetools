@@ -92,6 +92,9 @@ retry:
 				}
 				if p.openBquotes > 0 && bquotes < p.openBquotes &&
 					p.bsp < len(p.bs) && bquoteEscaped(p.bs[p.bsp]) {
+					// We turn backquote command substitutions into $(),
+					// so we remove the extra backslashes needed by the backquotes.
+					// For good position information, we still include them in p.w.
 					bquotes++
 					goto retry
 				}
@@ -102,7 +105,7 @@ retry:
 			if p.litBs != nil {
 				p.litBs = append(p.litBs, b)
 			}
-			p.w, p.r = 1, rune(b)
+			p.w, p.r = 1+bquotes, rune(b)
 			return p.r
 		}
 		if !utf8.FullRune(p.bs[p.bsp:]) {
@@ -270,6 +273,18 @@ skipSpace:
 		case ';', '"', '\'', '(', ')', '$', '|', '&', '>', '<', '`':
 			p.tok = p.regToken(r)
 		case '#':
+			// If we're parsing $foo#bar, ${foo}#bar, 'foo'#bar, or "foo"#bar,
+			// #bar is a continuation of the same word, not a comment.
+			// TODO: support $(foo)#bar and `foo`#bar as well, which is slightly tricky,
+			// as we can't easily tell them apart from (foo)#bar and `#bar`,
+			// where #bar should remain a comment.
+			if !p.spaced {
+				switch p.tok {
+				case _LitWord, rightBrace, sglQuote, dblQuote:
+					p.advanceLitNone(r)
+					return
+				}
+			}
 			r = p.rune()
 			p.newLit(r)
 		runeLoop:
@@ -372,10 +387,7 @@ func (p *Parser) extendedGlob() bool {
 		// We do this after peeking for just one byte, so that the input `echo *`
 		// followed by a newline does not hang an interactive shell parser until
 		// another byte is input.
-		if p.peekBytes("()") {
-			return false
-		}
-		return true
+		return !p.peekBytes("()")
 	}
 	return false
 }
@@ -400,11 +412,6 @@ func (p *Parser) peekByte(b byte) bool {
 func (p *Parser) regToken(r rune) token {
 	switch r {
 	case '\'':
-		if p.openBquotes > 0 {
-			// bury openBquotes
-			p.buriedBquotes = p.openBquotes
-			p.openBquotes = 0
-		}
 		p.rune()
 		return sglQuote
 	case '"':
@@ -420,9 +427,6 @@ func (p *Parser) regToken(r rune) token {
 			p.rune()
 			return andAnd
 		case '>':
-			if p.lang == LangPOSIX {
-				break
-			}
 			if p.rune() == '>' {
 				p.rune()
 				return appAll
@@ -821,6 +825,9 @@ func (p *Parser) newLit(r rune) {
 func (p *Parser) endLit() (s string) {
 	if p.r == utf8.RuneSelf || p.r == escNewl {
 		s = string(p.litBs)
+	} else if p.r == '`' && p.w > 1 {
+		// If we ended at a nested and escaped backquote, litBs does not include the backslash.
+		s = string(p.litBs[:len(p.litBs)-1])
 	} else {
 		s = string(p.litBs[:len(p.litBs)-p.w])
 	}
