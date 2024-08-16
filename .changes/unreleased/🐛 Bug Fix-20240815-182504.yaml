@@ -1,0 +1,5 @@
+kind: "\U0001F41B Bug Fix"
+body: |-
+  Since mage is typically not precompiled, the normal build directives for darwin, linux, windows don't apply. Instead, the logic needs to be just runtime evaluation in the same code not broken apart by files.
+  This fixes it, improves logging for trunk setup, and does general dep upgrades.
+time: 2024-08-15T18:25:04.926744-05:00

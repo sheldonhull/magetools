@@ -1,13 +1,10 @@
 version: 0.1
 cli:
-  shell_hooks:
-    path_add:
-      - "${workspace}/tools"
-  version: 1.22.1
+  version: 1.22.3
 plugins:
   sources:
     - id: trunk
-      ref: v1.5.0
+      ref: v1.6.1
       uri: https://github.com/trunk-io/plugins
 actions:
   enabled:
@@ -16,68 +13,40 @@ actions:
     - trunk-check-pre-push
     - trunk-fmt-pre-commit
     - trunk-upgrade-available
-    - gotestsum
-    - gotestsum-superslow
-  definitions:
-    - id: gotestsum
-      description: run go tests on pre-push
-      run: .trunk/scripts/gotestsum-superslow.sh
-      triggers:
-        - git_hooks: [pre-push]
-      notify_on_error: true
-      runtime: go
-    - id: gotestsum-superslow
-      description: run go tests that take forever
-      run: .trunk/scripts/gotestsum-superslow.sh
-      notify_on_error: true
-      runtime: go
-tools:
-  enabled:
-    - golines@0.12.2
-    - gotestsum@1.11.0
-  definitions:
-    - name: gotestsum
-      known_good_version: 1.11.0
-      package: gotest.tools/gotestsum
-      runtime: go
-      shims:
-        - name: gotestsum
-          target: gotestsum
-
 runtimes:
   enabled:
-    - go@1.22.3
+    - go@1.21.0
     - node@18.12.1
     - python@3.10.8
 lint:
   disabled:
-    - gofmt
     - checkov
     - cspell
   enabled:
-    - osv-scanner@1.7.3
-    - trivy@0.51.2
-    - trufflehog@3.76.3
-    - renovate@37.374.3
-    - actionlint@1.7.0
+    - osv-scanner@1.8.3
+    - trivy@0.54.1
+    - trufflehog@3.81.8
+    - renovate@38.33.0
+    - actionlint@1.7.1
     - dotenv-linter@3.3.0
     - git-diff-check
-    - gitleaks@8.18.2
-    - golangci-lint@1.57.2
+    - gitleaks@8.18.4
+    - gofmt@1.20.4
+    - golangci-lint@1.60.1
     - hadolint@2.12.0
-    - markdownlint@0.40.0
-    - prettier@3.2.5
+    - markdownlint@0.41.0
+    - prettier@3.3.3
     - shellcheck@0.10.0
     - shfmt@3.6.0
-    - taplo@0.8.1
+    - taplo@0.9.3
     - yamllint@1.35.1
   ignore:
     - linters: [ALL]
       paths:
-        - .devcontainer/*
-        - configs/*
-        - .changes/*
-        - vendor/*
+        - .devcontainer/**
+        - configs/**
+        - .changes/**
+        - vendor/**
     - linters: [markdownlint]
       paths:
         # in progress changelog notes
@@ -88,30 +57,3 @@ lint:
     - linters: [golangci-lint]
       paths:
         - .examples/*
-  definitions:
-    - name: gofumpt
-      files: [go]
-      runtime: go
-      package: mvdan.cc/gofumpt
-      commands:
-        - output: rewrite
-          formatter: true
-          run: gofumpt ${target}
-          success_codes: [0]
-      environment:
-        - name: PATH
-          list: ["${tool}/bin"]
-    - name: golines
-      tools: [golines, gofumpt] # to ensure the required runtime will be available
-      commands:
-        - name: format
-          output: rewrite
-          run: golines --base-formatter="gofumpt" --max-len=120 --reformat-tags -w  ${target}
-          success_codes: [0]
-          cache_results: true
-          formatter: true
-          in_place: true
-          batch: true
-      environment:
-        - name: PATH
-          list: ["${tool}/bin"]

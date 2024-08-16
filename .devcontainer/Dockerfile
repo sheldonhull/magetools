@@ -17,7 +17,7 @@ COPY files/first-run-notice.txt /home/$DEVCONTAINER_USER/first-run-notice.txt
 RUN mkdir -p /home/$DEVCONTAINER_USER/.minikube \
   && chown $DEVCONTAINER_USER /home/$DEVCONTAINER_USER/.minikube \
   && /bin/bash -c 'set -euo pipefail && curl https://get.trunk.io -fsSL | bash -s -- -y' \
-  && /bin/bash -c 'set -euo pipefail && curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/v3.0.1/aqua-installer | bash'
+  && /bin/bash -c 'set -euo pipefail && curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/v1.0.0/aqua-installer | bash'
 
 
 VOLUME [ "/var/lib/docker" ]

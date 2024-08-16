@@ -8,15 +8,13 @@ import (
 
 	"github.com/magefile/mage/mg"
 	"github.com/pterm/pterm"
-	"github.com/sheldonhull/magetools/ci"
-	"github.com/sheldonhull/magetools/fancy"
 
-	// mage:import
-	_ "github.com/sheldonhull/magetools/docgen"
+	"github.com/sheldonhull/magetools/trunk"
 
 	// mage:import
 	"github.com/sheldonhull/magetools/gotools"
-
+	// mage:import
+	_ "github.com/sheldonhull/magetools/docgen"
 	// mage:import
 	_ "github.com/sheldonhull/magetools/precommit"
 )
@@ -57,13 +55,14 @@ func createDirectories() error {
 
 // Init runs multiple tasks to initialize all the requirements for running a project for a new contributor.
 func Init() { //nolint:deadcode // This is not dead code, and I find this insulting golangci-lint.
-	fancy.IntroScreen(ci.IsCI())
+	// fancy.IntroScreen(ci.IsCI())
 	pterm.Success.Println("running Init()...")
 
 	mg.SerialDeps(
 		Clean,
 		createDirectories,
 		gotools.Go{}.Tidy,
+		trunk.Trunk{}.Init,
 		// tooling.SilentInstallTools(toolList),
 	)
 }

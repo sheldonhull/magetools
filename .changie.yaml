@@ -6,46 +6,34 @@ headerPath: header.tpl.md
 changelogPath: CHANGELOG.md
 versionExt: md
 versionFormat: '## {{.Version}} - {{.Time.Format "2006-01-02"}}'
-kindFormat: ""
-changeFormat: "- **{{ .Kind }}**: {{ .Body -}}"
+kindFormat: "### {{.Kind}}"
+changeFormat: "- {{ .Body -}}"
 body:
   block: true
 kinds:
   - label: 🤖 CI & Build
-    key: ci-build
     auto: patch
   - label: 🎉 New Product Feature
-    key: new-product-feature
     auto: minor
   - label: 📘 Documentation
-    key: documentation
     auto: patch
   - label: ⬆️ Dependencies
-    key: dependencies
     auto: patch
   - label: 🐛 Bug Fix
-    key: bug-fix
     auto: patch
   - label: 🧪 Tests
-    key: tests
     auto: patch
   - label: 🔨 Developer Experience
-    key: developer-experience
     auto: patch
   - label: 🔨 Refactor
-    key: refactor
     auto: patch
   - label: 🔥 Breaking Change
-    key: breaking-change
     auto: minor
   - label: 🔒 Security
-    key: security
     auto: patch
   - label: ⬇️ Deprecated
-    key: deprecated
     auto: minor
   - label: 🔥 Major Version Change (Breaking Changes)
-    key: major-version-change-breaking-changes)
     auto: major
 newlines:
   afterChange: 0

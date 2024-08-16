@@ -1,0 +1,81 @@
+---
+name: go-tests
+on:
+  pull_request:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+    working-directory: .
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
+      - uses: aquaproj/aqua-installer@fd2089d1f56724d6456f24d58605e6964deae124 # v2.3.2
+        with:
+          aqua_version: v2.27.4
+          enable_aqua_install: true
+          # aqua_opts: ""
+        env:
+          # AQUA_CONFIG: '${{ github.workspace }}/aqua.yaml'
+          AQUA_LOG_LEVEL: debug
+          AQUA_OPTS:
+            ""
+            # working_directory: "${{ github.workspace }}"
+
+      # - name: aqua-install
+      #   run: |
+      #     curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/v1.1.2/aqua-installer | bash -s -- -i /usr/local/bin/aqua
+      #     # echo "$HOME/.local/share/aquaproj-aqua/bin" >> $GITHUB_PATH
+      #     # [[ -e "${AQUA_CONFIG}" ]] && echo "✅ AQUA_CONFIG: ${AQUA_CONFIG} exists" ||  echo "::error ❗ unable to validate the target file: ${AQUA_CONFIG} exists"
+      #     ls -lla "${{ github.workspace }}"
+      #   env:
+      #     AQUA_CONFIG: '${{ github.workspace }}/aqua.yaml'
+      #     AQUA_LOG_LEVEL: debug
+      #     AQUA_OPTS: ""
+      - name: env-config-go
+        run: |
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+      - name: Setup Golang caches
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
+        with:
+          path: |
+            ${HOME}/.cache/go-build
+            ${HOME}/go/pkg/mod
+          key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-
+
+      - name: mage-init
+        run: |
+          export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua:${PATH}"
+          export PATH="$(go env GOPATH)/bin:${PATH}"
+          # aqua install # --only-link
+          mage init
+      - name: mage-testsum
+        run: |
+          export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua:${PATH}"
+          export PATH="$(go env GOPATH)/bin:${PATH}"
+          mage go:testsum ./...
+        env:
+          # Race conditions will be hit due to the cli driven tasks and binaries being called.
+          GOTEST_DISABLE_RACE: 1
+          GOTESTS: "slow"
+          GOTEST_FLAGS: "--tags=integration"
+
+      - name: Upload coverage reports to Codecov
+        run: |
+          # improved codecov with signature verification
+          curl https://uploader.codecov.io/verification.gpg | gpg --no-default-keyring --keyring trustedkeys.gpg --import # One-time step
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
+          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM.sig
+          gpgv codecov.SHA256SUM.sig codecov.SHA256SUM
+          shasum -a 256 -c codecov.SHA256SUM
+          chmod +x codecov
+          ./codecov -t ${{ secrets.CODECOV_TOKEN }}
