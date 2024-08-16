@@ -85,7 +85,7 @@
   },
   "features": {
     //"ghcr.io/devcontainers/features/common-utils:1": {
-    "ghcr.io/devcontainers/features/common-utils:1": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
       "version": "latest",
       "username": "vscode",
       "installOhMyZsh": true
