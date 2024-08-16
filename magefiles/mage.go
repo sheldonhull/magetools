@@ -8,9 +8,11 @@ import (
 
 	"github.com/magefile/mage/mg"
 	"github.com/pterm/pterm"
-	"github.com/sheldonhull/magetools/gotools"
+
 	"github.com/sheldonhull/magetools/trunk"
 
+	// mage:import
+	"github.com/sheldonhull/magetools/gotools"
 	// mage:import
 	_ "github.com/sheldonhull/magetools/docgen"
 	// mage:import
