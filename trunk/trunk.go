@@ -48,7 +48,7 @@ func (Trunk) Install() (err error) {
 // trunkInstallLinuxDarwin installs trunk.io on linux and darwin using the default curl approach.
 func trunkInstallLinuxDarwin() (err error) {
 	_, err = exec.LookPath("trunk")
-	if err != nil && os.IsNotExist(err) {
+	if err != nil {
 		pterm.Warning.Printfln(
 			"unable to resolve aqua cli tool, please install for automated project tooling setup: https://aquaproj.github.io/docs/tutorial-basics/quick-start#install-aqua",
 		)
@@ -76,7 +76,7 @@ func trunkInstallWindows() (err error) {
 
 	// if there's a package.json then use npm install with npm install -D @trunkio/launcher, else install as a global tool
 	_, err = exec.LookPath("trunk")
-	if err != nil && os.IsNotExist(err) {
+	if err != nil {
 		if _, err = os.Stat("package.json"); err == nil {
 			pterm.Info.Printfln("Found package.json, installing trunk.io as a dev dependency")
 			_, err = script.Exec("npm install -D @trunkio/launcher").Stdout()
