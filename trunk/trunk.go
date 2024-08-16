@@ -63,7 +63,7 @@ func trunkInstallLinuxDarwin() (err error) {
 	}
 	_, err = exec.LookPath("trunk")
 	if err != nil {
-		pterm.Error.Println("trunk setup error noted: %s", err)
+		pterm.Error.Println("trunk setup error noted:", err)
 		return fmt.Errorf("[trunkInstallLinuxDarwin] trunk setup error noted: %w", err)
 	}
 
@@ -98,7 +98,7 @@ func trunkInstallWindows() (err error) {
 	if err != nil {
 		pterm.Warning.Printfln("if any odd errors, try upgrading node/npm using install or upgrade command")
 		pterm.Warning.Printfln(shellescape.QuoteCommand([]string{"winget install --id OpenJS.NodeJS --source winget"}))
-		pterm.Error.Println("trunk setup error noted: %s", err)
+		pterm.Error.Println("trunk setup error noted:", err)
 		return fmt.Errorf("[trunkInstallWindows] trunk setup error noted: %w", err)
 	}
 

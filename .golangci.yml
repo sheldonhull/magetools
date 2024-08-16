@@ -5,7 +5,6 @@ output:
 linters-settings:
   misspell:
     locale: US
-
   nolintlint:
     allow-unused: false
     allow-no-explanation: []
@@ -37,15 +36,14 @@ linters-settings:
             desc: use zerolog
           - pkg: "github.com/pkg/errors"
             desc: Should be replaced by standard lib errors package
-
-    # gomodguard:
-    #   blocked:
-    #     modules:
-    #       - github.com/sirupsen/logrus:
-    #           recommendations:
-    #             - internal/logging
-    #           reason: logging is allowed only by zerolog. Please use zerolog
-    #     local_replace_directives: false
+            # gomodguard:
+            #   blocked:
+            #     modules:
+            #       - github.com/sirupsen/logrus:
+            #           recommendations:
+            #             - internal/logging
+            #           reason: logging is allowed only by zerolog. Please use zerolog
+            #     local_replace_directives: false
   tagliatelle:
     case:
       use-field-name: true
@@ -94,7 +92,6 @@ linters-settings:
       - ok
       - zl
       - fs
-
   revive:
     ignore-generated-header: true
     enable-all-rules: true
@@ -105,37 +102,30 @@ linters-settings:
         disabled: true
       - name: add-constant
         disabled: true
-
+      - name: comment-spacings
+        disabled: true
+      - name: cognitive-complexity
+        disabled: true # not useful for this repo cause it's not typical nice Go code ;-p
 linters:
   enable-all: true
   disable:
-    - scopelint
     - paralleltest
     - noctx
     - wsl
     - lll
-    - interfacer
-    - golint
-    - maligned
     - goimports
     - gci
     - gofmt
     - nlreturn
     - gofumpt
-    - exhaustivestruct
     - exhaustruct
     - wrapcheck
     - godox
     - execinquery
     - nonamedreturns
     - forbidigo
-    - structcheck
-    - varcheck
-    - deadcode
-    - ifshort
     - godox
     - godot
-    - nosnakecase
     - rowserrcheck # disabled due to generics, can enable in future if needed
     - sqlclosecheck # disabled due to generics, can enable in future if needed
     - wastedassign # disabled due to generics, can enable in future if needed
