@@ -44,7 +44,7 @@ func Build() error {
 
 	releaserArgs := []string{
 		"build",
-		"--rm-dist",
+		"--clean",
 		"--snapshot",
 		"--single-target",
 	}
