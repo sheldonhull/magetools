@@ -1,5 +1,3 @@
-//go:build linux || darwin
-
 // Package trunk contains tasks to automate setup and usage in Mage based projects for the great trunk.io tooling.
 package trunk
 
