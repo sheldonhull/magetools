@@ -1,7 +1,0 @@
-kind: "\U0001F528 Refactor"
-body: |-
-  Trunk package now supports installing for windows, via the newer trunk npm based install, while maintaining the bash install for linux/darwin.
-  If the project has a package.json, then it will install as dev dependency, otherwise as a global tool.
-  No logic to detect alternative tooling such as yarn, bun, deno, etc unless requested.
-  While trunk also supports this method of installation for Darwin/Linux, I've opted to keep it the same as before and use the bash install method for those regardless if package.json is there or not.
-time: 2024-05-21T12:29:29.380394-05:00
