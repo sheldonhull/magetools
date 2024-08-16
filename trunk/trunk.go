@@ -67,7 +67,7 @@ func trunkInstallLinuxDarwin() (err error) {
 		return fmt.Errorf("[trunkInstallLinuxDarwin] trunk setup error noted: %w", err)
 	}
 
-	pterm.Success.Printfln("trunk.io already installed, skipping")
+	pterm.Success.Printfln("trunk.io is installed")
 	return err
 }
 
@@ -102,7 +102,7 @@ func trunkInstallWindows() (err error) {
 		return fmt.Errorf("[trunkInstallWindows] trunk setup error noted: %w", err)
 	}
 
-	pterm.Success.Printfln("trunk.io already installed, skipping")
+	pterm.Success.Printfln("trunk.io is installed")
 	return err
 }
 
