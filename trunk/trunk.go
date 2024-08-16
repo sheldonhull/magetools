@@ -2,6 +2,7 @@
 package trunk
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"runtime"
@@ -60,6 +61,10 @@ func trunkInstallLinuxDarwin() (err error) {
 			return err
 		}
 	} else {
+		pterm.Error.Println("trunk setup error noted: %s", err)
+		return fmt.Errorf("[trunkInstallLinuxDarwin] trunk setup error noted: %w", err)
+	}
+	if err == nil {
 		pterm.Success.Printfln("trunk.io already installed, skipping")
 	}
 	return err
@@ -88,12 +93,16 @@ func trunkInstallWindows() (err error) {
 			}
 		}
 	} else {
-		pterm.Success.Printfln("trunk.io already installed, skipping")
+		pterm.Error.Println("trunk setup error noted: %s", err)
+		return fmt.Errorf("[trunkInstallWindows] trunk setup error noted: %w", err)
 	}
 	if err != nil {
 		pterm.Warning.Printfln("if any odd errors, try upgrading node/npm using install or upgrade command")
 		pterm.Warning.Printfln(shellescape.QuoteCommand([]string{"winget install --id OpenJS.NodeJS --source winget"}))
+		return err
 	}
+
+	pterm.Success.Printfln("trunk.io already installed, skipping")
 	return err
 }
 

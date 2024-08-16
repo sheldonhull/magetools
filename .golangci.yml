@@ -104,7 +104,7 @@ linters-settings:
       - name: line-length-limit
         disabled: true
       - name: add-constant
-        severity: warning
+        disabled: true
 
 linters:
   enable-all: true
