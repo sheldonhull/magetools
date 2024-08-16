@@ -18,6 +18,5 @@ changelog:
 # .goreleaser.yaml
 release:
   skip_upload: true
-  discussion_category_name: announcements
   prerelease: auto
   mode: replace
