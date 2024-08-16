@@ -12,7 +12,7 @@ checksum:
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
 changelog:
-  disable: true
+  disable: false
   sort: asc
   use: github
 # .goreleaser.yaml
