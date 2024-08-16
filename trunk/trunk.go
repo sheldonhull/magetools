@@ -58,15 +58,16 @@ func trunkInstallLinuxDarwin() (err error) {
 				"curl %s",
 				shellescape.QuoteCommand([]string{"https://get.trunk.io -fsSL | bash -s -- -y"}),
 			)
-			return err
+			return fmt.Errorf("[trunkInstallLinuxDarwin] trunk setup error noted: %w", err)
 		}
-	} else {
+	}
+	_, err = exec.LookPath("trunk")
+	if err != nil {
 		pterm.Error.Println("trunk setup error noted: %s", err)
 		return fmt.Errorf("[trunkInstallLinuxDarwin] trunk setup error noted: %w", err)
 	}
-	if err == nil {
-		pterm.Success.Printfln("trunk.io already installed, skipping")
-	}
+
+	pterm.Success.Printfln("trunk.io already installed, skipping")
 	return err
 }
 
@@ -82,24 +83,23 @@ func trunkInstallWindows() (err error) {
 			_, err = script.Exec("npm install -D @trunkio/launcher").Stdout()
 			if err != nil {
 				pterm.Error.Printfln(shellescape.QuoteCommand([]string{"npm install -D @trunkio/launcher"}))
-				return err
+				return fmt.Errorf("[trunkInstallWindows] trunk setup error noted with development level install: %w", err)
 			}
 		} else {
 			pterm.Info.Printfln("No package.json found, installing trunk.io globally")
 			_, err = script.Exec("npm install --global @trunkio/launcher").Stdout()
 			if err != nil {
 				pterm.Error.Printfln(shellescape.QuoteCommand([]string{"npm install --global @trunkio/launcher"}))
-				return err
+				return fmt.Errorf("[trunkInstallWindows] trunk setup error noted with --global install: %w", err)
 			}
 		}
-	} else {
-		pterm.Error.Println("trunk setup error noted: %s", err)
-		return fmt.Errorf("[trunkInstallWindows] trunk setup error noted: %w", err)
 	}
+	_, err = exec.LookPath("trunk")
 	if err != nil {
 		pterm.Warning.Printfln("if any odd errors, try upgrading node/npm using install or upgrade command")
 		pterm.Warning.Printfln(shellescape.QuoteCommand([]string{"winget install --id OpenJS.NodeJS --source winget"}))
-		return err
+		pterm.Error.Println("trunk setup error noted: %s", err)
+		return fmt.Errorf("[trunkInstallWindows] trunk setup error noted: %w", err)
 	}
 
 	pterm.Success.Printfln("trunk.io already installed, skipping")
