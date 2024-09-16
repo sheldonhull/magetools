@@ -12,7 +12,7 @@ atomicgo.dev/keyboard/keys
 # atomicgo.dev/schedule v0.1.0
 ## explicit; go 1.18
 atomicgo.dev/schedule
-# github.com/bitfield/script v0.22.1
+# github.com/bitfield/script v0.23.0
 ## explicit; go 1.18
 github.com/bitfield/script
 # github.com/containerd/console v1.0.4
