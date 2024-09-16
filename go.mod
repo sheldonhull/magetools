@@ -1,8 +1,8 @@
 module github.com/sheldonhull/magetools
 
-go 1.21
+go 1.22.0
 
-toolchain go1.22.3
+toolchain go1.23.1
 
 require (
 	al.essio.dev/pkg/shellescape v1.5.0
@@ -12,7 +12,7 @@ require (
 	github.com/matryer/is v1.4.1
 	github.com/pterm/pterm v0.12.79
 	github.com/ztrue/tracerr v0.4.0
-	golang.org/x/mod v0.20.0
+	golang.org/x/mod v0.21.0
 )
 
 require (
