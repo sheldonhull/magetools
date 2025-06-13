@@ -2,10 +2,10 @@ module github.com/sheldonhull/magetools
 
 go 1.21
 
-toolchain go1.22.3
+toolchain go1.24.4
 
 require (
-	al.essio.dev/pkg/shellescape v1.5.0
+	al.essio.dev/pkg/shellescape v1.6.0
 	github.com/bitfield/script v0.22.1
 	github.com/dustin/go-humanize v1.0.1
 	github.com/magefile/mage v1.15.0
