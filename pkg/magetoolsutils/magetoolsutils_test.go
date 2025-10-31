@@ -13,11 +13,6 @@ import (
 )
 
 func Test_CheckPtermDebug(t *testing.T) {
-	// pterm.EnableDebugMessages()
-
-	// pterm.DisableDebugMessages()
-	// pterm.DisableStyling()
-	// pterm.DisableOutput()
 	orig := os.Getenv("DEBUG")
 	defer os.Setenv("DEBUG", orig)
 
@@ -26,21 +21,29 @@ func Test_CheckPtermDebug(t *testing.T) {
 
 	origActions := os.Getenv("ACTIONS_STEP_DEBUG")
 	defer os.Setenv("ACTIONS_STEP_DEBUG", origActions)
+
+	origMage := os.Getenv("MAGEFILE_VERBOSE")
+	defer os.Setenv("MAGEFILE_VERBOSE", origMage)
+
 	testCases := []struct {
 		desc   string
 		envvar string
 	}{
 		{
-			desc:   "DEBUG general flag",
+			desc:   "General debug env",
 			envvar: "DEBUG",
 		},
 		{
-			desc:   "SYSTEM_DEBUG azure-devops flag",
+			desc:   "Azure DevOps debug env",
 			envvar: "SYSTEM_DEBUG",
 		},
 		{
-			desc:   "ACTIONS_STEP_DEBUG github-actions flag",
+			desc:   "GitHub Actions debug env",
 			envvar: "ACTIONS_STEP_DEBUG",
+		},
+		{
+			desc:   "Magefile debug env",
+			envvar: "MAGEFILE_VERBOSE",
 		},
 	}
 	for _, tt := range testCases {
