@@ -31,6 +31,8 @@ func CheckPtermDebug() {
 	}
 }
 
+// enableDebugMessagesBasedOnEnv checks if the specified environment variable is set to a truthy value.
+// If so, it enables debug messages in pterm and returns true. Otherwise, it returns false.
 func enableDebugMessagesBasedOnEnv(name string) bool {
 	envValue, isSet := os.LookupEnv(name)
 	if !isSet {
@@ -39,9 +41,11 @@ func enableDebugMessagesBasedOnEnv(name string) bool {
 
 	debug, err := strconv.ParseBool(envValue)
 	if err != nil {
+		const offset = 2
 		pterm.Warning.WithShowLineNumber(true).
-			WithLineNumberOffset(2).
+			WithLineNumberOffset(offset).
 			Printfln("ParseBool(%s): %v\t debug: %v", name, err, debug)
+		return false
 	}
 	if !debug {
 		return false
