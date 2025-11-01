@@ -1,8 +1,8 @@
 module github.com/sheldonhull/magetools
 
-go 1.21
+go 1.25
 
-toolchain go1.22.3
+toolchain go1.25.3
 
 require (
 	al.essio.dev/pkg/shellescape v1.5.0

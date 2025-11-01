@@ -56,12 +56,12 @@ jobs:
           export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua:${PATH}"
           export PATH="$(go env GOPATH)/bin:${PATH}"
           # aqua install # --only-link
-          mage init
+          go run github.com/magefile/mage@latest init
       - name: mage-testsum
         run: |
           export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua:${PATH}"
           export PATH="$(go env GOPATH)/bin:${PATH}"
-          mage go:testsum ./...
+          go run github.com/magefile/mage@latest go:testsum ./...
         env:
           # Race conditions will be hit due to the cli driven tasks and binaries being called.
           GOTEST_DISABLE_RACE: 1

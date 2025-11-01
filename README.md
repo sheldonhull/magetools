@@ -29,11 +29,25 @@ Lastly, another worthy mention is [Gosh](https://github.com/mumoshu/gosh).
 
 ## Mage
 
-Install with Go 1.16+
+### Recommended: Use `go run` (No Installation Required)
+
+The recommended approach is to use `go run` which doesn't require installing mage as a binary:
+
+```shell
+go run github.com/magefile/mage@latest [target]
+```
+
+This ensures compatibility across platforms (including Apple Silicon) and avoids version management issues with mage binary releases.
+
+### Alternative: Install with Go
+
+If you prefer to install the mage binary:
 
 ```shell
 go install github.com/magefile/mage@latest
 ```
+
+Note: Precompiled releases may lag behind latest versions and platform support.
 
 ## Mage-Select
 
