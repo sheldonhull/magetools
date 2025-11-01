@@ -6,11 +6,11 @@ toolchain go1.22.3
 
 require (
 	al.essio.dev/pkg/shellescape v1.5.0
-	github.com/bitfield/script v0.22.1
+	github.com/bitfield/script v0.24.1
 	github.com/dustin/go-humanize v1.0.1
 	github.com/magefile/mage v1.15.0
 	github.com/matryer/is v1.4.1
-	github.com/pterm/pterm v0.12.79
+	github.com/pterm/pterm v0.12.82
 	github.com/ztrue/tracerr v0.4.0
 	golang.org/x/mod v0.20.0
 )
