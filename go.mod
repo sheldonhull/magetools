@@ -1,8 +1,8 @@
 module github.com/sheldonhull/magetools
 
-go 1.21
+go 1.25
 
-toolchain go1.22.3
+toolchain go1.25.3
 
 require (
 	al.essio.dev/pkg/shellescape v1.5.0
@@ -32,3 +32,5 @@ require (
 	golang.org/x/text v0.17.0 // indirect
 	mvdan.cc/sh/v3 v3.8.0 // indirect
 )
+
+tool github.com/magefile/mage

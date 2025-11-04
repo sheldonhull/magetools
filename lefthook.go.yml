@@ -29,10 +29,10 @@ pre-commit:
   commands:
     format:
       tags: go
-      run: mage go:fmt
+      run: go tool mage go:fmt
     lint:
       tags: go
-      run: mage go:lint
+      run: go tool mage go:lint
     test:
       tags: go
       run: go test ./... -v -json -cover | tparse -all -pulse "1s"
