@@ -11,7 +11,6 @@ registries:
 packages:
   - name: miniscruff/changie@v1.19.1
   - name: goreleaser/goreleaser@v2.2.0
-  - name: magefile/mage@v1.15.0
   - name: golangci/golangci-lint@v1.60.1
   - name: golang/go@go1.25.3
   - name: gotestyourself/gotestsum@v1.12.0

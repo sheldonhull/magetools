@@ -1,0 +1,3 @@
+kind: "\U0001F528 Developer Experience"
+body: Migrate from mage binary to 'go tool mage' pattern. Update Go to v1.25.3. Add mage as a tool via 'go get -tool github.com/magefile/mage@latest'. This ensures compatibility across platforms including Darwin arm64/Apple Silicon by using Go's native tooling instead of relying on prebuilt mage binaries, making the solution more future-proof. Remove mage from aqua.yaml and update GitHub Actions workflows to use 'go tool mage' exclusively.
+time: 2025-11-04T18:05:09.819322568Z
