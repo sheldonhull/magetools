@@ -32,3 +32,5 @@ require (
 	golang.org/x/text v0.17.0 // indirect
 	mvdan.cc/sh/v3 v3.8.0 // indirect
 )
+
+tool github.com/magefile/mage
