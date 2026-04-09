@@ -1,3 +1,4 @@
 {
-  "extends": ["github>sheldonhull/renovate:renovate.json5"]
+  "extends": ["github>sheldonhull/renovate:renovate.json5"],
+  "enabled": false
 }
